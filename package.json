@@ -1,0 +1,35 @@
+{
+  "name": "craglog-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tap test/**/*.test.js",
+    "start": "fastify start -l info app.js",
+    "dev": "fastify start -l info -P -w app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^2.0.0",
+    "fastify-autoload": "^1.0.0",
+    "fastify-cli": "^1.2.0",
+    "fastify-jwt": "^1.0.0",
+    "fastify-mongodb": "^1.0.1",
+    "fastify-plugin": "^1.5.0",
+    "fastify-redis": "^3.1.1",
+    "fastify-swagger": "^2.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.3.0",
+    "eslint-config-prettier": "^6.2.0",
+    "eslint-config-wcl-backend": "^0.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "prettier": "^1.18.2",
+    "tap": "^12.5.3"
+  }
+}
