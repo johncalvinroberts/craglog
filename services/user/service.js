@@ -1,4 +1,5 @@
 'use strict';
+const bcrypt = require('bcryptjs');
 
 const DUPLICATE_KEY_ERROR_CODE = 11000;
 
@@ -9,9 +10,10 @@ class UserService {
     this.userCollection = userCollection;
   }
 
-  async register(username, password) {
+  async register(username, givenPass) {
     let writeResult;
     try {
+      const password = await bcrypt.hash(givenPass, 10);
       writeResult = await this.userCollection.insertOne({ username, password });
     } catch (e) {
       if (e.code === DUPLICATE_KEY_ERROR_CODE) {
@@ -24,12 +26,10 @@ class UserService {
   }
 
   async login(username, password) {
-    const users = await this.userCollection
-      .find({ username, password }, { projection: { password: 0 } })
-      .toArray();
+    const users = await this.userCollection.find({ username }).toArray();
     const user = users[0];
-
-    if (!user) throw new Error(errors.WRONG_CREDENTIAL);
+    const valid = await bcrypt.compare(password, user.password);
+    if (!user || !valid) throw new Error(errors.WRONG_CREDENTIAL);
 
     return user;
   }
