@@ -5,6 +5,7 @@ const AutoLoad = require('fastify-autoload');
 
 const swaggerOpts = {
   routePrefix: '/docs',
+  exposeRoute: true,
   swagger: {
     info: {
       title: 'craglog swagger',
@@ -36,7 +37,6 @@ module.exports = function(fastify, opts, next) {
     dir: path.join(__dirname, 'services'),
     options: Object.assign({}, opts)
   });
-
   // Make sure to call next when done
   next();
 };
