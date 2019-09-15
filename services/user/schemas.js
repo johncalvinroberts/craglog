@@ -2,7 +2,7 @@
 
 const userProfileOutput = {
   type: 'object',
-  require: ['_id', 'username'],
+  required: ['_id', 'username'],
   properties: {
     _id: { type: 'string' },
     username: { type: 'string' }
@@ -43,7 +43,7 @@ const login = {
   tags: ['user'],
   body: {
     type: 'object',
-    require: ['username', 'password'],
+    required: ['username', 'password'],
     properties: {
       username: { type: 'string' },
       password: { type: 'string' }
@@ -66,7 +66,7 @@ const search = {
   tags: ['user'],
   querystring: {
     type: 'object',
-    require: ['search'],
+    required: ['search'],
     properties: {
       search: { type: 'string' }
     },
@@ -81,7 +81,10 @@ const search = {
 };
 
 const me = {
-  tags: ['user']
+  tags: ['user'],
+  response: {
+    200: userProfileOutput
+  }
 };
 
 const getProfile = {

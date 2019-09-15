@@ -9,13 +9,16 @@
   "scripts": {
     "test": "tap test/**/*.test.js",
     "start": "fastify start -l info app.js",
-    "dev": "fastify start -l info -P -w app.js"
+    "dev": "fastify start -l info -P -w app.js",
+    "dev-debug": "fastify start -l info -P -w app.js --inspect"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bull": "^3.10.0",
+    "cheerio": "^1.0.0-rc.3",
     "fastify": "^2.0.0",
     "fastify-autoload": "^1.0.0",
     "fastify-cli": "^1.2.0",
@@ -23,7 +26,8 @@
     "fastify-mongodb": "^1.0.1",
     "fastify-plugin": "^1.5.0",
     "fastify-redis": "^3.1.1",
-    "fastify-swagger": "^2.4.0"
+    "fastify-swagger": "^2.4.0",
+    "got": "^9.6.0"
   },
   "devDependencies": {
     "eslint": "^6.3.0",

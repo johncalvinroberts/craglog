@@ -1,4 +1,5 @@
 'use strict';
+
 const bcrypt = require('bcryptjs');
 
 const DUPLICATE_KEY_ERROR_CODE = 11000;
