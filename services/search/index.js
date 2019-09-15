@@ -23,6 +23,8 @@ async function searchHandler(req, reply) {
     return {};
   }
 
+  console.log({ searchRes });
+
   // 1. check if redis has this search term
   // 2. if has, use the ids returned from redis and find each by id
   // 3. if not has, or is still processsing, return 202 "accepted"

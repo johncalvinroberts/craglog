@@ -33,15 +33,18 @@ async function scrapeRouteSearch(term) {
     const res = await got(`${baseUrl}/climbing/world/routes/search/${term}`);
     const $ = cheerio.load(res.body);
     const ids = Array.from($('span.route > a')).map(element => {
-      return element.attribs.href;
+      const href = element.attribs.href;
+      return href.substring(href.lastIndexOf('/') + 1);
     });
-    console.log(ids);
+
     const results = {};
 
     for (const id of ids) {
       const data = await scrapeSingleRoute(id);
       results[id] = data;
     }
+
+    console.log({ results });
 
     return Object.keys(results).map(id => results[id]);
   } catch (error) {
