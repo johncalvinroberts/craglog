@@ -11,6 +11,7 @@ const userProfileOutput = {
 
 const registration = {
   // This jsonschema will be used for data validation
+  tags: ['user'],
   body: {
     type: 'object',
     required: ['username', 'password'],
@@ -39,6 +40,7 @@ const registration = {
 };
 
 const login = {
+  tags: ['user'],
   body: {
     type: 'object',
     require: ['username', 'password'],
@@ -61,6 +63,7 @@ const login = {
 };
 
 const search = {
+  tags: ['user'],
   querystring: {
     type: 'object',
     require: ['search'],
@@ -77,7 +80,12 @@ const search = {
   }
 };
 
+const me = {
+  tags: ['user']
+};
+
 const getProfile = {
+  tags: ['user'],
   params: {
     type: 'object',
     required: ['userId'],
@@ -97,5 +105,6 @@ module.exports = {
   registration,
   login,
   search,
+  me,
   getProfile
 };

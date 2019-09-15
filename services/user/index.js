@@ -4,7 +4,8 @@ const {
   login: loginSchema,
   registration: registrationSchema,
   getProfile: getProfileSchema,
-  search: searchSchema
+  search: searchSchema,
+  me: meSchema
 } = require('./schemas');
 
 const errors = require('../../errors');
@@ -20,7 +21,7 @@ module.exports = async function(fastify, opts) {
   // Logged APIs
   fastify.register(async function(fastify) {
     fastify.addHook('preHandler', fastify.authPreHandler);
-    fastify.get('/me', meHandler);
+    fastify.get('/me', { schema: meSchema }, meHandler);
     fastify.get('/:userId', { schema: getProfileSchema }, userHandler);
     fastify.get('/search', { schema: searchSchema }, searchHandler);
   });
