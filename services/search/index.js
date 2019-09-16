@@ -17,13 +17,12 @@ module.exports.autoPrefix = '/search';
 async function searchHandler(req, reply) {
   const { term, type } = req.query;
   const searchRes = await this.searchService.findTermIds(term, type);
+
   if (!searchRes) {
     await this.addScrapeTask({ term, type });
     reply.code(202);
     return {};
   }
-
-  console.log({ searchRes });
 
   // 1. check if redis has this search term
   // 2. if has, use the ids returned from redis and find each by id

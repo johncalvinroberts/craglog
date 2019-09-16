@@ -29,10 +29,6 @@ class SearchService {
   }
 
   async findTermIds(term) {
-    const exists = await checkTermExists(this.redisClient, term);
-    if (!exists) {
-      return null;
-    }
     return getTermIds(this.redisClient, term);
   }
 

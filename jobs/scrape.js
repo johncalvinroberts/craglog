@@ -14,8 +14,9 @@ async function scrapeSingleRoute(id) {
   const name = $('span[itemprop=name]').text();
   const grade = $('span.grade').text();
   const latLongEl = trimWhiteSpace($('.areaInfo').text());
+
   const [latitude, longitude] =
-    latLongEl && latLongEl.split('Lat/Long:').split(',');
+    latLongEl && latLongEl.substring(latLongEl.indexOf(':') + 1).split(',');
 
   const stats = Array.from($('ul.stats > li')).reduce((memo, current) => {
     const [key, value] = $(current)
@@ -25,7 +26,15 @@ async function scrapeSingleRoute(id) {
     return memo;
   }, {});
   const { height, bolts } = stats;
-  return { id, name, grade, latitude, longitude, height, bolts };
+  return {
+    id,
+    name,
+    grade,
+    latitude,
+    longitude,
+    height,
+    bolts: parseInt(bolts)
+  };
 }
 
 async function scrapeRouteSearch(term) {
@@ -43,8 +52,6 @@ async function scrapeRouteSearch(term) {
       const data = await scrapeSingleRoute(id);
       results[id] = data;
     }
-
-    console.log({ results });
 
     return Object.keys(results).map(id => results[id]);
   } catch (error) {

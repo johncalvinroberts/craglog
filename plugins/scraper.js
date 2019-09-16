@@ -17,14 +17,17 @@ module.exports = fp(async function(fastify) {
   async function handleComplete(job, results) {
     const { term, type } = job.data;
     let ids;
-    console.log({ results });
+
     if (type === 'route') {
       ids = await fastify.routeService.createRoutes(results);
     }
-
+    console.log({ ids });
     await fastify.searchService.setTermIds(term, ids);
   }
 
   queue.on('completed', handleComplete);
+  queue.on('error', function(error) {
+    console.log(error);
+  });
   fastify.decorate('addScrapeTask', addScrapeTask);
 });
