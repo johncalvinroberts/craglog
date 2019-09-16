@@ -1,9 +1,13 @@
 'use strict';
 
-const { getRoute: getRouteSchema } = require('./schemas');
+const {
+  getRoute: getRouteSchema,
+  getRoutes: getRoutesSchema
+} = require('./schemas');
 
 module.exports = async function(fastify) {
   fastify.get('/:id', { schema: getRouteSchema }, routeByIdHandler);
+  fastify.get('/', { schema: getRoutesSchema }, getRoutesList);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
@@ -12,9 +16,14 @@ module.exports[Symbol.for('plugin-meta')] = {
   }
 };
 
-module.exports.autoPrefix = '/route';
+module.exports.autoPrefix = '/routes';
 
 async function routeByIdHandler(req) {
-  console.log({ req });
-  return {};
+  return this.routeService.getRoute(
+    this.transformStringIntoObjectId(req.params.id)
+  );
+}
+
+async function getRoutesList({ query }) {
+  return this.routeService.getRoutes(query);
 }

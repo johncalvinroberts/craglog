@@ -46,32 +46,32 @@ module.exports[Symbol.for('plugin-meta')] = {
   }
 };
 
-module.exports.autoPrefix = '/user';
+module.exports.autoPrefix = '/users';
 
-async function loginHandler(req, reply) {
+async function loginHandler(req) {
   const { username, password } = req.body;
   const user = await this.userService.login(username, password);
   return { jwt: this.jwt.sign(user) };
 }
 
-async function registerHandler(req, reply) {
+async function registerHandler(req) {
   const { username, password } = req.body;
   const userId = await this.userService.register(username, password);
   return { userId };
 }
 
-async function meHandler(req, reply) {
+async function meHandler(req) {
   const userId = req.user._id;
   return this.userService.getProfile(this.transformStringIntoObjectId(userId));
 }
 
-async function userHandler(req, reply) {
+async function userHandler(req) {
   return this.userService.getProfile(
     this.transformStringIntoObjectId(req.params.userId)
   );
 }
 
-async function searchHandler(req, reply) {
+async function searchHandler(req) {
   const { search } = req.query;
   return this.userService.search(search);
 }

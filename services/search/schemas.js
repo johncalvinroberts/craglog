@@ -1,6 +1,5 @@
 'use strict';
-
-const routeOutput = {};
+const { routeOutput } = require('../route/schemas');
 
 const search = {
   tags: ['search'],

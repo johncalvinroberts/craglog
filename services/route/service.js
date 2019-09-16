@@ -40,7 +40,11 @@ class RouteService {
     return this.routeCollection.findOne({ _id });
   }
 
-  getRoutes(ids) {
+  getRoutes({ skip, limit }) {
+    return this.routeCollection.find({}, { skip, limit }).toArray();
+  }
+
+  getRouteIds(ids) {
     return this.routeCollection.find({
       _id: { $in: ids }
     });

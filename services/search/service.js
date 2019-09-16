@@ -10,10 +10,6 @@ function execRedis(redisClient, method, args) {
   });
 }
 
-function checkTermExists(redisClient, term) {
-  return execRedis(redisClient, 'exists', [term]);
-}
-
 async function getTermIds(redisClient, term) {
   const res = await execRedis(redisClient, 'get', [term]);
   return res && res.split(',');

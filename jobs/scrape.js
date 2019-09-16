@@ -26,14 +26,15 @@ async function scrapeSingleRoute(id) {
     return memo;
   }, {});
   const { height, bolts } = stats;
+  const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
   return {
-    id,
+    externalId: id,
     name,
     grade,
     latitude,
     longitude,
     height,
-    bolts: parseInt(bolts)
+    bolts: boltsVal || null
   };
 }
 
@@ -52,7 +53,7 @@ async function scrapeRouteSearch(term) {
       const data = await scrapeSingleRoute(id);
       results[id] = data;
     }
-
+    console.log({ results });
     return Object.keys(results).map(id => results[id]);
   } catch (error) {
     Promise.reject(error);
