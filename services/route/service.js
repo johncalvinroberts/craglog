@@ -22,19 +22,6 @@ class RouteService {
     return writeResult.ops[0];
   }
 
-  async createRoutes(payload) {
-    let writeResult;
-    try {
-      writeResult = await this.routeCollection.insertMany(payload);
-    } catch (e) {
-      if (e.code === DUPLICATE_KEY_ERROR_CODE) {
-        throw new Error(errors.ROUTE_EXISTS);
-      }
-      throw e;
-    }
-    return writeResult.insertedIds;
-  }
-
   getRoute(_id) {
     return this.routeCollection.findOne({ _id });
   }
