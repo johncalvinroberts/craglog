@@ -2,12 +2,14 @@
 
 const {
   getRoute: getRouteSchema,
-  getRoutes: getRoutesSchema
+  getRoutes: getRoutesSchema,
+  createRoute: createRouteSchema
 } = require('./schemas');
 
 module.exports = async function(fastify) {
   fastify.get('/:id', { schema: getRouteSchema }, routeByIdHandler);
   fastify.get('/', { schema: getRoutesSchema }, getRoutesList);
+  fastify.post('/', { schema: createRouteSchema }, createRoute);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
@@ -26,4 +28,12 @@ async function routeByIdHandler(req) {
 
 async function getRoutesList({ query }) {
   return this.routeService.getRoutes(query);
+}
+
+async function createRoute(req) {
+  const res = await this.routeService.createRoute(req.body);
+  if (req.query.term) {
+    await this.searchService.appendIdToTerm(req.query.term, res._id);
+  }
+  return res;
 }

@@ -11,12 +11,11 @@ function execRedis(redisClient, method, args) {
 }
 
 async function getTermIds(redisClient, term) {
-  const res = await execRedis(redisClient, 'get', [term]);
-  return res && res.split(',');
+  return execRedis(redisClient, 'smembers', [term]);
 }
 
-async function setTermIds(redisClient, term, ids) {
-  return execRedis(redisClient, 'set', [term, ids]);
+async function appendIdToTerm(redisClient, term, id) {
+  return execRedis(redisClient, 'sadd', [term, id]);
 }
 
 class SearchService {
@@ -28,8 +27,8 @@ class SearchService {
     return getTermIds(this.redisClient, term);
   }
 
-  async setTermIds(term, ids) {
-    return setTermIds(this.redisClient, term, ids);
+  async appendIdToTerm(term, id) {
+    return appendIdToTerm(this.redisClient, term, id);
   }
 }
 

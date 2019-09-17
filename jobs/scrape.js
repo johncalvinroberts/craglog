@@ -2,14 +2,19 @@
 
 const cheerio = require('cheerio');
 const got = require('got');
+const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
+const apiUrl = process.env.API_URL;
+const debug = require('debug')('scraper');
 
 function trimWhiteSpace(string) {
   return string && string.replace(/\s+/g, '');
 }
 
 async function scrapeSingleRoute(id) {
+  debug(`scraping route id ${id} from the crag`);
   const res = await got(`${baseUrl}/route/${id}`);
+  debug(`FINISHED scraping route id ${id} from the crag. Now parsing html.`);
   const $ = cheerio.load(res.body);
   const name = $('span[itemprop=name]').text();
   const grade = $('span.grade').text();
@@ -27,6 +32,7 @@ async function scrapeSingleRoute(id) {
   }, {});
   const { height, bolts } = stats;
   const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
+
   return {
     externalId: id,
     name,
@@ -39,6 +45,7 @@ async function scrapeSingleRoute(id) {
 }
 
 async function scrapeRouteSearch(term) {
+  debug('scraping search for route', { term });
   try {
     const res = await got(`${baseUrl}/climbing/world/routes/search/${term}`);
     const $ = cheerio.load(res.body);
@@ -47,15 +54,34 @@ async function scrapeRouteSearch(term) {
       return href.substring(href.lastIndexOf('/') + 1);
     });
 
-    const results = {};
+    debug(
+      `FINISHED scraping search term for route, found ${ids.length} results`,
+      {
+        term,
+        ids
+      }
+    );
 
     for (const id of ids) {
-      const data = await scrapeSingleRoute(id);
-      results[id] = data;
+      try {
+        const data = await scrapeSingleRoute(id);
+        debug(data);
+        const url = `${apiUrl}/routes?term=${term}`;
+        await fetch(url, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      } catch (error) {
+        debug(error);
+      }
     }
-    console.log({ results });
-    return Object.keys(results).map(id => results[id]);
+    debug('FINISHED scraping and creating routes');
+    return ids;
   } catch (error) {
+    debug(error);
     Promise.reject(error);
   }
 }
@@ -72,6 +98,7 @@ async function scrapeCragSearch(term) {
 
 module.exports = function(job) {
   const { term, type } = job.data;
+  debug('Scraper received job', { type, term, job });
   switch (type) {
     case 'crag':
       return scrapeCragSearch(term);

@@ -16,13 +16,7 @@ module.exports = fp(async function(fastify) {
 
   async function handleComplete(job, results) {
     const { term, type } = job.data;
-    let ids;
-
-    if (type === 'route') {
-      ids = await fastify.routeService.createRoutes(results);
-    }
-    console.log({ ids });
-    await fastify.searchService.setTermIds(term, ids);
+    console.log('FINISHED scraping job', { term, type, results });
   }
 
   queue.on('completed', handleComplete);

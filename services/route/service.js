@@ -19,8 +19,7 @@ class RouteService {
       }
       throw e;
     }
-
-    return writeResult.insertedId;
+    return writeResult.ops[0];
   }
 
   async createRoutes(payload) {
@@ -40,14 +39,8 @@ class RouteService {
     return this.routeCollection.findOne({ _id });
   }
 
-  getRoutes({ skip, limit }) {
-    return this.routeCollection.find({}, { skip, limit }).toArray();
-  }
-
-  getRouteIds(ids) {
-    return this.routeCollection.find({
-      _id: { $in: ids }
-    });
+  getRoutes({ skip, limit, ...query }) {
+    return this.routeCollection.find({ ...query }, { skip, limit }).toArray();
   }
 
   getRouteByExternalId(externalId) {
@@ -59,7 +52,7 @@ class RouteService {
       collMod: this.routeCollection.collectionName,
       validator: {}
     });
-    await this.routeCollection.createIndex({ externalId: 1 }, { unique: true });
+    await this.routeCollection.createIndex({ externalId: 1, name: 1 });
   }
 }
 

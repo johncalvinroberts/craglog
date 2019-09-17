@@ -2,18 +2,19 @@
 
 const routeOutput = {
   type: 'object',
-  required: ['_id', 'externalId', 'grade'],
+  required: ['grade', 'name'],
   properties: {
     _id: { type: 'string' },
     externalId: { type: 'string' },
-    cragId: { type: 'string' },
+    cragId: { type: 'string', default: null },
+    bolts: { type: 'number', default: null },
+    height: { type: 'string', default: null },
+    latitude: { type: 'string', default: null },
+    longitude: { type: 'string', default: null },
     grade: { type: 'string' },
-    bolts: { type: 'number' },
-    height: { type: 'string' },
-    latitude: { type: 'string' },
-    longitude: { type: 'string' },
     name: { type: 'string' }
-  }
+  },
+  additionalProperties: true
 };
 
 const getRoutes = {
@@ -51,8 +52,24 @@ const getRoute = {
   }
 };
 
+const createRoute = {
+  tags: ['route'],
+  querystring: {
+    type: 'object',
+    properties: {
+      term: { type: 'string' }
+    },
+    additionalProperties: false
+  },
+  body: routeOutput,
+  response: {
+    200: routeOutput
+  }
+};
+
 module.exports = {
   getRoute,
   getRoutes,
-  routeOutput
+  routeOutput,
+  createRoute
 };
