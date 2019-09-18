@@ -6,13 +6,17 @@ const routeOutput = {
   properties: {
     _id: { type: 'string' },
     externalId: { type: 'string' },
-    cragId: { type: 'string', default: null },
     bolts: { type: 'number', default: null },
     height: { type: 'string', default: null },
     latitude: { type: 'string', default: null },
     longitude: { type: 'string', default: null },
     grade: { type: 'string' },
-    name: { type: 'string' }
+    name: { type: 'string' },
+    style: { type: 'string' },
+    region: { type: 'string' },
+    area: { type: 'string' },
+    cragName: { type: 'string' },
+    externalCragId: { type: 'string' }
   },
   additionalProperties: true
 };

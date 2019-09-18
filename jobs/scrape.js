@@ -5,19 +5,52 @@ const got = require('got');
 const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
 const apiUrl = process.env.API_URL;
+const climbingGrade = require('climbing-grade');
 const debug = require('debug')('scraper');
 
 function trimWhiteSpace(string) {
   return string && string.replace(/\s+/g, '');
 }
 
-async function scrapeSingleRoute(id) {
+const gradeMappings = {
+  au: 'australian',
+  us: 'yds',
+  fr: 'french',
+  font: 'font',
+  uk: 'british'
+};
+
+function convertFont({ grade, gradecontext }) {
+  const loweredAndTrimmed = grade && trimWhiteSpace(grade.toLowerCase());
+  const isFont = loweredAndTrimmed && loweredAndTrimmed.startsWith('{fb}');
+
+  if (isFont) {
+    grade = trimWhiteSpace(loweredAndTrimmed).split('{fb}')[1];
+    gradecontext = 'font';
+  }
+
+  return { gradecontext, grade };
+}
+
+async function scrapeSingleRoute(href) {
+  const broken = href.split('/');
+
+  const id = broken[broken.length - 1];
+  const region = broken[2];
+  const area = broken[3];
   debug(`scraping route id ${id} from the crag`);
-  const res = await got(`${baseUrl}/route/${id}`);
+
+  const res = await got(`${baseUrl}/${href}`);
   debug(`FINISHED scraping route id ${id} from the crag. Now parsing html.`);
   const $ = cheerio.load(res.body);
   const name = $('span[itemprop=name]').text();
-  const grade = $('span.grade').text();
+  const originalGrade = $('span.grade').text();
+
+  const style = $('.style-band')
+    .text()
+    .trim()
+    .toLowerCase();
+
   const latLongEl = trimWhiteSpace($('.areaInfo').text());
 
   const [latitude, longitude] =
@@ -26,13 +59,51 @@ async function scrapeSingleRoute(id) {
   const stats = Array.from($('ul.stats > li')).reduce((memo, current) => {
     const [key, value] = $(current)
       .text()
+      .trim()
       .split(':');
-    memo[key.toLowerCase()] = value;
+
+    memo[trimWhiteSpace(key.toLowerCase())] = trimWhiteSpace(
+      value.toLowerCase()
+    );
     return memo;
   }, {});
-  const { height, bolts } = stats;
-  const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
 
+  let { height, bolts, gradecontext } = stats;
+
+  const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
+  let grade;
+  try {
+    if (style !== 'boulder' && gradeMappings[gradecontext]) {
+      const conversion = new climbingGrade(
+        originalGrade.toLowerCase(),
+        gradeMappings[gradecontext]
+      );
+      grade = conversion.format('yds');
+    }
+
+    if (style === 'boulder' && gradeMappings[gradecontext]) {
+      ({ grade, gradecontext } = convertFont({
+        grade: originalGrade,
+        gradecontext
+      }));
+
+      const conversion = new climbingGrade(
+        grade.toLowerCase(),
+        gradeMappings[gradecontext]
+      );
+      grade = conversion.format('hueco');
+    }
+  } catch (error) {
+    grade = originalGrade;
+  }
+
+  const breadCrumbs = $('.crumb__a');
+  const cragNameEl = breadCrumbs[breadCrumbs.length - 2];
+  const cragName = $(cragNameEl)
+    .text()
+    .trim();
+  const cragHref = cragNameEl.attribs && cragNameEl.attribs.href;
+  const externalCragId = cragHref.substring(cragHref.lastIndexOf('/') + 1);
   return {
     externalId: id,
     name,
@@ -40,7 +111,12 @@ async function scrapeSingleRoute(id) {
     latitude,
     longitude,
     height,
-    bolts: boltsVal || null
+    bolts: boltsVal || null,
+    style,
+    region,
+    area,
+    cragName,
+    externalCragId
   };
 }
 
@@ -49,22 +125,21 @@ async function scrapeRouteSearch(term) {
   try {
     const res = await got(`${baseUrl}/climbing/world/routes/search/${term}`);
     const $ = cheerio.load(res.body);
-    const ids = Array.from($('span.route > a')).map(element => {
-      const href = element.attribs.href;
-      return href.substring(href.lastIndexOf('/') + 1);
+    const hrefs = Array.from($('span.route > a')).map(element => {
+      return element.attribs.href;
     });
 
     debug(
-      `FINISHED scraping search term for route, found ${ids.length} results`,
+      `FINISHED scraping search term for route, found ${hrefs.length} results`,
       {
         term,
-        ids
+        hrefs
       }
     );
 
-    for (const id of ids) {
+    for (const href of hrefs) {
       try {
-        const data = await scrapeSingleRoute(id);
+        const data = await scrapeSingleRoute(href);
         debug(data);
         const url = `${apiUrl}/routes?term=${term}`;
         await fetch(url, {
@@ -79,7 +154,7 @@ async function scrapeRouteSearch(term) {
       }
     }
     debug('FINISHED scraping and creating routes');
-    return ids;
+    return;
   } catch (error) {
     debug(error);
     Promise.reject(error);
@@ -89,7 +164,6 @@ async function scrapeRouteSearch(term) {
 async function scrapeCragSearch(term) {
   try {
     const res = await got(`/climbing/world/search?S=${term}&only=areas`);
-    console.log({ res });
     return res;
   } catch (error) {
     Promise.reject(error);
