@@ -5,10 +5,9 @@ const search = {
   tags: ['search'],
   querystring: {
     type: 'object',
-    required: ['term', 'type'],
+    required: ['term'],
     properties: {
-      term: { type: 'string' },
-      type: { type: 'string', enum: ['crag', 'route'] }
+      term: { type: 'string' }
     },
     additionalProperties: false
   },

@@ -161,24 +161,8 @@ async function scrapeRouteSearch(term) {
   }
 }
 
-async function scrapeCragSearch(term) {
-  try {
-    const res = await got(`/climbing/world/search?S=${term}&only=areas`);
-    return res;
-  } catch (error) {
-    Promise.reject(error);
-  }
-}
-
 module.exports = function(job) {
-  const { term, type } = job.data;
-  debug('Scraper received job', { type, term, job });
-  switch (type) {
-    case 'crag':
-      return scrapeCragSearch(term);
-    case 'route':
-      return scrapeRouteSearch(term);
-    default:
-      break;
-  }
+  const { term } = job.data;
+  debug('Scraper received job', { term, job });
+  return scrapeRouteSearch(term);
 };
