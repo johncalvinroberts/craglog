@@ -2,26 +2,36 @@
 const path = require('path');
 const fp = require('fastify-plugin');
 const Queue = require('bull');
+const debug = require('debug');
 
 module.exports = fp(async function(fastify) {
   const queue = new Queue('scraper', {
     redis: { url: process.env.REDIS_URL }
   });
 
-  queue.process(path.resolve(__dirname, '../jobs/scrape.js'));
+  queue.process(
+    'scrapeRoute',
+    path.resolve(__dirname, '../jobs/scrapeRoute.js')
+  );
 
-  async function addScrapeTask(args) {
-    await queue.add(args);
-  }
+  queue.process(
+    'scrapeRouteListPage',
+    path.resolve(__dirname, '../jobs/scrapeRouteListPage.js')
+  );
 
   async function handleComplete(job, results) {
-    const { term, type } = job.data;
-    console.log('FINISHED scraping job', { term, type, results });
+    debug('FINISHED scraping job', { job, results });
   }
 
   queue.on('completed', handleComplete);
+
   queue.on('error', function(error) {
-    console.log(error);
+    debug(error);
+    // add to errors
   });
-  fastify.decorate('addScrapeTask', addScrapeTask);
+
+  fastify.ready(err => {
+    if (err) throw err;
+    fastify.jobService.initScraperJobs();
+  });
 });

@@ -1,9 +1,7 @@
 'use strict';
 
-const { search: searchSchema } = require('./schemas');
-
 module.exports = async function(fastify) {
-  fastify.get('/', { schema: searchSchema }, searchHandler);
+  fastify.get('/', jobListHandler);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
@@ -12,6 +10,8 @@ module.exports[Symbol.for('plugin-meta')] = {
   }
 };
 
-module.exports.autoPrefix = '/search';
+module.exports.autoPrefix = '/jobs';
 
-async function searchHandler() {}
+async function jobListHandler(req) {
+  console.log(req);
+}

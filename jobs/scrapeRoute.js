@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
 const apiUrl = process.env.API_URL;
 const climbingGrade = require('climbing-grade');
-const debug = require('debug')('scraper');
+const debug = require('debug')('scraper:route');
 
 function trimWhiteSpace(string) {
   return string && string.replace(/\s+/g, '');
@@ -32,16 +32,16 @@ function convertFont({ grade, gradecontext }) {
   return { gradecontext, grade };
 }
 
-async function scrapeSingleRoute(href) {
+async function fetchAndFormatRoute(href) {
   const broken = href.split('/');
-
   const id = broken[broken.length - 1];
   const region = broken[2];
   const area = broken[3];
-  debug(`scraping route id ${id} from the crag`);
 
+  debug(`scraping route id ${id} from the crag`);
   const res = await got(`${baseUrl}/${href}`);
   debug(`FINISHED scraping route id ${id} from the crag. Now parsing html.`);
+
   const $ = cheerio.load(res.body);
   const name = $('span[itemprop=name]').text();
   const originalGrade = $('span.grade').text();
@@ -70,7 +70,6 @@ async function scrapeSingleRoute(href) {
 
   let { height, bolts, gradecontext } = stats;
 
-  const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
   let grade;
   try {
     if (style !== 'boulder' && gradeMappings[gradecontext]) {
@@ -104,65 +103,51 @@ async function scrapeSingleRoute(href) {
     .trim();
   const cragHref = cragNameEl.attribs && cragNameEl.attribs.href;
   const externalCragId = cragHref.substring(cragHref.lastIndexOf('/') + 1);
+  const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
   return {
     externalId: id,
+    externalCragId,
     name,
+    cragName,
+    region,
+    area,
     grade,
     latitude,
     longitude,
     height,
     bolts: boltsVal || null,
-    style,
-    region,
-    area,
-    cragName,
-    externalCragId
+    style
   };
 }
 
-async function scrapeRouteSearch(term) {
-  debug('scraping search for route', { term });
+async function scrapeSingleRoute(href) {
   try {
-    const res = await got(`${baseUrl}/climbing/world/routes/search/${term}`);
-    const $ = cheerio.load(res.body);
-    const hrefs = Array.from($('span.route > a')).map(element => {
-      return element.attribs.href;
-    });
-
+    const data = await fetchAndFormatRoute(href);
     debug(
-      `FINISHED scraping search term for route, found ${hrefs.length} results`,
-      {
-        term,
-        hrefs
-      }
+      'completed scrape of single route, gonna, um, write it down now',
+      data
     );
 
-    for (const href of hrefs) {
-      try {
-        const data = await scrapeSingleRoute(href);
-        debug(data);
-        const url = `${apiUrl}/routes?term=${term}`;
-        await fetch(url, {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-      } catch (error) {
-        debug(error);
+    const url = `${apiUrl}/routes`;
+
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
       }
-    }
-    debug('FINISHED scraping and creating routes');
+    });
+
+    debug(`FINISHED scraping and creating route: ${href}`);
     return;
   } catch (error) {
-    debug(error);
+    debug('Failed to scrape route', error);
     Promise.reject(error);
   }
 }
 
 module.exports = function(job) {
-  const { term } = job.data;
-  debug('Scraper received job', { term, job });
-  return scrapeRouteSearch(term);
+  const { href } = job.data;
+  debug('Scraper received job to scrape single route', { href, job });
+  return scrapeSingleRoute(href);
 };
