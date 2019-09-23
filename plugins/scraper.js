@@ -23,13 +23,6 @@ module.exports = fp(async function(fastify) {
     debug('FINISHED scraping job', { job, results });
   }
 
-  queue.on('completed', handleComplete);
-
-  queue.on('error', function(error) {
-    debug(error);
-    // add to errors
-  });
-
   fastify.ready(err => {
     if (err) throw err;
     fastify.jobService.initScraperJobs();

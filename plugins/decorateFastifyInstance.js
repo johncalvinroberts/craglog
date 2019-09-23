@@ -36,4 +36,9 @@ module.exports = fp(async function(fastify) {
   });
 
   fastify.decorate('transformStringIntoObjectId', transformStringIntoObjectId);
+
+  fastify.ready(err => {
+    if (err) throw err;
+    fastify.jobService.initScraperJobs();
+  });
 });
