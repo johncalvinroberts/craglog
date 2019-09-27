@@ -15,12 +15,13 @@ async function scrapeRouteListPage(page) {
     debug(`Scraped page number ${page}`);
     const $ = cheerio.load(res.body);
     const routeEls = Array.from($('span.route > a'));
+    debug({ routeEls: routeEls.length });
     const routeHrefs = routeEls
       .map(el => {
         return el.attribs && el.attribs.href;
       })
       .filter(item => !!item);
-
+    debug({ routeHrefs: routeHrefs.length });
     const url = `${apiUrl}/jobs/add`;
 
     const works = [];

@@ -98,7 +98,7 @@ class JobService {
   }
 
   async addJob({ type, data }) {
-    debug('Adding scraper job', { type });
+    debug('Adding scraper job', { type, data, length: data && data.length });
     if (type === 'route') {
       return this.addRouteJob(data);
     }
