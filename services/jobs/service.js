@@ -4,6 +4,7 @@ const Queue = require('bull');
 const debug = require('debug')('app:service:jobs');
 
 const CURRENT_SCRAPE_PAGE_KEY = 'scrape-page';
+const maxPage = parseInt(process.env.MAX_PAGE);
 
 function execRedis(redisClient, method, args) {
   return new Promise(function(resolve, reject) {
@@ -36,7 +37,7 @@ class JobService {
   async initNextPageScrape() {
     const page = await this.getScraperPage();
     debug(`Initalizing scraper jobs, page: ${page}`);
-    this.listQueue.add({ page }, { jobId: page });
+    this.addListJob(page);
   }
 
   async getScraperPage() {
@@ -69,6 +70,13 @@ class JobService {
   }
 
   async addListJob(data) {
+    if (parseInt(data) >= maxPage) {
+      debug('ALREADY REACHED MAX PAGE! YOU ARE DONE SCRAPING PAGES!', {
+        maxPage,
+        currentPage: data
+      });
+      return {};
+    }
     if (Array.isArray(data)) {
       for (const item of data) {
         await this.addListJob(item);
