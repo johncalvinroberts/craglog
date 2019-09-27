@@ -1,9 +1,10 @@
 'use strict';
-
 const cheerio = require('cheerio');
 const got = require('got');
+const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
 const debug = require('debug')('scraper:page');
+const apiUrl = process.env.API_URL;
 
 async function scrapeRouteListPage(page) {
   try {
@@ -19,7 +20,32 @@ async function scrapeRouteListPage(page) {
         return el.attribs && el.attribs.href;
       })
       .filter(item => !!item);
-    return routeHrefs;
+
+    const url = `${apiUrl}/jobs/add`;
+
+    const works = [];
+    works.push(
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ type: 'route', data: routeHrefs }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    );
+
+    works.push(
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({ type: 'list' }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    );
+
+    await Promise.all(works);
+    return;
   } catch (error) {
     Promise.reject(error);
   }

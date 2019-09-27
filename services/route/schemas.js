@@ -39,6 +39,23 @@ const getRoutes = {
   }
 };
 
+const getCount = {
+  tags: ['route'],
+  querystring: {
+    type: 'object',
+    properties: {},
+    additionalProperties: true
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        count: { type: 'number' }
+      }
+    }
+  }
+};
+
 const getRoute = {
   tags: ['route'],
   params: {
@@ -74,6 +91,7 @@ const createRoute = {
 module.exports = {
   getRoute,
   getRoutes,
+  getCount,
   routeOutput,
   createRoute
 };

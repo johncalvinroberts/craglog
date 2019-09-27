@@ -1,9 +1,11 @@
 'use strict';
 
+const { addSchema: addJobSchema } = require('./schemas');
+
 module.exports = async function(fastify) {
   fastify.get('/', jobListHandler);
   fastify.get('/failed', failedJobListHandler);
-  fastify.post('/clear', clearJobHandler);
+  fastify.post('/add', { schema: addJobSchema }, addHandler);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
@@ -22,6 +24,6 @@ async function failedJobListHandler() {
   return this.jobService.getFailedJobs();
 }
 
-async function clearJobHandler() {
-  return this.jobService.clearJobs();
+async function addHandler(req) {
+  return this.jobService.addJob(req.body);
 }

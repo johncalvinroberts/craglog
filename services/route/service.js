@@ -30,6 +30,10 @@ class RouteService {
     return this.routeCollection.find({ ...query }, { skip, limit }).toArray();
   }
 
+  async getRoutesCount({ ...query }) {
+    return this.routeCollection.count({ ...query });
+  }
+
   getRouteByExternalId(externalId) {
     return this.routeCollection.findOne({ externalId });
   }
