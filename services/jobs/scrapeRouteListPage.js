@@ -13,7 +13,7 @@ async function scrapeRouteListPage(page) {
     );
     debug(`Scraped page number ${page}`);
     const $ = cheerio.load(res.body);
-    const routeEls = $('span.route > a');
+    const routeEls = Array.from($('span.route > a'));
     const routeHrefs = routeEls
       .map(el => {
         return el.attribs && el.attribs.href;

@@ -2,6 +2,8 @@
 
 module.exports = async function(fastify) {
   fastify.get('/', jobListHandler);
+  fastify.get('/failed', failedJobListHandler);
+  fastify.post('/clear', clearJobHandler);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
@@ -12,6 +14,14 @@ module.exports[Symbol.for('plugin-meta')] = {
 
 module.exports.autoPrefix = '/jobs';
 
-async function jobListHandler(req) {
-  console.log(req);
+async function jobListHandler() {
+  return this.jobService.getScraperJobs();
+}
+
+async function failedJobListHandler() {
+  return this.jobService.getFailedJobs();
+}
+
+async function clearJobHandler() {
+  return this.jobService.clearJobs();
 }
