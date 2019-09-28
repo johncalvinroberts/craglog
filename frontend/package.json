@@ -4,15 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html",
-    "build": "parcel build src/index.html",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "clean": "rimraf dist && rimraf .cache"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/polyfill": "^7.6.0",
     "@chakra-ui/core": "^0.3.2",
     "@emotion/core": "^10.0.17",
     "@emotion/styled": "^10.0.17",
@@ -24,6 +23,7 @@
   "devDependencies": {
     "eslint": "^6.4.0",
     "eslint-config-wcl-frontend": "^1.0.9",
+    "react-scripts": "^3.1.2",
     "rimraf": "^3.0.0"
   },
   "browserslist": [
