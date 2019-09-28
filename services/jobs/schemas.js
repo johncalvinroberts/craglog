@@ -38,14 +38,36 @@ const countSchema = {
   tags: ['job']
 };
 
-const commandQueueSchema = {
+const queueCommandSchema = {
   tags: ['job'],
-  querystring: {
+  body: {
     type: 'object',
     required: ['type', 'command'],
     properties: {
       type: { type: 'string', enum: ['route', 'list'], default: 'route' },
-      command: { type: 'string', enum: ['pause', 'resume'] }
+      command: { type: 'string', enum: ['pause', 'resume', 'clean'] }
+    }
+  }
+};
+
+const jobCommandSchema = {
+  tags: ['job'],
+  body: {
+    type: 'object',
+    required: ['type', 'command'],
+    properties: {
+      type: { type: 'string', enum: ['route', 'list'], default: 'route' },
+      command: {
+        type: 'string',
+        enum: [
+          'retry',
+          'remove',
+          'promote',
+          'discard',
+          'moveToCompleted',
+          'moveToFailed'
+        ]
+      }
     }
   }
 };
@@ -54,5 +76,6 @@ module.exports = {
   addSchema,
   listSchema,
   countSchema,
-  commandQueueSchema
+  queueCommandSchema,
+  jobCommandSchema
 };

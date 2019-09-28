@@ -70,13 +70,13 @@ class JobService {
         MAX_PAGE,
         currentPage: data
       });
-      return {};
+      return { success: true };
     }
     if (Array.isArray(data)) {
       for (const item of data) {
         await this.addListJob(item);
       }
-      return {};
+      return { success: true };
     }
 
     if (!data) {
@@ -85,7 +85,7 @@ class JobService {
     } else {
       this.listQueue.add({ page: data }, { jobId: data });
     }
-    return {};
+    return { success: true };
   }
 
   async addRouteJob(data) {
@@ -93,11 +93,11 @@ class JobService {
       for (const item of data) {
         await this.addRouteJob(item);
       }
-      return {};
+      return { success: true };
     }
     const jobId = data.substring(data.lastIndexOf('/') + 1);
     this.routeQueue.add({ href: data }, { jobId });
-    return {};
+    return { success: true };
   }
 
   async addJob({ type, data }) {
@@ -140,7 +140,20 @@ class JobService {
     if (type === 'list') {
       await this.listQueue[command]();
     }
-    return {};
+    return { success: true };
+  }
+
+  async commandJob({ type, command, jobId }) {
+    if (type === 'route') {
+      const job = this.routeQueue.getJob(jobId);
+      await job[command]();
+    }
+
+    if (type === 'list') {
+      const job = this.listQueue.getJob(jobId);
+      await job[command]();
+    }
+    return { success: true };
   }
 }
 
