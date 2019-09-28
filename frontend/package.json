@@ -1,0 +1,19 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eslint": "^6.4.0",
+    "eslint-config-wcl-frontend": "^1.0.9",
+    "parcel": "^1.12.3",
+    "react": "^16.10.0",
+    "react-dom": "^16.10.0"
+  }
+}

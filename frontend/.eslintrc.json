@@ -1,0 +1,12 @@
+{
+  "env": {
+    "node": true
+  },
+  "extends": ["wcl-frontend"],
+  "rules": {
+    "react/button-has-type": "off",
+    "import/no-cycle": "off",
+    "react/jsx-props-no-spreading": "off",
+    "no-case-declarations": "off"
+  }
+}
