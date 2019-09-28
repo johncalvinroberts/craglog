@@ -1,6 +1,5 @@
 'use strict';
 const cheerio = require('cheerio');
-const got = require('got');
 const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
 const debug = require('debug')('scraper:page');
@@ -9,11 +8,12 @@ const apiUrl = process.env.API_URL;
 async function scrapeRouteListPage(page) {
   try {
     debug(`Scraping page number ${page}`);
-    const res = await got(
+    const res = await fetch(
       `${baseUrl}/climbing/world/routes/search/?page=${page}`
     );
+    const html = await res.text();
     debug(`Scraped page number ${page}`);
-    const $ = cheerio.load(res.body);
+    const $ = cheerio.load(html);
     const routeEls = Array.from($('span.route > a'));
     debug({ routeEls: routeEls.length });
     const routeHrefs = routeEls

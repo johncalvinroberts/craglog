@@ -1,7 +1,6 @@
 'use strict';
 
 const cheerio = require('cheerio');
-const got = require('got');
 const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
 const apiUrl = process.env.API_URL;
@@ -39,10 +38,11 @@ async function fetchAndFormatRoute(href) {
   const area = broken[3];
 
   debug(`scraping route id ${id} from the crag`);
-  const res = await got(`${baseUrl}/${href}`);
+  const res = await fetch(`${baseUrl}/${href}`);
+  const html = await res.text();
   debug(`FINISHED scraping route id ${id} from the crag. Now parsing html.`);
 
-  const $ = cheerio.load(res.body);
+  const $ = cheerio.load(html);
   const name = $('span[itemprop=name]').text();
   const originalGrade = $('span.grade').text();
 

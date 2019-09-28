@@ -27,11 +27,11 @@ function execRedis(redisClient, method, args) {
 
 class JobService {
   constructor(redisClient) {
-    const listQueue = new Queue('list pages', {
+    const listQueue = new Queue('list', {
       redis: { url: process.env.REDIS_URL }
     });
 
-    const routeQueue = new Queue('routes', {
+    const routeQueue = new Queue('route', {
       redis: { url: process.env.REDIS_URL }
     });
 
@@ -119,12 +119,14 @@ class JobService {
   }
 
   getScraperJobs({ type, status, skip, limit }) {
+    const start = parseInt(skip);
+    const end = parseInt(limit) + skip - 1;
     if (type === 'route') {
-      return this.routeQueue.getJobs([status], skip, limit);
+      return this.routeQueue.getJobs([status], start, end);
     }
 
     if (type === 'list') {
-      return this.listQueue.getJobs([status], skip, limit);
+      return this.listQueue.getJobs([status], start, end);
     }
   }
 }
