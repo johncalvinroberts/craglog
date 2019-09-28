@@ -3,13 +3,16 @@
 const {
   addSchema: addJobSchema,
   listSchema: jobListSchema,
-  countSchema: jobCountSchema
+  countSchema: jobCountSchema,
+  commandQueueSchema
 } = require('./schemas');
 
 module.exports = async function(fastify) {
   fastify.get('/', { schema: jobListSchema }, jobListHandler);
   fastify.get('/count', { schema: jobCountSchema }, jobCountHandler);
   fastify.post('/add', { schema: addJobSchema }, addHandler);
+  fastify.post('/queue', { schema: commandQueueSchema }, queueCommandHandler);
+  fastify.post('/:jobId/retry', retryHandler);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
@@ -20,14 +23,20 @@ module.exports[Symbol.for('plugin-meta')] = {
 
 module.exports.autoPrefix = '/jobs';
 
-async function jobListHandler({ query }) {
+function jobListHandler({ query }) {
   return this.jobService.getScraperJobs(query);
 }
 
-async function jobCountHandler() {
+function jobCountHandler() {
   return this.jobService.getJobCounts();
 }
 
-async function addHandler(req) {
+function addHandler(req) {
   return this.jobService.addJob(req.body);
 }
+
+function queueCommandHandler({ query }) {
+  return this.jobService.commandQueue(query);
+}
+
+function retryHandler(req) {}

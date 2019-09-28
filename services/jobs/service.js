@@ -4,7 +4,9 @@ const Queue = require('bull');
 const debug = require('debug')('app:service:jobs');
 
 const CURRENT_SCRAPE_PAGE_KEY = 'scrape-page';
-const maxPage = parseInt(process.env.MAX_PAGE);
+const MAX_PAGE = parseInt(process.env.MAX_PAGE);
+const LIST_SCRAPE_CONCURRENCY = parseInt(process.env.LIST_SCRAPE_CONCURRENCY);
+const ROUTE_SCRAPE_CONCURRENCY = parseInt(process.env.ROUTE_SCRAPE_CONCURRENCY);
 
 const listProcessor = path.resolve(
   __dirname,
@@ -35,8 +37,8 @@ class JobService {
       redis: { url: process.env.REDIS_URL }
     });
 
-    listQueue.process(listProcessor);
-    routeQueue.process(routeProcessor);
+    listQueue.process(LIST_SCRAPE_CONCURRENCY, listProcessor);
+    routeQueue.process(ROUTE_SCRAPE_CONCURRENCY, routeProcessor);
 
     this.redisClient = redisClient;
     this.listQueue = listQueue;
@@ -63,9 +65,9 @@ class JobService {
   }
 
   async addListJob(data) {
-    if (parseInt(data) >= maxPage) {
+    if (parseInt(data) >= MAX_PAGE) {
       debug('ALREADY REACHED MAX PAGE! YOU ARE DONE SCRAPING PAGES!', {
-        maxPage,
+        MAX_PAGE,
         currentPage: data
       });
       return {};
@@ -128,6 +130,17 @@ class JobService {
     if (type === 'list') {
       return this.listQueue.getJobs([status], start, end);
     }
+  }
+
+  async commandQueue({ type, command }) {
+    if (type === 'route') {
+      await this.routeQueue[command]();
+    }
+
+    if (type === 'list') {
+      await this.listQueue[command]();
+    }
+    return {};
   }
 }
 

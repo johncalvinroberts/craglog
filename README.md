@@ -3,7 +3,6 @@
 ### Libs
 * [fastify](https://github.com/fastify/fastify)
 * [bull](https://github.com/OptimalBits/bull)
-* [got](https://github.com/sindresorhus/got)
 
 ### Scraping The Crag 
 * Area Search: https://www.thecrag.com/climbing/world/search?S=lions%20head&only=areas
@@ -16,3 +15,14 @@
  - https://www.thecrag.com/route/1132935318
 
 
+### `.env`
+```
+MONGODB_URL
+REDIS_URL
+JWT_SECRET
+DEBUG #"scraper:*,app:*"
+API_URL
+MAX_PAGE #6285
+LIST_SCRAPE_CONCURRENCY #2
+ROUTE_SCRAPE_CONCURRENCY #10
+```

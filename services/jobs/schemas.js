@@ -38,8 +38,21 @@ const countSchema = {
   tags: ['job']
 };
 
+const commandQueueSchema = {
+  tags: ['job'],
+  querystring: {
+    type: 'object',
+    required: ['type', 'command'],
+    properties: {
+      type: { type: 'string', enum: ['route', 'list'], default: 'route' },
+      command: { type: 'string', enum: ['pause', 'resume'] }
+    }
+  }
+};
+
 module.exports = {
   addSchema,
   listSchema,
-  countSchema
+  countSchema,
+  commandQueueSchema
 };
