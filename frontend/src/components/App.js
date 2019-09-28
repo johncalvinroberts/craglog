@@ -24,7 +24,7 @@ export default () => {
                   <Route path="/" exact>
                     <Home />
                   </Route>
-                  <Route path="/log-in" exact>
+                  <Route path="/login" exact>
                     <LogIn />
                   </Route>
                   <Route path="/register" exact>

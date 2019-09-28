@@ -6,7 +6,7 @@ const Main = (props) => <Box as="main" mx="auto" mb="3rem" {...props} />;
 
 const Dashboard = ({ children }) => {
   return (
-    <Box minH="100vh">
+    <Box minH="100vh" pt="4rem">
       <DashboardHeader />
       <Main>{children}</Main>
     </Box>

@@ -9,6 +9,7 @@ import {
   IconButton,
   useColorMode,
 } from '@chakra-ui/core';
+import { Link } from 'react-router-dom';
 import MobileNav from './MobileNav';
 
 const SearchBox = (props) => (
@@ -46,12 +47,22 @@ const DocsHeader = (props) => {
       <Flex size="100%" px="6" align="center">
         <Flex align="center" mr={5}>
           <Box
-            as="a"
+            as={Link}
             style={{ display: 'block' }}
-            href="/"
-            aria-label="Chakra UI, Back to homepage"
+            to="/"
+            aria-label="Craglog, back to homepage"
           >
-            logo here
+            <IconButton
+              aria-label={`Switch to ${
+                colorMode === 'light' ? 'dark' : 'light'
+              } mode`}
+              variant="ghost"
+              to="/"
+              color="current"
+              fontSize="30px"
+              rounded="full"
+              icon="logo"
+            />
           </Box>
         </Flex>
         <SearchBox

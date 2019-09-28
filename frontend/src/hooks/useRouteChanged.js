@@ -4,11 +4,11 @@ import { useLocation } from 'react-router';
 const useRouteChanged = (callback) => {
   const location = useLocation();
   useEffect(() => {
-    const handleRouteChange = (url) => {
+    const handleRouteChange = ({ pathname }) => {
       callback();
-      console.log('App is changing to: ', url); //eslint-disable-line
+      console.log('App is changing to: ', pathname); //eslint-disable-line
     };
-    handleRouteChange();
+    handleRouteChange(location);
   }, [location, callback]);
 };
 
