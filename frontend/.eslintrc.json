@@ -1,12 +1,36 @@
 {
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
+  "plugins": ["react-hooks"],
   "env": {
-    "node": true
+    "browser": true,
+    "es6": true,
+    "commonjs": true
   },
-  "extends": ["wcl-frontend"],
   "rules": {
-    "react/button-has-type": "off",
-    "import/no-cycle": "off",
-    "react/jsx-props-no-spreading": "off",
-    "no-case-declarations": "off"
+    "consistent-return": "off",
+    "global-require": "off",
+    "no-underscore-dangle": "off",
+    "operator-assignment": "off",
+    "arrow-body-style": "off",
+    "func-names": "off",
+    "eqeqeq": "off",
+    "no-use-before-define": "off",
+    "no-param-reassign": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
+    "jsx-a11y/anchor-is-valid": ["error", {
+      "components": ["Link"],
+      "specialLink": ["to"],
+      "aspects": ["noHref", "invalidHref", "preferButton"]
+    }],
+    "react/prop-types": "off",
+    "react/no-string-refs": "warn",
+    "react/prefer-stateless-function": "off",
+    "react/jsx-filename-extension": ["error", { "extensions": [".js"] }]
   }
 }

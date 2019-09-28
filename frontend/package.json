@@ -4,16 +4,30 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "clean": "rimraf dist && rimraf .cache"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "eslint": "^6.4.0",
-    "eslint-config-wcl-frontend": "^1.0.9",
-    "parcel": "^1.12.3",
+    "@babel/polyfill": "^7.6.0",
+    "@chakra-ui/core": "^0.3.2",
+    "@emotion/core": "^10.0.17",
+    "@emotion/styled": "^10.0.17",
+    "emotion-theming": "^10.0.19",
+    "parcel-bundler": "^1.12.3",
     "react": "^16.10.0",
     "react-dom": "^16.10.0"
-  }
+  },
+  "devDependencies": {
+    "eslint": "^6.4.0",
+    "eslint-config-wcl-frontend": "^1.0.9",
+    "rimraf": "^3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "not dead"
+  ]
 }
