@@ -6,6 +6,15 @@ const debug = require('debug')('app:service:jobs');
 const CURRENT_SCRAPE_PAGE_KEY = 'scrape-page';
 const maxPage = parseInt(process.env.MAX_PAGE);
 
+const listProcessor = path.resolve(
+  __dirname,
+  '../../processors/scrapeRouteListPage.js'
+);
+const routeProcessor = path.resolve(
+  __dirname,
+  '../../processors/scrapeRoute.js'
+);
+
 function execRedis(redisClient, method, args) {
   return new Promise(function(resolve, reject) {
     args.push(function(err, result) {
@@ -18,7 +27,6 @@ function execRedis(redisClient, method, args) {
 
 class JobService {
   constructor(redisClient) {
-    this.redisClient = redisClient;
     const listQueue = new Queue('list pages', {
       redis: { url: process.env.REDIS_URL }
     });
@@ -27,9 +35,10 @@ class JobService {
       redis: { url: process.env.REDIS_URL }
     });
 
-    listQueue.process(path.resolve(__dirname, './scrapeRouteListPage.js'));
-    routeQueue.process(path.resolve(__dirname, './scrapeRoute.js'));
+    listQueue.process(listProcessor);
+    routeQueue.process(routeProcessor);
 
+    this.redisClient = redisClient;
     this.listQueue = listQueue;
     this.routeQueue = routeQueue;
   }
@@ -51,22 +60,6 @@ class JobService {
     }
 
     return currentPage;
-  }
-
-  async getScraperJobs() {
-    const [listJobs, routeJobs] = await Promise.all([
-      this.listQueue.getJobs(),
-      this.routeQueue.getJobs()
-    ]);
-    return { listJobs, routeJobs };
-  }
-
-  async getFailedJobs() {
-    const [listJobs, routeJobs] = await Promise.all([
-      this.listQueue.getFailed(),
-      this.routeQueue.getFailed()
-    ]);
-    return { listJobs, routeJobs };
   }
 
   async addListJob(data) {
@@ -116,13 +109,23 @@ class JobService {
     }
   }
 
-  async clearJobs() {
-    await Promise.all([this.routeQueue.empty(), this.listQueue.empty()]);
-    await Promise.all([
-      this.routeQueue.clean(5000),
-      this.listQueue.clean(5000)
+  async getJobCounts() {
+    const [route, list] = await Promise.all([
+      this.routeQueue.getJobCounts(),
+      this.listQueue.getJobCounts()
     ]);
-    return {};
+
+    return { list, route };
+  }
+
+  getScraperJobs({ type, status, skip, limit }) {
+    if (type === 'route') {
+      return this.routeQueue.getJobs([status], skip, limit);
+    }
+
+    if (type === 'list') {
+      return this.listQueue.getJobs([status], skip, limit);
+    }
   }
 }
 

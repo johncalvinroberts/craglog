@@ -1,10 +1,14 @@
 'use strict';
 
-const { addSchema: addJobSchema } = require('./schemas');
+const {
+  addSchema: addJobSchema,
+  listSchema: jobListSchema,
+  countSchema: jobCountSchema
+} = require('./schemas');
 
 module.exports = async function(fastify) {
-  fastify.get('/', jobListHandler);
-  fastify.get('/failed', failedJobListHandler);
+  fastify.get('/', { schema: jobListSchema }, jobListHandler);
+  fastify.get('/count', { schema: jobCountSchema }, jobCountHandler);
   fastify.post('/add', { schema: addJobSchema }, addHandler);
 };
 
@@ -16,12 +20,12 @@ module.exports[Symbol.for('plugin-meta')] = {
 
 module.exports.autoPrefix = '/jobs';
 
-async function jobListHandler() {
-  return this.jobService.getScraperJobs();
+async function jobListHandler({ query }) {
+  return this.jobService.getScraperJobs(query);
 }
 
-async function failedJobListHandler() {
-  return this.jobService.getFailedJobs();
+async function jobCountHandler() {
+  return this.jobService.getJobCounts();
 }
 
 async function addHandler(req) {
