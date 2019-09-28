@@ -31,6 +31,7 @@
     "react/prop-types": "off",
     "react/no-string-refs": "warn",
     "react/prefer-stateless-function": "off",
-    "react/jsx-filename-extension": ["error", { "extensions": [".js"] }]
+    "react/jsx-filename-extension": ["error", { "extensions": [".js"] }],
+    "react/jsx-props-no-spreading": "off"
   }
 }

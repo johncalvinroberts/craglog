@@ -18,7 +18,8 @@
     "emotion-theming": "^10.0.19",
     "parcel-bundler": "^1.12.3",
     "react": "^16.10.0",
-    "react-dom": "^16.10.0"
+    "react-dom": "^16.10.0",
+    "react-router-dom": "^5.1.1"
   },
   "devDependencies": {
     "eslint": "^6.4.0",
