@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { UIContext } from '../context/UI';
+import React from 'react';
+import { getUIState } from '../states';
+import { useGlobalState } from '../components/State';
 
 export { default as Dashboard } from './Dashboard';
 
 const Layout = ({ children }) => {
-  const { state } = useContext(UIContext);
-  const { Layout: StateLayout } = state;
+  const { Layout: StateLayout } = getUIState(useGlobalState());
   return <StateLayout>{children}</StateLayout>;
 };
 

@@ -4,8 +4,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import theme from '../theme';
 import Loading from './Loading';
 import NotFound from './NotFound';
-import UIProvider from '../context/UI';
 import Layout from '../layouts';
+import State from './State';
+import ProtectedRoute from './ProtectedRoute';
 
 const Home = lazy(() => import('./Home'));
 const LogIn = lazy(() => import('./LogIn'));
@@ -17,24 +18,18 @@ export default () => {
       <ColorModeProvider>
         <Suspense fallback={<Loading />}>
           <CSSReset />
-          <Router>
-            <UIProvider>
+          <State>
+            <Router>
               <Layout>
                 <Switch>
-                  <Route path="/" exact>
-                    <Home />
-                  </Route>
-                  <Route path="/login" exact>
-                    <LogIn />
-                  </Route>
-                  <Route path="/register" exact>
-                    <Register />
-                  </Route>
+                  <ProtectedRoute path="/" exact component={Home} />
+                  <Route path="/login" exact component={LogIn} />
+                  <Route path="/register" exact component={Register} />
                   <Route component={NotFound} />
                 </Switch>
               </Layout>
-            </UIProvider>
-          </Router>
+            </Router>
+          </State>
         </Suspense>
       </ColorModeProvider>
     </ThemeProvider>

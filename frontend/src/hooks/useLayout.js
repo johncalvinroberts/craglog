@@ -1,9 +1,9 @@
-import { useContext, useLayoutEffect } from 'react';
-import { UIContext } from '../context/UI';
+import { useLayoutEffect } from 'react';
+import { useDispatch } from '../components/State';
 
 const useLayout = (Layout) => {
-  const { dispatch } = useContext(UIContext);
-  useLayoutEffect(() => dispatch({ Layout }), [Layout, dispatch]);
+  const dispatch = useDispatch();
+  useLayoutEffect(() => dispatch({ 'UI': { Layout } }), [Layout, dispatch]);
 };
 
 export default useLayout;
