@@ -1,2 +1,2 @@
 export { getState as getUIState } from './UI';
-export { getState as getAuthState, performAuth } from './auth';
+export { getState as getAuthState, performRegistration } from './auth';

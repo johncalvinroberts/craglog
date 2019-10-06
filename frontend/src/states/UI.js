@@ -2,7 +2,7 @@ import { addReducer } from '../components/State';
 import Dashboard from '../components/layouts/Dashboard';
 
 const stateKey = 'UI';
-const initialState = { Layout: Dashboard };
+const initialState = { Layout: Dashboard, title: 'craglog' };
 
 const reducer = (state, action) => {
   return { ...state, ...action };

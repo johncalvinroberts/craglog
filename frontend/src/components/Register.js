@@ -11,8 +11,11 @@ import {
 import * as yup from 'yup';
 import useFormal from '@kevinwolf/formal-web';
 import useLayout from '../hooks/useLayout';
+import useTitle from '../hooks/useTitle';
+import { useDispatch } from './State';
 import LoginLayout from './layouts/LogIn';
 import TextField from './fields/TextField';
+import { performRegistration } from '../states';
 
 const schema = yup.object().shape({
   username: yup
@@ -39,13 +42,25 @@ const initialValues = {
   password: '',
 };
 
+// TODO: terms & conditions, privacy etc.
+
 const Register = () => {
   useLayout(LoginLayout);
+  useTitle('Register');
+
+  const dispatch = useDispatch();
 
   const formal = useFormal(initialValues, {
     schema,
-    onSubmit: (formValues) => console.log({ formValues }),
+    onSubmit: async (formValues) => {
+      try {
+        await dispatch(performRegistration(formValues));
+      } catch (error) {
+        console.log({ error });
+      }
+    },
   });
+
   const { isOpen, onToggle } = useDisclosure();
   return (
     <>
@@ -66,7 +81,6 @@ const Register = () => {
             id="email"
             type="email"
             formal={formal.getFieldProps('email')}
-            helperText="We will never share your email"
             required
           />
           <TextField

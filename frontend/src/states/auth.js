@@ -1,6 +1,8 @@
 import { addReducer } from '../components/State';
+import { postRegistration } from '../api';
 
 const stateKey = 'auth';
+
 const initialState = {
   isAuthenticated: false,
   token: null,
@@ -14,7 +16,17 @@ addReducer(stateKey, initialState, reducer);
 
 export const getState = (state) => state[stateKey] || initialState;
 
-export const performAuth = (payload) => async (dispatch) => {
+export const performRegistration = (payload) => async (dispatch) => {
   dispatch({ [stateKey]: { isLoading: true } });
-  console.log({ payload });
+  try {
+    const res = await postRegistration(payload);
+    console.log({ res });
+    dispatch({ [stateKey]: { isLoading: false, isAuthenticated: true } });
+    return res;
+  } catch (error) {
+    dispatch({
+      [stateKey]: { isLoading: false, isAuthenticated: false, errors: [error] },
+    });
+    throw error;
+  }
 };
