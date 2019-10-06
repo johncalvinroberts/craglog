@@ -3,6 +3,10 @@ import { Box, Heading, Icon } from '@chakra-ui/core';
 import useLayout from '../hooks/useLayout';
 import LoginLayout from '../layouts/LogIn';
 
+const schema = {
+  type: 'object',
+};
+
 const LogIn = () => {
   useLayout(LoginLayout);
   return (
