@@ -1,11 +1,18 @@
 'use strict';
 
+const emailRegex =
+  '/[a-z0-9._%+!$&*=^|~#%{}/-]+@([a-z0-9-]+.){1,}([a-z]{2,22})/';
+
 const userProfileOutput = {
   type: 'object',
   required: ['_id', 'username'],
   properties: {
     _id: { type: 'string' },
-    username: { type: 'string' }
+    username: { type: 'string' },
+    email: {
+      type: 'string',
+      pattern: emailRegex
+    }
   }
 };
 
@@ -14,13 +21,23 @@ const registration = {
   tags: ['user'],
   body: {
     type: 'object',
-    required: ['username', 'password'],
+    required: ['username', 'password', 'email'],
     properties: {
+      email: {
+        type: 'string',
+        pattern: emailRegex,
+        minLength: 5,
+        maxLength: 250
+      },
       username: {
-        type: 'string'
+        type: 'string',
+        minLength: 6,
+        maxLength: 250
       },
       password: {
-        type: 'string'
+        type: 'string',
+        minLength: 8,
+        maxLength: 20
       }
     },
     additionalProperties: false
@@ -45,8 +62,8 @@ const login = {
     type: 'object',
     required: ['username', 'password'],
     properties: {
-      username: { type: 'string' },
-      password: { type: 'string' }
+      username: { type: 'string', minLength: 6, maxLength: 250 },
+      password: { type: 'string', minLength: 8, maxLength: 20 }
     },
     additionalProperties: false
   },
