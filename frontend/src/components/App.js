@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import theme from '../theme';
 import Loading from './Loading';
 import NotFound from './NotFound';
-import Layout from '../layouts';
+import Layout from './layouts';
 import State from './State';
 import ProtectedRoute from './ProtectedRoute';
 

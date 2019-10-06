@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon, Heading, Box } from '@chakra-ui/core';
 import useLayout from '../hooks/useLayout';
-import LogIn from '../layouts/LogIn';
+import LogIn from './layouts/LogIn';
 
 const NotFound = () => {
   useLayout(LogIn);
