@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Heading,
@@ -7,15 +7,18 @@ import {
   useDisclosure,
   InputRightElement,
   IconButton,
+  useToast,
 } from '@chakra-ui/core';
 import * as yup from 'yup';
 import useFormal from '@kevinwolf/formal-web';
+import { useHistory, Link } from 'react-router-dom';
 import useLayout from '@/hooks/useLayout';
 import useTitle from '@/hooks/useTitle';
 import { useDispatch } from '@/components/State';
 import LoginLayout from '@/layouts/LogIn';
 import TextField from '@/fields/TextField';
-import { performRegistration } from '@/states';
+import { performRegistration, performLogin } from '@/states';
+import useAuthState from '@/hooks/useAuthState';
 
 const schema = yup.object().shape({
   username: yup
@@ -47,6 +50,11 @@ const initialValues = {
 const Register = () => {
   useLayout(LoginLayout);
   useTitle('Register');
+  const { isAuthenticated } = useAuthState();
+
+  const { isOpen, onToggle } = useDisclosure();
+  const toast = useToast();
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -55,13 +63,41 @@ const Register = () => {
     onSubmit: async (formValues) => {
       try {
         await dispatch(performRegistration(formValues));
+        await dispatch(
+          performLogin({
+            username: formValues.username,
+            password: formValues.password,
+          }),
+        );
+        toast({
+          title: "You're in",
+          description: 'Welcome to the crag.',
+          duration: 5000,
+          isClosable: true,
+        });
+        history.replace('/');
       } catch (error) {
-        console.log({ error });
+        toast({
+          description: error.message,
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
       }
     },
   });
 
-  const { isOpen, onToggle } = useDisclosure();
+  useEffect(() => {
+    if (isAuthenticated) {
+      toast({
+        description: 'You are already logged in to craglog',
+        duration: 4000,
+        isClosable: true,
+      });
+      history.replace('/');
+    }
+  }, []);
+
   return (
     <>
       <Box mb={4} d="block">
@@ -104,11 +140,27 @@ const Register = () => {
             <Button
               {...formal.getSubmitButtonProps()}
               isLoading={formal.isSubmitting}
+              loadingText="Submitting"
+              border="2px"
+              borderColor="teal.300"
+              variant="solid"
             >
               Submit
             </Button>
           </Box>
         </form>
+      </Box>
+      <Box pt={4} pb={4}>
+        <Button
+          variant="link"
+          to="/login"
+          as={Link}
+          fontSize="sm"
+          d="block"
+          mb={2}
+        >
+          Already have an account?
+        </Button>
       </Box>
     </>
   );

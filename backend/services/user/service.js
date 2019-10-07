@@ -15,7 +15,12 @@ class UserService {
     let writeResult;
     try {
       const password = await bcrypt.hash(givenPass, 10);
-      writeResult = await this.userCollection.insertOne({ username, password });
+
+      writeResult = await this.userCollection.insertOne({
+        username,
+        password,
+        roles: ['user']
+      });
     } catch (e) {
       if (e.code === DUPLICATE_KEY_ERROR_CODE) {
         throw new Error(errors.USERNAME_IS_NOT_AVAILABLE);

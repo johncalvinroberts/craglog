@@ -1,8 +1,5 @@
 'use strict';
 
-const emailRegex =
-  '/[a-z0-9._%+!$&*=^|~#%{}/-]+@([a-z0-9-]+.){1,}([a-z]{2,22})/';
-
 const userProfileOutput = {
   type: 'object',
   required: ['_id', 'username'],
@@ -10,10 +7,18 @@ const userProfileOutput = {
     _id: { type: 'string' },
     username: { type: 'string' },
     email: {
-      type: 'string',
-      pattern: emailRegex
+      type: 'string'
+    },
+    roles: {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: ['user', 'admin'],
+        default: ['user']
+      }
     }
-  }
+  },
+  additionalProperties: false
 };
 
 const registration = {
@@ -25,7 +30,6 @@ const registration = {
     properties: {
       email: {
         type: 'string',
-        pattern: emailRegex,
         minLength: 5,
         maxLength: 250
       },

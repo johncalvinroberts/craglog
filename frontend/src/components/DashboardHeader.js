@@ -8,9 +8,18 @@ import {
   InputLeftElement,
   IconButton,
   useColorMode,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+  useToast,
 } from '@chakra-ui/core';
+import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import MobileNav from './MobileNav';
+import { useDispatch } from './State';
+import { performLogout } from '../states';
 
 const SearchBox = (props) => (
   <InputGroup {...props}>
@@ -27,9 +36,23 @@ const SearchBox = (props) => (
   </InputGroup>
 );
 
-const DocsHeader = (props) => {
+const DashboardHeader = (props) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const bg = { light: 'white', dark: 'gray.800' };
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const toast = useToast();
+
+  const handleLogout = () => {
+    dispatch(performLogout());
+    history.replace('/login');
+    toast({
+      duration: 5000,
+      description: 'You have logged out',
+      isClosable: true,
+    });
+  };
+
   return (
     <Box
       pos="fixed"
@@ -79,17 +102,46 @@ const DocsHeader = (props) => {
           color="gray.500"
           justify="flex-end"
         >
-          <IconButton
-            aria-label={`Switch to ${
-              colorMode === 'light' ? 'dark' : 'light'
-            } mode`}
-            variant="ghost"
-            color="current"
-            ml="2"
-            fontSize="20px"
-            onClick={toggleColorMode}
-            icon={colorMode === 'light' ? 'moon' : 'sun'}
-          />
+          <Menu>
+            {({ isOpen }) => (
+              <>
+                <MenuButton isActive={isOpen} as={Button}>
+                  <Icon
+                    name="settings"
+                    css={{
+                      transform: isOpen ? 'rotate(30deg)' : 'rotate(0)',
+                      transition: `transform 0.2s ease-in-out`,
+                    }}
+                  />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem
+                    aria-label={`Switch to ${
+                      colorMode === 'light' ? 'dark' : 'light'
+                    } mode`}
+                    onClick={toggleColorMode}
+                  >
+                    <Icon
+                      color="current"
+                      name={colorMode === 'light' ? 'moon' : 'sun'}
+                      mr="2"
+                    />
+                    <Box flex="1">
+                      Switch to {colorMode === 'light' ? 'Dark' : 'Light'} Mode
+                    </Box>
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleLogout}
+                    aria-label={`Log out of craglog`}
+                  >
+                    <Icon color="current" name="arrow-back" mr="2" />
+                    <Box flex="1">Log Out</Box>
+                  </MenuItem>
+                </MenuList>
+              </>
+            )}
+          </Menu>
+
           <MobileNav />
         </Flex>
       </Flex>
@@ -97,4 +149,4 @@ const DocsHeader = (props) => {
   );
 };
 
-export default DocsHeader;
+export default DashboardHeader;

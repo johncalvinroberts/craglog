@@ -10,7 +10,7 @@ const {
 
 const errors = require('../../errors');
 
-module.exports = async function(fastify, opts) {
+module.exports = async function(fastify) {
   // Route registration
   // fastify.<method>(<path>, <schema>, <handler>)
   // schema is used to validate the input and serialize the output
@@ -51,6 +51,7 @@ module.exports.autoPrefix = '/users';
 async function loginHandler(req) {
   const { username, password } = req.body;
   const user = await this.userService.login(username, password);
+  delete user.password;
   return { jwt: this.jwt.sign(user) };
 }
 

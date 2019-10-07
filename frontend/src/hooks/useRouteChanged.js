@@ -9,7 +9,7 @@ const useRouteChanged = (callback) => {
       console.log('App is changing to: ', pathname); //eslint-disable-line
     };
     handleRouteChange(location);
-  }, [location, callback]);
+  }, [location]);
 };
 
 export default useRouteChanged;

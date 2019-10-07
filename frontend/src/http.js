@@ -8,10 +8,6 @@ const DELETE = 'DELETE';
 class Http {
   constructor() {
     this.token = localStorage.getItem(TOKEN_KEY);
-    this.defaultHeader = {
-      'content-type': 'application/json',
-      accept: 'application/json, text/plain, */*',
-    };
     this.cache = {};
   }
 
@@ -20,15 +16,21 @@ class Http {
   };
 
   fetch = async ({ url, method, body = {} }) => {
+    const headers = {
+      'content-type': 'application/json',
+      accept: 'application/json, text/plain, */*',
+      ...(this.token ? { authorization: `Bearer ${this.token}` } : null),
+    };
+
     const options = {
-      headers: { ...this.defaultHeader },
+      headers,
       method,
       ...(method !== GET ? { body: JSON.stringify(body) } : null),
     };
     const res = await fetch(url, options);
     const value = await res.json();
     if (!res.ok) {
-      throw new Error(value);
+      throw new Error(value.message);
     } else {
       return value;
     }

@@ -22,7 +22,9 @@ const MobileNav = () => {
         fontSize="20px"
         variant="ghost"
         onClick={onToggle}
-      />
+      >
+        what
+      </Button>
       <Drawer size="xs" isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
