@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
+
 const BABEL_EXCLUDE = /node_modules\/(?!(@chakra-ui)\/).*/;
 
 // webpack loaders

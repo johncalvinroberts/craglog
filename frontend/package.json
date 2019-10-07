@@ -6,7 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development node ./webpack --hot",
     "build": "cross-env NODE_ENV=production node ./webpack",
-    "clean": "rimraf dist && rimraf .cache"
+    "clean": "rimraf dist && rimraf .cache",
+    "lint": "eslint . --ignore-path .gitignore"
   },
   "keywords": [],
   "author": "",
@@ -57,7 +58,7 @@
     "yup": "^0.27.0"
   },
   "devDependencies": {
-    "eslint": "^6.4.0",
+    "acorn": "^7.1.0",
     "eslint-config-wcl-frontend": "^1.0.9",
     "rimraf": "^3.0.0"
   },

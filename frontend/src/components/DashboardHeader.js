@@ -15,8 +15,7 @@ import {
   Button,
   useToast,
 } from '@chakra-ui/core';
-import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import MobileNav from './MobileNav';
 import { useDispatch } from './State';
 import { performLogout } from '../states';
@@ -132,7 +131,7 @@ const DashboardHeader = (props) => {
                   </MenuItem>
                   <MenuItem
                     onClick={handleLogout}
-                    aria-label={`Log out of craglog`}
+                    aria-label="Log out of craglog"
                   >
                     <Icon color="current" name="arrow-back" mr="2" />
                     <Box flex="1">Log Out</Box>

@@ -1,8 +1,8 @@
+import decodeJwt from 'jwt-decode';
 import { addReducer } from '../components/State';
 import { postRegistration, postLogin } from '../api';
 import http from '../http';
 import { TOKEN_KEY } from '../constants';
-import decodeJwt from 'jwt-decode';
 
 const stateKey = 'auth';
 
