@@ -1,4 +1,4 @@
-require('dotenv');
+require('dotenv').config();
 const webpack = require('webpack');
 const chalk = require('chalk');
 const clearConsole = require('react-dev-utils/clearConsole');
@@ -36,7 +36,6 @@ const webpackCallBack = (error) => {
 // IIFE - run function of build script
 (async () => {
   clearConsole();
-  // get name of config file
   const env = await configureEnv();
   const devServerOptions = configureDevServer(env);
   const compiler = webpack(configureWebpack(env));

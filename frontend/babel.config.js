@@ -1,6 +1,5 @@
 module.exports = (api) => {
-  // api.cache(true);
-  const isTest = api.env(['test']);
+  api.cache(true);
   const presets = [
     [
       '@babel/preset-env',
@@ -30,18 +29,5 @@ module.exports = (api) => {
     '@babel/plugin-syntax-dynamic-import',
   ];
 
-  const env = {
-    test: {
-      presets: ['@babel/preset-env', '@babel/preset-react'],
-      plugins: [
-        '@babel/plugin-proposal-class-properties',
-        '@babel/plugin-transform-runtime',
-      ],
-    },
-  };
-  if (isTest) {
-    return env.test;
-  }
-
-  return { plugins, presets, env };
+  return { plugins, presets };
 };

@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const configureLoaders = require('./webpack.loaders');
 const configurePlugins = require('./webpack.plugins');
 
-module.exports = env => {
+module.exports = (env) => {
   const { isProduction, PUBLIC_PATH, OUTPUT_DIR, ENTRY } = env;
   const exists = path.resolve(ENTRY);
   if (!exists) {
@@ -24,7 +24,7 @@ module.exports = env => {
       filename: isProduction ? 'js/[name].[chunkhash:8].js' : 'js/bundle.js',
       chunkFilename: isProduction
         ? 'js/[name].[chunkhash:8].chunk.js'
-        : 'js/[name].chunk.js'
+        : 'js/[name].chunk.js',
     },
     optimization: {
       minimize: isProduction,
@@ -33,16 +33,16 @@ module.exports = env => {
         new TerserPlugin({
           terserOptions: {
             parse: {
-              ecma: 8
+              ecma: 8,
             },
             mangle: {
-              safari10: true
-            }
+              safari10: true,
+            },
           },
           parallel: true,
           cache: true,
-          sourceMap: !isProduction
-        })
+          sourceMap: !isProduction,
+        }),
       ],
       runtimeChunk: true,
       splitChunks: {
@@ -50,33 +50,34 @@ module.exports = env => {
         minSize: 0,
         cacheGroups: {
           react: {
-            test: /node_modules\/?(react|react-dom)[\\/]/,
+            test: /node_modules\/?(react|react-dom|react-router-dom)[\\/]/,
             name: 'react',
-            chunks: 'initial'
+            chunks: 'initial',
+            reuseExistingChunk: false,
           },
           chakra: {
             test: /node_modules\/?(chakra-ui|@chakra-ui|@chakra-ui)[\\/]/,
-            name: 'material',
-            chunks: 'initial'
+            name: 'chakra',
+            chunks: 'initial',
           },
           vendor: {
-            test: /node_modules\/(?!(react|react-dom|)\/).*/,
-            maxSize: 40000,
+            test: /node_modules\/(?!(react|react-dom|react-router-dom|@chakra-ui)\/).*/,
+            maxSize: 300000,
             name: 'vendor',
-            chunks: 'initial'
+            chunks: 'initial',
           },
           styles: {
             name: 'styles',
             test: /\.(le|sc|c)?ss$/,
             chunks: 'all',
             minChunks: 2,
-            reuseExistingChunk: true
-          }
-        }
+            reuseExistingChunk: true,
+          },
+        },
       },
       namedModules: !isProduction,
-      namedChunks: !isProduction
+      namedChunks: !isProduction,
     },
-    plugins: configurePlugins(env)
+    plugins: configurePlugins(env),
   };
 };

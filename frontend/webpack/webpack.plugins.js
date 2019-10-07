@@ -12,6 +12,7 @@ const DonePlugin = require('./webpack.done');
 
 module.exports = (env) => {
   const { isProduction, ENTRY } = env;
+
   let plugins = [
     new webpack.DefinePlugin(env.stringified),
     new CleanWebpackPlugin(),

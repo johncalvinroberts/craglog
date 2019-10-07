@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
+const BABEL_EXCLUDE = /node_modules\/(?!(@chakra-ui)\/).*/;
 
 // webpack loaders
 module.exports = (env) => {
@@ -27,6 +28,7 @@ module.exports = (env) => {
     {
       test: /\.(js|jsx)$/,
       loader: 'babel-loader',
+      exclude: BABEL_EXCLUDE,
       options: {
         cacheDirectory: true,
         cacheCompression: isProduction,
