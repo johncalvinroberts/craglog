@@ -1,6 +1,6 @@
 import React from 'react';
-import { getUIState } from '../../states';
-import { useGlobalState } from '../State';
+import { getUIState } from '@/states';
+import { useGlobalState } from '@/components/State';
 
 export { default as Dashboard } from './Dashboard';
 

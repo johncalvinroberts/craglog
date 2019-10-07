@@ -1,16 +1,16 @@
 import React, { Suspense, lazy } from 'react';
 import { ThemeProvider, CSSReset, ColorModeProvider } from '@chakra-ui/core';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import theme from '../theme';
 import Loading from './Loading';
-import NotFound from './NotFound';
-import Layout from './layouts';
+import NotFound from '@/pages/NotFound';
+import Layout from '@/layouts';
 import State from './State';
+import theme from '../theme';
 import ProtectedRoute from './ProtectedRoute';
 
-const Home = lazy(() => import('./Home'));
-const LogIn = lazy(() => import('./LogIn'));
-const Register = lazy(() => import('./Register'));
+const Home = lazy(() => import('@/pages/Home'));
+const LogIn = lazy(() => import('@/pages/LogIn'));
+const Register = lazy(() => import('@/pages/Register'));
 
 export default () => {
   return (

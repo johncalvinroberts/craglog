@@ -19,11 +19,11 @@ class Http {
     this.token = token;
   };
 
-  fetch = async ({ url, method, body }) => {
+  fetch = async ({ url, method, body = {} }) => {
     const options = {
       headers: { ...this.defaultHeader },
       method,
-      ...(method !== GET ? { body } : null),
+      ...(method !== GET ? { body: JSON.stringify(body) } : null),
     };
     const res = await fetch(url, options);
     const value = await res.json();

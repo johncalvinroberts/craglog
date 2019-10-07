@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
-import { Dashboard } from './layouts';
-import useLayout from '../hooks/useLayout';
+import { Dashboard } from '@/layouts';
+import useLayout from '@/hooks/useLayout';
 
 const Home = () => {
   useLayout(Dashboard);

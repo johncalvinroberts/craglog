@@ -10,12 +10,12 @@ import {
 } from '@chakra-ui/core';
 import * as yup from 'yup';
 import useFormal from '@kevinwolf/formal-web';
-import useLayout from '../hooks/useLayout';
-import useTitle from '../hooks/useTitle';
-import { useDispatch } from './State';
-import LoginLayout from './layouts/LogIn';
-import TextField from './fields/TextField';
-import { performRegistration } from '../states';
+import useLayout from '@/hooks/useLayout';
+import useTitle from '@/hooks/useTitle';
+import { useDispatch } from '@/components/State';
+import LoginLayout from '@/layouts/LogIn';
+import TextField from '@/fields/TextField';
+import { performRegistration } from '@/states';
 
 const schema = yup.object().shape({
   username: yup

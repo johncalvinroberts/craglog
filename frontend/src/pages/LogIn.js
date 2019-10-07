@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Heading, Icon } from '@chakra-ui/core';
 import * as yup from 'yup';
-import useLayout from '../hooks/useLayout';
-import LoginLayout from './layouts/LogIn';
+import useLayout from '@/hooks/useLayout';
+import LoginLayout from '@/layouts/LogIn';
 
 const schema = yup.object().shape({
   username: yup.string().required(),

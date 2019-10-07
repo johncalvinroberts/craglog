@@ -15,7 +15,12 @@ module.exports = (env) => {
     entry: ENTRY,
     mode: isProduction ? 'production' : 'development',
     module: configureLoaders(env),
-    resolve: { extensions: ['*', '.js', '.jsx'], symlinks: false },
+    resolve: {
+      extensions: ['*', '.js', '.jsx'],
+      alias: {
+        '@': path.resolve(ENTRY),
+      },
+    },
     node: { fs: 'empty' },
     devtool: isProduction ? false : 'inline-source-maps',
     output: {

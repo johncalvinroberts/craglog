@@ -1,5 +1,5 @@
-import { addReducer } from '../components/State';
-import Dashboard from '../components/layouts/Dashboard';
+import { addReducer } from '@/components/State';
+import Dashboard from '@/layouts/Dashboard';
 
 const stateKey = 'UI';
 const initialState = { Layout: Dashboard, title: 'craglog' };
