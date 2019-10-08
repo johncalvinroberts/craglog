@@ -15,3 +15,5 @@ dev-backend:
 	cd backend && npm run dev
 dev-frontend:
 	cd frontend && npm start
+seed:
+	cd backend && node ./scripts/seed.js

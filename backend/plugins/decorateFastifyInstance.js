@@ -18,10 +18,11 @@ module.exports = fp(async function(fastify) {
   const routeService = new RouteService(routeCollection);
   const searchService = new SearchService(fastify.redis);
   const jobService = new JobService(fastify.redis);
-  fastify.decorate('jobService', jobService);
+
   await userService.ensureIndexes(db);
   await routeService.ensureIndexes(db);
 
+  fastify.decorate('jobService', jobService);
   fastify.decorate('userService', userService);
   fastify.decorate('routeService', routeService);
   fastify.decorate('searchService', searchService);
