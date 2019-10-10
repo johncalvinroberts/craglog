@@ -8,15 +8,18 @@ const {
 } = require('./schemas');
 
 module.exports = async function(fastify) {
-  fastify.get('/:id', { schema: getRouteSchema }, routeByIdHandler);
-  fastify.get('/', { schema: getRoutesSchema }, getRoutesList);
-  fastify.get('/count', { schema: getRoutesCountSchema }, getRoutesCount);
-  fastify.post('/', { schema: createRouteSchema }, createRoute);
+  fastify.register(async function(fastify) {
+    fastify.addHook('preHandler', fastify.authPreHandler);
+    fastify.get('/:id', { schema: getRouteSchema }, routeByIdHandler);
+    fastify.get('/', { schema: getRoutesSchema }, getRoutesList);
+    fastify.get('/count', { schema: getRoutesCountSchema }, getRoutesCount);
+    fastify.post('/', { schema: createRouteSchema }, createRoute);
+  });
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
   decorators: {
-    fastify: ['authPreHandler', 'transformStringIntoObjectId']
+    fastify: ['authPreHandler', 'aclPreHandler', 'transformStringIntoObjectId']
   }
 };
 

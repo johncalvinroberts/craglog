@@ -2,8 +2,6 @@
 
 const DUPLICATE_KEY_ERROR_CODE = 11000;
 
-const errors = require('../../errors');
-
 class RouteService {
   constructor(routeCollection) {
     this.routeCollection = routeCollection;
@@ -15,7 +13,7 @@ class RouteService {
       writeResult = await this.routeCollection.insertOne(payload);
     } catch (e) {
       if (e.code === DUPLICATE_KEY_ERROR_CODE) {
-        throw new Error(errors.ROUTE_EXISTS);
+        throw new Error('ROUTE_EXISTS');
       }
       throw e;
     }

@@ -9,16 +9,22 @@ const {
 } = require('./schemas');
 
 module.exports = async function(fastify) {
-  fastify.get('/', { schema: jobListSchema }, jobListHandler);
-  fastify.get('/count', { schema: jobCountSchema }, jobCountHandler);
-  fastify.post('/add', { schema: addJobSchema }, addHandler);
-  fastify.post('/queue', { schema: queueCommandSchema }, queueCommandHandler);
-  fastify.post('/:jobId', { schema: jobCommandSchema }, jobCommandHandler);
+  fastify.register(async function(fastify) {
+    fastify.addHook('preHandler', fastify.authPreHandler);
+    fastify.addHook('preHandler', async function(request, reply) {
+      fastify.aclPreHandler(request, reply, ['admin']);
+    });
+    fastify.get('/', { schema: jobListSchema }, jobListHandler);
+    fastify.get('/count', { schema: jobCountSchema }, jobCountHandler);
+    fastify.post('/add', { schema: addJobSchema }, addHandler);
+    fastify.post('/queue', { schema: queueCommandSchema }, queueCommandHandler);
+    fastify.post('/:jobId', { schema: jobCommandSchema }, jobCommandHandler);
+  });
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
   decorators: {
-    fastify: ['authPreHandler', 'transformStringIntoObjectId']
+    fastify: ['authPreHandler', 'aclPreHandler', 'transformStringIntoObjectId']
   }
 };
 

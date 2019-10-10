@@ -4,6 +4,7 @@ const UserService = require('../services/user/service');
 const RouteService = require('../services/route/service');
 const SearchService = require('../services/search/service');
 const JobService = require('../services/jobs/service');
+const errors = require('../errors');
 
 module.exports = fp(async function(fastify) {
   const db = fastify.mongo.db;
@@ -35,7 +36,34 @@ module.exports = fp(async function(fastify) {
     }
   });
 
+  fastify.decorate('aclPreHandler', async function acl(
+    request,
+    reply,
+    rolesNeeded
+  ) {
+    try {
+      const hasRoles = rolesNeeded.every(role =>
+        request.user.roles.includes(role)
+      );
+
+      if (!hasRoles) {
+        throw new Error('FORBIDDEN');
+      }
+    } catch (error) {
+      reply.code(errors[error.message].code);
+      reply.send(error);
+    }
+  });
+
   fastify.decorate('transformStringIntoObjectId', transformStringIntoObjectId);
+
+  fastify.setErrorHandler(function(error, request, reply) {
+    const message = error.message;
+    if (errors[message]) {
+      reply.code(errors[message].code);
+    }
+    reply.send(error);
+  });
 
   fastify.ready(err => {
     if (err) throw err;

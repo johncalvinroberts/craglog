@@ -4,8 +4,6 @@ const bcrypt = require('bcryptjs');
 
 const DUPLICATE_KEY_ERROR_CODE = 11000;
 
-const errors = require('../../errors');
-
 class UserService {
   constructor(userCollection) {
     this.userCollection = userCollection;
@@ -23,7 +21,7 @@ class UserService {
       });
     } catch (e) {
       if (e.code === DUPLICATE_KEY_ERROR_CODE) {
-        throw new Error(errors.USERNAME_IS_NOT_AVAILABLE);
+        throw new Error('USERNAME_IS_NOT_AVAILABLE');
       }
       throw e;
     }
@@ -32,12 +30,17 @@ class UserService {
   }
 
   async login(username, password) {
-    const users = await this.userCollection.find({ username }).toArray();
-    const user = users[0];
-    const valid = await bcrypt.compare(password, user.password);
-    if (!user || !valid) throw new Error(errors.WRONG_CREDENTIAL);
-
-    return user;
+    try {
+      const users = await this.userCollection.find({ username }).toArray();
+      const user = users[0];
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) {
+        throw null;
+      }
+      return user;
+    } catch (error) {
+      throw new Error('WRONG_CREDENTIAL');
+    }
   }
 
   getProfile(_id) {
