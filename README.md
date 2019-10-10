@@ -1,8 +1,19 @@
 # CRAGLOG
 
-### Libs
+### Tech stack
+This app is using a monorepo -- both frontend, backend, and deployment related code lives in this repo.
+#### Data persistence
+* mongo db v4.0.1
+* Redis
+
+#### Backend
 * [fastify](https://github.com/fastify/fastify)
 * [bull](https://github.com/OptimalBits/bull)
+
+#### Frontend
+* React
+* [Chakra-ui](https://chakra-ui.com)
+
 
 ### Scraping The Crag 
 * Area Search: https://www.thecrag.com/climbing/world/search?S=lions%20head&only=areas
@@ -11,13 +22,13 @@
   - https://www.thecrag.com/climbing/china-mainland/zhejiang-jiangsu/area/563680785
   - https://www.thecrag.com/area/563680785
 * Route detail: 
- - https://www.thecrag.com/climbing/china-mainland/zhejiang-jiangsu/route/1132935318
- - https://www.thecrag.com/route/1132935318
+  - https://www.thecrag.com/climbing/china-mainland/zhejiang-jiangsu/route/1132935318
+  - https://www.thecrag.com/route/1132935318
 
 
-### `.env`
+### Environment variables
 
-backend
+#### backend
 ```
 MONGODB_URL
 REDIS_URL
@@ -32,7 +43,7 @@ ADMIN_PASS
 ADMIN_EMAIL
 ```
 
-frontend
+#### frontend
 ```
 WEBPACK_DEV_PORT=1234
 API_BASE_URL=http://localhost:3000
