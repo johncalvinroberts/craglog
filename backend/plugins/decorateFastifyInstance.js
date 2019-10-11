@@ -1,10 +1,13 @@
 'use strict';
 const fp = require('fastify-plugin');
+const compare = require('secure-compare');
 const UserService = require('../services/user/service');
 const RouteService = require('../services/route/service');
 const SearchService = require('../services/search/service');
 const JobService = require('../services/jobs/service');
 const errors = require('../errors');
+
+const WORKER_ACCESS_TOKEN = process.env.WORKER_ACCESS_TOKEN;
 
 module.exports = fp(async function(fastify) {
   const db = fastify.mongo.db;
@@ -30,7 +33,14 @@ module.exports = fp(async function(fastify) {
 
   fastify.decorate('authPreHandler', async function auth(request, reply) {
     try {
-      await request.jwtVerify();
+      const isWorker = compare(
+        request.headers.authorization,
+        WORKER_ACCESS_TOKEN
+      );
+
+      if (!isWorker) {
+        await request.jwtVerify();
+      }
     } catch (err) {
       reply.send(err);
     }
@@ -42,11 +52,16 @@ module.exports = fp(async function(fastify) {
     rolesNeeded
   ) {
     try {
-      const hasRoles = rolesNeeded.every(role =>
-        request.user.roles.includes(role)
+      const hasRoles =
+        request.user &&
+        rolesNeeded.every(role => request.user.roles.includes(role));
+
+      const isWorker = compare(
+        request.headers.authorization,
+        WORKER_ACCESS_TOKEN
       );
 
-      if (!hasRoles) {
+      if (!hasRoles && !isWorker) {
         throw new Error('FORBIDDEN');
       }
     } catch (error) {

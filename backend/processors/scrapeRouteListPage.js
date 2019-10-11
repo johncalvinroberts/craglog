@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
 const debug = require('debug')('scraper:page');
 const apiUrl = process.env.API_URL;
+const WORKER_ACCESS_TOKEN = process.env.WORKER_ACCESS_TOKEN;
 
 async function scrapeRouteListPage(page) {
   try {
@@ -30,7 +31,8 @@ async function scrapeRouteListPage(page) {
         method: 'POST',
         body: JSON.stringify({ type: 'route', data: routeHrefs }),
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          authorization: WORKER_ACCESS_TOKEN
         }
       })
     );
@@ -40,12 +42,19 @@ async function scrapeRouteListPage(page) {
         method: 'POST',
         body: JSON.stringify({ type: 'list' }),
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          authorization: WORKER_ACCESS_TOKEN
         }
       })
     );
 
-    await Promise.all(works);
+    const responses = await Promise.all(works);
+    for (const res of responses) {
+      if (!res.ok) {
+        const error = await res.json();
+        throw error;
+      }
+    }
     return;
   } catch (error) {
     Promise.reject(error);

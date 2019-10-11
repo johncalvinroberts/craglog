@@ -3,9 +3,10 @@
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
-const apiUrl = process.env.API_URL;
 const climbingGrade = require('climbing-grade');
 const debug = require('debug')('scraper:route');
+const apiUrl = process.env.API_URL;
+const WORKER_ACCESS_TOKEN = process.env.WORKER_ACCESS_TOKEN;
 
 function trimWhiteSpace(string) {
   return string && string.replace(/\s+/g, '');
@@ -130,13 +131,19 @@ async function scrapeSingleRoute(href) {
 
     const url = `${apiUrl}/routes`;
 
-    await fetch(url, {
+    const res = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        authorization: WORKER_ACCESS_TOKEN
       }
     });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw error;
+    }
 
     debug(`FINISHED scraping and creating route: ${href}`);
     return;
