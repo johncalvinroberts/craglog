@@ -2,7 +2,7 @@
 
 const routeOutput = {
   type: 'object',
-  required: ['grade', 'name'],
+  required: ['name'],
   properties: {
     _id: { type: 'string' },
     externalId: { type: 'string' },

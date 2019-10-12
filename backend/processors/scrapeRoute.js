@@ -122,39 +122,38 @@ async function fetchAndFormatRoute(href) {
 }
 
 async function scrapeSingleRoute(href) {
-  try {
-    const data = await fetchAndFormatRoute(href);
-    debug(
-      'completed scrape of single route, gonna, um, write it down now',
-      data
-    );
+  const data = await fetchAndFormatRoute(href);
+  debug('completed scrape of single route, gonna, um, write it down now', data);
 
-    const url = `${apiUrl}/routes`;
+  const url = `${apiUrl}/routes`;
 
-    const res = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: WORKER_ACCESS_TOKEN
-      }
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      throw error;
+  const res = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: WORKER_ACCESS_TOKEN
     }
+  });
 
-    debug(`FINISHED scraping and creating route: ${href}`);
-    return;
-  } catch (error) {
-    debug('Failed to scrape route', error);
-    Promise.reject(error);
+  if (!res.ok) {
+    const error = await res.json();
+    throw error;
   }
+
+  debug(`FINISHED scraping and creating route: ${href}`);
+  return;
 }
 
-module.exports = function(job) {
+module.exports = async function(job) {
   const { href } = job.data;
   debug('Scraper received job to scrape single route', { href, job });
-  return scrapeSingleRoute(href);
+  try {
+    await scrapeSingleRoute(href);
+    Promise.resolve();
+  } catch (error) {
+    debug('FAILED ROUTE JOB', { error, job });
+    job.moveToFailed(error);
+    Promise.reject(error);
+  }
 };
