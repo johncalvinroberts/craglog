@@ -12,6 +12,7 @@ import Landing from '@/pages/Landing';
 const Home = lazy(() => import('@/pages/Home'));
 const LogIn = lazy(() => import('@/pages/LogIn'));
 const Register = lazy(() => import('@/pages/Register'));
+const Jobs = lazy(() => import('@/pages/Jobs'));
 
 export default () => {
   return (
@@ -24,9 +25,15 @@ export default () => {
               <Layout>
                 <Switch>
                   <Route path="/" exact component={Landing} />
-                  <ProtectedRoute path="/app" exact component={Home} />
                   <Route path="/login" exact component={LogIn} />
                   <Route path="/register" exact component={Register} />
+                  <ProtectedRoute path="/app" exact component={Home} />
+                  <ProtectedRoute
+                    path="/app/admin/jobs"
+                    exact
+                    rolesNeeded={['admin']}
+                    component={Jobs}
+                  />
                   <Route component={NotFound} />
                 </Switch>
               </Layout>

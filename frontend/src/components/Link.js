@@ -20,7 +20,6 @@ export const SideNavLink = forwardRef(({ children, icon, ...props }, ref) => {
   return (
     <PseudoBox
       ref={ref}
-      as="a"
       mx={-2}
       display="flex"
       cursor="pointer"

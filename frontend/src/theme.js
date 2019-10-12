@@ -26,6 +26,16 @@ const customIcons = {
     ),
     viewBox: '0 0 222 222',
   },
+  menu: {
+    path: (
+      <svg xmlns="http://www.w3.org/2000/svg">
+        <rect width="19" height="19" fill="currentColor" />
+        <rect y="38" width="19" height="19" fill="currentColor" />
+        <rect y="76" width="19" height="19" fill="currentColor" />
+      </svg>
+    ),
+    viewBox: '0 0 19 95',
+  },
 };
 
 const customTheme = {
