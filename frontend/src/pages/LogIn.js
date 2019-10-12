@@ -57,7 +57,7 @@ const LogIn = () => {
           duration: 5000,
           isClosable: true,
         });
-        history.replace('/');
+        history.replace('/app');
       } catch (error) {
         toast({
           description: error.message,
@@ -76,7 +76,7 @@ const LogIn = () => {
         duration: 4000,
         isClosable: true,
       });
-      history.replace('/');
+      history.replace('/app');
     }
   }, []);
 

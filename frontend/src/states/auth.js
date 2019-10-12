@@ -9,12 +9,14 @@ const stateKey = 'auth';
 const getInitialState = () => {
   const token = localStorage.getItem(TOKEN_KEY);
   const user = token ? decodeJwt(token) : {};
+  const isAdmin = user.roles && user.roles.includes('admin');
   return {
     isAuthenticated: Boolean(token),
     token,
     isLoading: false,
     user,
     errors: [],
+    isAdmin,
   };
 };
 
@@ -47,12 +49,14 @@ export const performLogin = (payload) => async (dispatch) => {
     http.setToken(jwt);
     localStorage.setItem(TOKEN_KEY, jwt);
     const user = decodeJwt(jwt);
+    const isAdmin = user.roles.includes('admin');
     dispatch({
       [stateKey]: {
         isLoading: false,
         isAuthenticated: true,
         user,
         token: jwt,
+        isAdmin,
       },
     });
     return jwt;

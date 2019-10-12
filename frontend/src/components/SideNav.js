@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Heading } from '@chakra-ui/core';
+import useAuthState from '@/hooks/useAuthState';
+import { ListLink } from '@/components/Link';
 
 const NavGroupHeading = (props) => (
   <Heading
@@ -15,32 +17,36 @@ const NavGroupHeading = (props) => (
 export const SideNavContent = ({
   contentHeight = 'calc(100vh - 4rem)',
   ...props
-}) => (
-  <Box
-    top="4rem"
-    position="relative"
-    overflowY="auto"
-    borderRightWidth="1px"
-    {...props}
-  >
+}) => {
+  const { isAdmin } = useAuthState();
+  return (
     <Box
-      as="nav"
-      height={contentHeight}
-      aria-label="Main navigation"
-      fontSize="sm"
-      p="6"
+      top="4rem"
+      position="relative"
+      overflowY="auto"
+      borderRightWidth="1px"
+      {...props}
     >
-      <Box mb="8">thing</Box>
-
-      <Box mb="10">
-        <NavGroupHeading>Components</NavGroupHeading>
-        thing
+      <Box
+        as="nav"
+        height={contentHeight}
+        aria-label="Main navigation"
+        fontSize="sm"
+        p="6"
+      >
+        {isAdmin && (
+          <Box mb="10">
+            <NavGroupHeading>Admin</NavGroupHeading>
+            <Box mb="10">
+              <ListLink to="/jobs">jobs</ListLink>
+              <ListLink to="/users">users</ListLink>
+            </Box>
+          </Box>
+        )}
       </Box>
-
-      <Box mb="10">thing</Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 const SideNavContainer = (props) => (
   <Box

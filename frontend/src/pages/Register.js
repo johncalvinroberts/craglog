@@ -75,7 +75,7 @@ const Register = () => {
           duration: 5000,
           isClosable: true,
         });
-        history.replace('/');
+        history.replace('/app');
       } catch (error) {
         toast({
           description: error.message,
@@ -94,7 +94,7 @@ const Register = () => {
         duration: 4000,
         isClosable: true,
       });
-      history.replace('/');
+      history.replace('/app');
     }
   }, []);
 

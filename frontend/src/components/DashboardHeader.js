@@ -71,7 +71,7 @@ const DashboardHeader = (props) => {
           <Box
             as={Link}
             style={{ display: 'block' }}
-            to="/"
+            to="/app"
             aria-label="Craglog, back to homepage"
           >
             <IconButton
@@ -79,7 +79,6 @@ const DashboardHeader = (props) => {
                 colorMode === 'light' ? 'dark' : 'light'
               } mode`}
               variant="ghost"
-              to="/"
               color="current"
               fontSize="30px"
               rounded="full"
