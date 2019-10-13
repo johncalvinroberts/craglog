@@ -36,10 +36,11 @@ class Http {
     }
   };
 
-  get = async (url) => {
+  get = async (url, refetch) => {
     const now = new Date().valueOf();
     const cached = this.cache[url];
-    if (cached && now - cached.fetchedAt > CACHE_LIMIT) {
+
+    if (cached && now - cached.fetchedAt < CACHE_LIMIT && !refetch) {
       return cached.res;
     }
     const res = await this.fetch({ url, method: GET });

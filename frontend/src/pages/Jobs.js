@@ -200,8 +200,36 @@ const JobsCountData = ({ params, handleChangeParams }) => {
 
 const JobItem = ({ item }) => {
   return (
-    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200">
-      {JSON.stringify(item)}
+    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
+      <Box d="flex" alignItems="space-between" width="100%">
+        <Box d="flex" justifyContent="flex-start" flex="1">
+          <Text fontWeight="bold">ID: </Text>
+          <Text mx={2}>{item.id}</Text>
+        </Box>
+        <Box>stuff</Box>
+      </Box>
+      <Box d="flex" alignItems="space-between" width="100%">
+        {Object.keys(item.data).map((key) => {
+          return (
+            <>
+              <Text fontWeight="bold" fontSize="xs">
+                {key}:{' '}
+              </Text>
+              <Text mx={2} fontSize="xs">
+                {item.data[key]}
+              </Text>
+            </>
+          );
+        })}
+      </Box>
+      <Box d="flex" alignItems="flex-start" width="100%">
+        <Text fontWeight="bold" fontSize="xs">
+          Processed On:
+        </Text>
+        <Text mx={2} fontSize="xs">
+          here
+        </Text>
+      </Box>
     </Box>
   );
 };
@@ -220,7 +248,7 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
       countData[params.type][params.status]) ||
     0;
 
-  const currentPage = params.skip / params.limit + 1;
+  const currentPage = Math.ceil(params.skip / params.limit) + 1;
   const totalPages = Math.ceil(count / params.limit);
 
   const pages = [
@@ -229,7 +257,7 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
     currentPage,
     currentPage + 1,
     currentPage + 2,
-  ].filter((page) => page <= totalPages + 1 && page > 0);
+  ].filter((page) => page <= totalPages && page > 0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -252,8 +280,7 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
   }, [params]);
 
   const handleChangePage = (page) => {
-    const skip = params.limit / (page - 1);
-    console.log({ skip, page });
+    const skip = params.limit * (page - 1);
 
     handleChangeParams({ skip });
   };
@@ -295,6 +322,19 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
       <Box d="flex" alignItems="center" py={2} justifyContent="space-between">
         <Text>Total pages: {totalPages}</Text>
         <ButtonGroup spacing={2}>
+          {currentPage > 3 && (
+            <>
+              <Button
+                borderColor="teal.300"
+                onClick={() => handleChangePage(1)}
+              >
+                1
+              </Button>
+              <Text as="span" flex="1" mx={2}>
+                ...
+              </Text>
+            </>
+          )}
           {pages.map((page) => (
             <Button
               borderWidth={page === currentPage ? '2px' : null}
@@ -306,7 +346,7 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
             </Button>
           ))}
 
-          {currentPage !== totalPages && totalPages !== 0 && (
+          {currentPage < totalPages - 2 && totalPages !== 0 && (
             <>
               <Text as="span" flex="1" mr={2}>
                 ...
@@ -341,6 +381,12 @@ const Jobs = () => {
   );
 
   const handleChangeParams = (update) => {
+    if (
+      (update.type && update.type !== params.type) ||
+      (update.status && update.status !== params.status)
+    ) {
+      update = { ...update, skip: 0, limit: 25 };
+    }
     setParams({ ...params, ...update });
   };
 

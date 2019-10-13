@@ -7,7 +7,7 @@ export const fetchJobs = (params) => {
 };
 
 export const fetchJobsCount = () => {
-  return http.get(`${API_BASE_PATH}/jobs/count`);
+  return http.get(`${API_BASE_PATH}/jobs/count`, true);
 };
 
 export const postJob = (payload) => {
