@@ -155,6 +155,21 @@ class JobService {
     }
     return { success: true };
   }
+
+  async findJob({ jobId, type }) {
+    const works = [];
+    if (type === 'route') {
+      works.push(this.routeQueue.getJob(jobId));
+      works.push(this.routeQueue.getJobLogs(jobId));
+    }
+
+    if (type === 'list') {
+      works.push(this.listQueue.getJob(jobId));
+      works.push(this.listQueue.getJobLogs(jobId));
+    }
+    const [job, logs] = await Promise.all(works);
+    return { ...job, logs };
+  }
 }
 
 module.exports = JobService;

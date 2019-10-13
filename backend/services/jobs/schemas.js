@@ -26,7 +26,7 @@ const listSchema = {
       limit: { type: 'number', default: 100 },
       status: {
         type: 'string',
-        enum: ['waiting', 'active', 'completed', 'failed', 'delayed'],
+        enum: ['waiting', 'active', 'completed', 'failed', 'delayed', 'paused'],
         default: 'active'
       }
     },
@@ -72,10 +72,21 @@ const jobCommandSchema = {
   }
 };
 
+const findJobSchema = {
+  tags: ['job'],
+  querystring: {
+    type: 'object',
+    properties: {
+      type: { type: 'string', enum: ['route', 'list'], default: 'route' }
+    }
+  }
+};
+
 module.exports = {
   addSchema,
   listSchema,
   countSchema,
   queueCommandSchema,
-  jobCommandSchema
+  jobCommandSchema,
+  findJobSchema
 };

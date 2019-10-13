@@ -1,12 +1,15 @@
 import React from 'react';
-import { Box, Flex, IconButton, useColorMode } from '@chakra-ui/core';
+import { Box, Flex, IconButton, useColorMode, Heading } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
 import MobileNav from './MobileNav';
 import UtilMenu from './UtilMenu';
+import { useGlobalState } from './State';
+import { getUIState } from '../states';
 
 const DashboardHeader = (props) => {
   const { colorMode } = useColorMode();
   const bg = { light: 'white', dark: 'gray.800' };
+  const { Title } = getUIState(useGlobalState());
 
   return (
     <Box
@@ -29,6 +32,7 @@ const DashboardHeader = (props) => {
             style={{ display: 'block' }}
             to="/app"
             aria-label="Craglog, back to homepage"
+            mr={2}
           >
             <IconButton
               variant="ghost"
@@ -38,6 +42,7 @@ const DashboardHeader = (props) => {
               icon="logo"
             />
           </Box>
+          <Heading size="l">{Title}</Heading>
         </Flex>
         <Flex
           flex={{ xs: '1' }}

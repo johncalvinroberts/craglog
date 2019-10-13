@@ -22,7 +22,7 @@ async function scrapeRouteListPage(page) {
     })
     .filter(item => !!item);
   debug({ routeHrefs: routeHrefs.length });
-  const url = `${apiUrl}/jobs/add`;
+  const url = `${apiUrl}/jobs`;
 
   const works = [];
   works.push(
