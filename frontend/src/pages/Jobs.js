@@ -13,7 +13,12 @@ import {
   Button,
   PseudoBox,
   Text,
+  Menu,
+  MenuList,
+  MenuItem,
+  MenuButton,
 } from '@chakra-ui/core';
+import format from 'date-fns/format';
 import useLayout from '@/hooks/useLayout';
 import useTitle from '@/hooks/useTitle';
 import useInterval from '@/hooks/useInterval';
@@ -21,7 +26,8 @@ import Dashboard from '@/layouts/Dashboard';
 import DashboardWrapper from '@/components/DashboardWrapper';
 import { getJobsState, getCountData } from '@/states';
 import { useDispatch, useGlobalState } from '@/components/State';
-import { updateQueue, fetchJobs } from '@/api';
+import { updateQueue, fetchJobs, updateJob } from '@/api';
+import { DATE_FORMAT } from '../constants';
 
 const PseudoButton = ({ children, ...props }) => {
   return (
@@ -198,7 +204,30 @@ const JobsCountData = ({ params, handleChangeParams }) => {
   );
 };
 
-const JobItem = ({ item }) => {
+const JobItem = ({ item, type, onCommand }) => {
+  const jobCommands = [
+    'retry',
+    'remove',
+    'promote',
+    'discard',
+    'moveToCompleted',
+    'moveToFailed',
+  ];
+  const toast = useToast();
+  const handleCommand = async (command) => {
+    try {
+      await updateJob({ command, id: item.id, type });
+      onCommand();
+    } catch (error) {
+      toast({
+        description: error.message,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
       <Box d="flex" alignItems="space-between" width="100%">
@@ -206,13 +235,40 @@ const JobItem = ({ item }) => {
           <Text fontWeight="bold">ID: </Text>
           <Text mx={2}>{item.id}</Text>
         </Box>
-        <Box>stuff</Box>
+        <Menu>
+          {({ isOpen }) => (
+            <>
+              <MenuButton isActive={isOpen} variant="ghost" as={Button}>
+                <Icon
+                  name="settings"
+                  css={{
+                    transform: isOpen ? 'rotate(30deg)' : 'rotate(0)',
+                    transition: `transform 0.2s ease-in-out`,
+                  }}
+                />
+              </MenuButton>
+              <MenuList>
+                {jobCommands.map((command) => {
+                  return (
+                    <MenuItem
+                      onClick={() => handleCommand(command)}
+                      key={command}
+                      css={{ textTransform: 'uppercase', marginRight: 2 }}
+                    >
+                      {command}
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+            </>
+          )}
+        </Menu>
       </Box>
       <Box d="flex" alignItems="space-between" width="100%">
         {Object.keys(item.data).map((key) => {
           return (
             <>
-              <Text fontWeight="bold" fontSize="xs">
+              <Text fontWeight="bold" fontSize="xs" key={key}>
                 {key}:{' '}
               </Text>
               <Text mx={2} fontSize="xs">
@@ -227,9 +283,29 @@ const JobItem = ({ item }) => {
           Processed On:
         </Text>
         <Text mx={2} fontSize="xs">
-          here
+          {format(new Date(item.processedOn), DATE_FORMAT)}
         </Text>
       </Box>
+      {item.finishedOn && (
+        <Box d="flex" alignItems="flex-start" width="100%">
+          <Text fontWeight="bold" fontSize="xs">
+            Finished On:
+          </Text>
+          <Text mx={2} fontSize="xs">
+            {format(new Date(item.finishedOn), DATE_FORMAT)}
+          </Text>
+        </Box>
+      )}
+      {item.failedReason && (
+        <Box d="flex" alignItems="flex-start" width="100%">
+          <Text fontWeight="bold" fontSize="xs">
+            Failed reason:
+          </Text>
+          <Text mx={2} fontSize="xs">
+            {item.failedReason}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 };
@@ -259,29 +335,29 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
     currentPage + 2,
   ].filter((page) => page <= totalPages && page > 0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetchJobs(params);
-        setData(res);
-      } catch (error) {
-        toast({
-          description: error.message,
-          status: 'error',
-          duration: 9000,
-          isClosable: true,
-        });
-      }
+  const fetchData = async (refetch = false) => {
+    try {
+      setIsLoading(true);
+      const res = await fetchJobs(params, refetch);
+      setData(res);
+    } catch (error) {
+      toast({
+        description: error.message,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
 
-      setIsLoading(false);
-    };
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
     fetchData();
   }, [params]);
 
   const handleChangePage = (page) => {
     const skip = params.limit * (page - 1);
-
     handleChangeParams({ skip });
   };
 
@@ -305,7 +381,14 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
         )}
         {!isLoading &&
           data.map((job) => {
-            return <JobItem item={job} key={job.id} />;
+            return (
+              <JobItem
+                item={job}
+                key={job.id}
+                type={params.type}
+                onCommand={() => fetchData(true)}
+              />
+            );
           })}
         {!isLoading && data.length < 1 && (
           <Box

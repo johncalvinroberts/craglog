@@ -37,7 +37,7 @@
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
     "cssnano": "^4.1.10",
-    "date-fns": "^2.4.1",
+    "date-fns": "^2.5.0",
     "dotenv": "^8.1.0",
     "emotion-theming": "^10.0.19",
     "file-loader": "^4.2.0",

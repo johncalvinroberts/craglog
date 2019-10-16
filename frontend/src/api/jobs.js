@@ -1,9 +1,9 @@
 import { API_BASE_PATH } from '../constants';
 import http from '../http';
 
-export const fetchJobs = (params) => {
+export const fetchJobs = (params, refetch) => {
   const query = new URLSearchParams(params);
-  return http.get(`${API_BASE_PATH}/jobs?${query.toString()}`);
+  return http.get(`${API_BASE_PATH}/jobs?${query.toString()}`, refetch);
 };
 
 export const fetchJobsCount = () => {
