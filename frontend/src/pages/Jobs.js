@@ -229,12 +229,73 @@ const JobItem = ({ item, type, onCommand }) => {
   };
 
   return (
-    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
-      <Box d="flex" alignItems="space-between" width="100%">
-        <Box d="flex" justifyContent="flex-start" flex="1">
-          <Text fontWeight="bold">ID: </Text>
-          <Text mx={2}>{item.id}</Text>
+    <Box
+      borderBottom="1px"
+      as={PseudoBox}
+      borderColor="gray.200"
+      py={2}
+      d="flex"
+      width="100%"
+    >
+      <Box flex="1">
+        <Box d="flex" alignItems="flex-start" width="100%">
+          <Text fontWeight="bold" fontSize="xs">
+            ID:
+          </Text>
+          <Text mx={2} fontSize="xs">
+            {item.id}
+          </Text>
         </Box>
+        {Object.keys(item.data).map((key) => {
+          return (
+            <Box d="flex" alignItems="flex-start" width="100%" key={key}>
+              <Text fontWeight="bold" fontSize="xs">
+                {key}:{' '}
+              </Text>
+              <Text mx={2} fontSize="xs">
+                {item.data[key]}
+              </Text>
+            </Box>
+          );
+        })}
+        <Box d="flex" alignItems="flex-start" width="100%">
+          <Text fontWeight="bold" fontSize="xs">
+            Processed On:
+          </Text>
+          <Text mx={2} fontSize="xs">
+            {format(new Date(item.processedOn), DATE_FORMAT)}
+          </Text>
+        </Box>
+        {item.finishedOn && (
+          <Box d="flex" alignItems="flex-start" width="100%">
+            <Text fontWeight="bold" fontSize="xs">
+              Finished On:
+            </Text>
+            <Text mx={2} fontSize="xs">
+              {format(new Date(item.finishedOn), DATE_FORMAT)}
+            </Text>
+          </Box>
+        )}
+        <Box d="flex" alignItems="flex-start" width="100%">
+          <Text fontWeight="bold" fontSize="xs">
+            Attempts Made:
+          </Text>
+          <Text mx={2} fontSize="xs">
+            {item.attemptsMade}
+          </Text>
+        </Box>
+        {item.failedReason && (
+          <Box d="flex" alignItems="flex-start" width="100%">
+            <Text fontWeight="bold" fontSize="xs">
+              Failed reason:
+            </Text>
+            <Text mx={2} fontSize="xs">
+              {item.failedReason}
+            </Text>
+          </Box>
+        )}
+      </Box>
+      <Box d="flex" alignItems="space-between" width="100%" flex="0 0 50px">
         <Menu>
           {({ isOpen }) => (
             <>
@@ -264,48 +325,6 @@ const JobItem = ({ item, type, onCommand }) => {
           )}
         </Menu>
       </Box>
-      <Box d="flex" alignItems="space-between" width="100%">
-        {Object.keys(item.data).map((key) => {
-          return (
-            <>
-              <Text fontWeight="bold" fontSize="xs" key={key}>
-                {key}:{' '}
-              </Text>
-              <Text mx={2} fontSize="xs">
-                {item.data[key]}
-              </Text>
-            </>
-          );
-        })}
-      </Box>
-      <Box d="flex" alignItems="flex-start" width="100%">
-        <Text fontWeight="bold" fontSize="xs">
-          Processed On:
-        </Text>
-        <Text mx={2} fontSize="xs">
-          {format(new Date(item.processedOn), DATE_FORMAT)}
-        </Text>
-      </Box>
-      {item.finishedOn && (
-        <Box d="flex" alignItems="flex-start" width="100%">
-          <Text fontWeight="bold" fontSize="xs">
-            Finished On:
-          </Text>
-          <Text mx={2} fontSize="xs">
-            {format(new Date(item.finishedOn), DATE_FORMAT)}
-          </Text>
-        </Box>
-      )}
-      {item.failedReason && (
-        <Box d="flex" alignItems="flex-start" width="100%">
-          <Text fontWeight="bold" fontSize="xs">
-            Failed reason:
-          </Text>
-          <Text mx={2} fontSize="xs">
-            {item.failedReason}
-          </Text>
-        </Box>
-      )}
     </Box>
   );
 };
