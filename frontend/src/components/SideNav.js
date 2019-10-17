@@ -39,7 +39,7 @@ export const SideNavContent = ({
             <NavGroupHeading>Admin</NavGroupHeading>
             <Box mb="10">
               <ListLink to="/app/admin/jobs">jobs</ListLink>
-              <ListLink to="/admin/users">users</ListLink>
+              <ListLink to="/app/admin/users">users</ListLink>
             </Box>
           </Box>
         )}

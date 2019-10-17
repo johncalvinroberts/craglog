@@ -34,6 +34,7 @@ async function routeByIdHandler(req) {
 async function getRoutesList({ query }) {
   return this.routeService.getRoutes(query);
 }
+
 async function getRoutesCount({ query }) {
   return { count: await this.routeService.getRoutesCount(query) };
 }

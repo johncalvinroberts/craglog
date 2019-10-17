@@ -11,3 +11,4 @@ export {
   getListJobs,
   getCountData,
 } from './jobs';
+export * from './users';

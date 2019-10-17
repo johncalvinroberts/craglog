@@ -20,6 +20,7 @@ import {
   IconButton,
   useDisclosure,
   Collapse,
+  useColorMode,
 } from '@chakra-ui/core';
 import format from 'date-fns/format';
 import useLayout from '@/hooks/useLayout';
@@ -218,8 +219,9 @@ const JobItem = ({ item, type, onCommand }) => {
     'moveToFailed',
   ];
   const toast = useToast();
-
   const { isOpen: isLogsOpen, onToggle } = useDisclosure();
+  const { colorMode } = useColorMode();
+  const logsBg = { light: 'gray.200', dark: 'gray.900' };
 
   const toggleLogs = async () => {
     onToggle();
@@ -352,7 +354,7 @@ const JobItem = ({ item, type, onCommand }) => {
       <Collapse isOpen={isLogsOpen} width="100%">
         {!logs && <Spinner />}
         {logs && (
-          <Box backgroundColor="gray.200" p={2}>
+          <Box backgroundColor={logsBg[colorMode]} p={2}>
             <Box>{JSON.stringify(logs)}</Box>
             {item.stacktrace &&
               item.stacktrace.map((t) => {

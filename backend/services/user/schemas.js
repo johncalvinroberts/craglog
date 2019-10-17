@@ -125,10 +125,29 @@ const getProfile = {
   }
 };
 
+const getUsers = {
+  tags: ['user'],
+  querystring: {
+    type: 'object',
+    properties: {
+      skip: { type: 'number', default: 0 },
+      limit: { type: 'number', default: 20 }
+    },
+    additionalProperties: false
+  },
+  response: {
+    200: {
+      type: 'array',
+      items: userProfileOutput
+    }
+  }
+};
+
 module.exports = {
   registration,
   login,
   search,
   me,
-  getProfile
+  getProfile,
+  getUsers
 };

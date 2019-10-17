@@ -5,10 +5,9 @@ const {
   registration: registrationSchema,
   getProfile: getProfileSchema,
   search: searchSchema,
-  me: meSchema
+  me: meSchema,
+  getUsers: getUsersSchema
 } = require('./schemas');
-
-const errors = require('../../errors');
 
 module.exports = async function(fastify) {
   // Route registration
@@ -24,6 +23,10 @@ module.exports = async function(fastify) {
     fastify.get('/me', { schema: meSchema }, meHandler);
     fastify.get('/:userId', { schema: getProfileSchema }, userHandler);
     fastify.get('/search', { schema: searchSchema }, searchHandler);
+  });
+  fastify.addHook('preHandler', async function(request, reply) {
+    fastify.aclPreHandler(request, reply, ['admin']);
+    fastify.get('/', { schema: getUsersSchema }, getUsersList);
   });
 };
 
@@ -67,4 +70,8 @@ async function userHandler(req) {
 async function searchHandler(req) {
   const { search } = req.query;
   return this.userService.search(search);
+}
+
+async function getUsersList({ query }) {
+  return this.userService.getUsers(query);
 }

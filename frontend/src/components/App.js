@@ -13,6 +13,7 @@ const Home = lazy(() => import('@/pages/Home'));
 const LogIn = lazy(() => import('@/pages/LogIn'));
 const Register = lazy(() => import('@/pages/Register'));
 const Jobs = lazy(() => import('@/pages/Jobs'));
+const Users = lazy(() => import('@/pages/Users'));
 
 export default () => {
   return (
@@ -33,6 +34,12 @@ export default () => {
                     exact
                     rolesNeeded={['admin']}
                     component={Jobs}
+                  />
+                  <ProtectedRoute
+                    path="/app/admin/users"
+                    exact
+                    rolesNeeded={['admin']}
+                    component={Users}
                   />
                   <Route component={NotFound} />
                 </Switch>
