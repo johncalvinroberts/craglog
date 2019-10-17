@@ -17,6 +17,9 @@ import {
   MenuList,
   MenuItem,
   MenuButton,
+  IconButton,
+  useDisclosure,
+  Collapse,
 } from '@chakra-ui/core';
 import format from 'date-fns/format';
 import useLayout from '@/hooks/useLayout';
@@ -26,7 +29,7 @@ import Dashboard from '@/layouts/Dashboard';
 import DashboardWrapper from '@/components/DashboardWrapper';
 import { getJobsState, getCountData } from '@/states';
 import { useDispatch, useGlobalState } from '@/components/State';
-import { updateQueue, fetchJobs, updateJob } from '@/api';
+import { updateQueue, fetchJobs, updateJob, fetchJobById } from '@/api';
 import { DATE_FORMAT } from '../constants';
 
 const PseudoButton = ({ children, ...props }) => {
@@ -205,6 +208,7 @@ const JobsCountData = ({ params, handleChangeParams }) => {
 };
 
 const JobItem = ({ item, type, onCommand }) => {
+  const [logs, setLogs] = useState(null);
   const jobCommands = [
     'retry',
     'remove',
@@ -214,6 +218,21 @@ const JobItem = ({ item, type, onCommand }) => {
     'moveToFailed',
   ];
   const toast = useToast();
+
+  const { isOpen: isLogsOpen, onToggle } = useDisclosure();
+
+  const toggleLogs = async () => {
+    onToggle();
+    if (!logs) {
+      try {
+        const res = await fetchJobById({ id: item.id, type });
+        setLogs(res);
+      } catch (error) {
+        toast({ message: error.message, status: 'error' });
+      }
+    }
+  };
+
   const handleCommand = async (command) => {
     try {
       await updateJob({ command, id: item.id, type });
@@ -229,102 +248,119 @@ const JobItem = ({ item, type, onCommand }) => {
   };
 
   return (
-    <Box
-      borderBottom="1px"
-      as={PseudoBox}
-      borderColor="gray.200"
-      py={2}
-      d="flex"
-      width="100%"
-    >
-      <Box flex="1">
-        <Box d="flex" alignItems="flex-start" width="100%">
-          <Text fontWeight="bold" fontSize="xs">
-            ID:
-          </Text>
-          <Text mx={2} fontSize="xs">
-            {item.id}
-          </Text>
-        </Box>
-        {Object.keys(item.data).map((key) => {
-          return (
-            <Box d="flex" alignItems="flex-start" width="100%" key={key}>
+    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
+      <Box d="flex" width="100%">
+        <Box flex="1">
+          <Box d="flex" alignItems="flex-start" width="100%">
+            <Text fontWeight="bold" fontSize="xs">
+              ID:
+            </Text>
+            <Text mx={2} fontSize="xs">
+              {item.id}
+            </Text>
+          </Box>
+          {Object.keys(item.data).map((key) => {
+            return (
+              <Box d="flex" alignItems="flex-start" width="100%" key={key}>
+                <Text fontWeight="bold" fontSize="xs">
+                  {key}:{' '}
+                </Text>
+                <Text mx={2} fontSize="xs">
+                  {item.data[key]}
+                </Text>
+              </Box>
+            );
+          })}
+          <Box d="flex" alignItems="flex-start" width="100%">
+            <Text fontWeight="bold" fontSize="xs">
+              Processed On:
+            </Text>
+            <Text mx={2} fontSize="xs">
+              {format(new Date(item.processedOn), DATE_FORMAT)}
+            </Text>
+          </Box>
+          {item.finishedOn && (
+            <Box d="flex" alignItems="flex-start" width="100%">
               <Text fontWeight="bold" fontSize="xs">
-                {key}:{' '}
+                Finished On:
               </Text>
               <Text mx={2} fontSize="xs">
-                {item.data[key]}
+                {format(new Date(item.finishedOn), DATE_FORMAT)}
               </Text>
             </Box>
-          );
-        })}
-        <Box d="flex" alignItems="flex-start" width="100%">
-          <Text fontWeight="bold" fontSize="xs">
-            Processed On:
-          </Text>
-          <Text mx={2} fontSize="xs">
-            {format(new Date(item.processedOn), DATE_FORMAT)}
-          </Text>
-        </Box>
-        {item.finishedOn && (
-          <Box d="flex" alignItems="flex-start" width="100%">
-            <Text fontWeight="bold" fontSize="xs">
-              Finished On:
-            </Text>
-            <Text mx={2} fontSize="xs">
-              {format(new Date(item.finishedOn), DATE_FORMAT)}
-            </Text>
-          </Box>
-        )}
-        <Box d="flex" alignItems="flex-start" width="100%">
-          <Text fontWeight="bold" fontSize="xs">
-            Attempts Made:
-          </Text>
-          <Text mx={2} fontSize="xs">
-            {item.attemptsMade}
-          </Text>
-        </Box>
-        {item.failedReason && (
-          <Box d="flex" alignItems="flex-start" width="100%">
-            <Text fontWeight="bold" fontSize="xs">
-              Failed reason:
-            </Text>
-            <Text mx={2} fontSize="xs">
-              {item.failedReason}
-            </Text>
-          </Box>
-        )}
-      </Box>
-      <Box d="flex" alignItems="space-between" width="100%" flex="0 0 50px">
-        <Menu>
-          {({ isOpen }) => (
-            <>
-              <MenuButton isActive={isOpen} variant="ghost" as={Button}>
-                <Icon
-                  name="settings"
-                  css={{
-                    transform: isOpen ? 'rotate(30deg)' : 'rotate(0)',
-                    transition: `transform 0.2s ease-in-out`,
-                  }}
-                />
-              </MenuButton>
-              <MenuList>
-                {jobCommands.map((command) => {
-                  return (
-                    <MenuItem
-                      onClick={() => handleCommand(command)}
-                      key={command}
-                      css={{ textTransform: 'uppercase', marginRight: 2 }}
-                    >
-                      {command}
-                    </MenuItem>
-                  );
-                })}
-              </MenuList>
-            </>
           )}
-        </Menu>
+          <Box d="flex" alignItems="flex-start" width="100%">
+            <Text fontWeight="bold" fontSize="xs">
+              Attempts Made:
+            </Text>
+            <Text mx={2} fontSize="xs">
+              {item.attemptsMade}
+            </Text>
+          </Box>
+          {item.failedReason && (
+            <Box d="flex" alignItems="flex-start" width="100%">
+              <Text fontWeight="bold" fontSize="xs">
+                Failed reason:
+              </Text>
+              <Text mx={2} fontSize="xs">
+                {item.failedReason}
+              </Text>
+            </Box>
+          )}
+        </Box>
+        <Box
+          d="flex"
+          alignItems="space-between"
+          flex="0 0 50px"
+          flexDirection="column"
+        >
+          <Menu>
+            {({ isOpen }) => (
+              <>
+                <MenuButton isActive={isOpen} variant="ghost" as={Button}>
+                  <Icon
+                    name="settings"
+                    css={{
+                      transform: isOpen ? 'rotate(30deg)' : 'rotate(0)',
+                      transition: `transform 0.2s ease-in-out`,
+                    }}
+                  />
+                </MenuButton>
+                <MenuList>
+                  {jobCommands.map((command) => {
+                    return (
+                      <MenuItem
+                        onClick={() => handleCommand(command)}
+                        key={command}
+                        css={{ textTransform: 'uppercase', marginRight: 2 }}
+                      >
+                        {command}
+                      </MenuItem>
+                    );
+                  })}
+                </MenuList>
+              </>
+            )}
+          </Menu>
+          <IconButton
+            icon="chevron-down"
+            variant="ghost"
+            onClick={toggleLogs}
+          />
+        </Box>
       </Box>
+      <Collapse isOpen={isLogsOpen} width="100%">
+        {!logs && <Spinner />}
+        {logs && (
+          <Box backgroundColor="gray.200" p={2}>
+            <Box>{JSON.stringify(logs)}</Box>
+            {item.stacktrace &&
+              item.stacktrace.map((t) => {
+                return <Box>{t}</Box>;
+              })}
+          </Box>
+        )}
+      </Collapse>
     </Box>
   );
 };
