@@ -146,7 +146,6 @@ class JobService {
   async commandJob({ type, command, jobId }) {
     if (type === 'route') {
       const job = await this.routeQueue.getJob(jobId);
-      console.log({ job });
       await job[command]();
     }
 

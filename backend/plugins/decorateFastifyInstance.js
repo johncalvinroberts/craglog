@@ -65,6 +65,7 @@ module.exports = fp(async function(fastify) {
         throw new Error('FORBIDDEN');
       }
     } catch (error) {
+      console.log(error);
       reply.code(errors[error.message].code);
       reply.send(error);
     }

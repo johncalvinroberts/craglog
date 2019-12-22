@@ -24,8 +24,11 @@ module.exports = async function(fastify) {
     fastify.get('/:userId', { schema: getProfileSchema }, userHandler);
     fastify.get('/search', { schema: searchSchema }, searchHandler);
   });
-  fastify.addHook('preHandler', async function(request, reply) {
-    fastify.aclPreHandler(request, reply, ['admin']);
+
+  fastify.register(async function(fastify) {
+    fastify.addHook('preHandler', async function(request, reply) {
+      fastify.aclPreHandler(request, reply, ['admin']);
+    });
     fastify.get('/', { schema: getUsersSchema }, getUsersList);
   });
 };
@@ -34,6 +37,7 @@ module.exports[Symbol.for('plugin-meta')] = {
   decorators: {
     fastify: [
       'authPreHandler',
+      'aclPreHandler',
       'userService',
       'jwt',
       'transformStringIntoObjectId'
