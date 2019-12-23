@@ -10,17 +10,18 @@ import {
   useToast,
 } from '@chakra-ui/core';
 import * as yup from 'yup';
-import useFormal from '@kevinwolf/formal-web';
+import useForm from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
-import useLayout from '@/hooks/useLayout';
-import useAuthState from '@/hooks/useAuthState';
-import useTitle from '@/hooks/useTitle';
-import LoginLayout from '@/layouts/LogIn';
-import TextField from '@/fields/TextField';
-import { performLogin } from '@/states';
-import { useDispatch } from '@/components/State';
+import useLayout from '../hooks/useLayout';
+import useAuthState from '../hooks/useAuthState';
+import useTitle from '../hooks/useTitle';
+import LoginLayout from '../layouts/LogIn';
+import TextField from '../fields/TextField';
+import { performLogin } from '../states';
+import { useDispatch } from '../components/State';
+import Form from '../components/Form';
 
-const schema = yup.object().shape({
+const validationSchema = yup.object().shape({
   username: yup
     .string()
     .required()
@@ -33,7 +34,7 @@ const schema = yup.object().shape({
     .max(20),
 });
 
-const initialValues = {
+const defaultValues = {
   username: '',
   password: '',
 };
@@ -47,27 +48,26 @@ const LogIn = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuthState();
 
-  const formal = useFormal(initialValues, {
-    schema,
-    onSubmit: async (formValues) => {
-      try {
-        await dispatch(performLogin(formValues));
-        toast({
-          description: 'Welcome back.',
-          duration: 5000,
-          isClosable: true,
-        });
-        history.replace('/app');
-      } catch (error) {
-        toast({
-          description: error.message,
-          status: 'error',
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    },
-  });
+  const formMethods = useForm({ validationSchema, defaultValues });
+
+  const onSubmit = async (formValues) => {
+    try {
+      await dispatch(performLogin(formValues));
+      toast({
+        description: 'Welcome back.',
+        duration: 5000,
+        isClosable: true,
+      });
+      history.replace('/app');
+    } catch (error) {
+      toast({
+        description: error.message,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -78,7 +78,7 @@ const LogIn = () => {
       });
       history.replace('/app');
     }
-  }, []);
+  }, [history, isAuthenticated, toast]);
 
   return (
     <>
@@ -87,18 +87,16 @@ const LogIn = () => {
         <Heading>Log in to craglog</Heading>
       </Box>
       <Box w="100%" borderWidth="1px" rounded="sm" overflow="hidden" p="4">
-        <form {...formal.getFormProps()}>
-          <TextField
-            label="Username"
-            id="username"
-            formal={formal.getFieldProps('username')}
-            required
-          />
+        <Form
+          onSubmit={onSubmit}
+          methods={formMethods}
+          defaultValues={defaultValues}
+        >
+          <TextField label="Username" name="username" input required />
           <TextField
             label="Password"
-            id="password"
+            name="password"
             type={isOpen ? 'text' : 'password'}
-            formal={formal.getFieldProps('password')}
             required
             adornmentRight={
               <InputRightElement>
@@ -113,8 +111,7 @@ const LogIn = () => {
           />
           <Box pt={3} pb={2}>
             <Button
-              {...formal.getSubmitButtonProps()}
-              isLoading={formal.isSubmitting}
+              type="submit"
               loadingText="Submitting"
               border="2px"
               borderColor="teal.300"
@@ -123,7 +120,7 @@ const LogIn = () => {
               Submit
             </Button>
           </Box>
-        </form>
+        </Form>
       </Box>
 
       <Box pt={4} pb={4}>

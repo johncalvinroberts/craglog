@@ -1,6 +1,6 @@
 import { addReducer } from '../components/State';
-import merge from '@/utils/merge';
-import { fetchJobs, fetchJobsCount } from '@/api';
+import merge from '../utils/merge';
+import { fetchJobs, fetchJobsCount } from '../api';
 
 const stateKey = 'jobs';
 

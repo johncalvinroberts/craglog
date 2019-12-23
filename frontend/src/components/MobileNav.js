@@ -8,7 +8,7 @@ import {
   IconButton,
 } from '@chakra-ui/core';
 import { SideNavContent } from './SideNav';
-import useRouteChanged from '@/hooks/useRouteChanged';
+import useRouteChanged from '../hooks/useRouteChanged';
 
 const MobileNav = () => {
   const { isOpen, onToggle, onClose } = useDisclosure();

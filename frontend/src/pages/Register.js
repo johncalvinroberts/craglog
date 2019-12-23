@@ -10,17 +10,18 @@ import {
   useToast,
 } from '@chakra-ui/core';
 import * as yup from 'yup';
-import useFormal from '@kevinwolf/formal-web';
+import useForm from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
-import useLayout from '@/hooks/useLayout';
-import useTitle from '@/hooks/useTitle';
-import { useDispatch } from '@/components/State';
-import LoginLayout from '@/layouts/LogIn';
-import TextField from '@/fields/TextField';
-import { performRegistration, performLogin } from '@/states';
-import useAuthState from '@/hooks/useAuthState';
+import useLayout from '../hooks/useLayout';
+import useTitle from '../hooks/useTitle';
+import { useDispatch } from '../components/State';
+import LoginLayout from '../layouts/LogIn';
+import TextField from '../fields/TextField';
+import Form from '../components/Form';
+import { performRegistration, performLogin } from '../states';
+import useAuthState from '../hooks/useAuthState';
 
-const schema = yup.object().shape({
+const validationSchema = yup.object().shape({
   username: yup
     .string()
     .required()
@@ -39,7 +40,7 @@ const schema = yup.object().shape({
     .max(20),
 });
 
-const initialValues = {
+const defaultValues = {
   username: '',
   email: '',
   password: '',
@@ -58,34 +59,33 @@ const Register = () => {
 
   const dispatch = useDispatch();
 
-  const formal = useFormal(initialValues, {
-    schema,
-    onSubmit: async (formValues) => {
-      try {
-        await dispatch(performRegistration(formValues));
-        await dispatch(
-          performLogin({
-            username: formValues.username,
-            password: formValues.password,
-          }),
-        );
-        toast({
-          title: "You're in",
-          description: 'Welcome to the crag.',
-          duration: 5000,
-          isClosable: true,
-        });
-        history.replace('/app');
-      } catch (error) {
-        toast({
-          description: error.message,
-          status: 'error',
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    },
-  });
+  const formMethods = useForm({ defaultValues, validationSchema });
+
+  const onSubmit = async (formValues) => {
+    try {
+      await dispatch(performRegistration(formValues));
+      await dispatch(
+        performLogin({
+          username: formValues.username,
+          password: formValues.password,
+        }),
+      );
+      toast({
+        title: "You're in",
+        description: 'Welcome to the crag.',
+        duration: 5000,
+        isClosable: true,
+      });
+      history.replace('/app');
+    } catch (error) {
+      toast({
+        description: error.message,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -96,7 +96,7 @@ const Register = () => {
       });
       history.replace('/app');
     }
-  }, []);
+  }, [history, isAuthenticated, toast]);
 
   return (
     <>
@@ -105,25 +105,13 @@ const Register = () => {
         <Heading>Join craglog</Heading>
       </Box>
       <Box w="100%" borderWidth="1px" rounded="sm" overflow="hidden" p="4">
-        <form {...formal.getFormProps()}>
-          <TextField
-            label="Username"
-            id="username"
-            formal={formal.getFieldProps('username')}
-            required
-          />
-          <TextField
-            label="Email"
-            id="email"
-            type="email"
-            formal={formal.getFieldProps('email')}
-            required
-          />
+        <Form methods={formMethods} onSubmit={onSubmit}>
+          <TextField label="Username" name="username" required />
+          <TextField label="Email" type="email" name="email" required />
           <TextField
             label="Password"
-            id="password"
             type={isOpen ? 'text' : 'password'}
-            formal={formal.getFieldProps('password')}
+            name="password"
             required
             adornmentRight={
               <InputRightElement>
@@ -138,9 +126,8 @@ const Register = () => {
           />
           <Box pt={3} pb={2}>
             <Button
-              {...formal.getSubmitButtonProps()}
-              isLoading={formal.isSubmitting}
               loadingText="Submitting"
+              type="submit"
               border="2px"
               borderColor="teal.300"
               variant="solid"
@@ -148,7 +135,7 @@ const Register = () => {
               Submit
             </Button>
           </Box>
-        </form>
+        </Form>
       </Box>
       <Box pt={4} pb={4}>
         <Button

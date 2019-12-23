@@ -5,6 +5,7 @@ const POST = 'POST';
 const PATCH = 'PATCH';
 const DELETE = 'DELETE';
 
+// TODO: refactor to use Proxy
 class Http {
   constructor() {
     this.token = localStorage.getItem(TOKEN_KEY);

@@ -23,14 +23,14 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 import format from 'date-fns/format';
-import useLayout from '@/hooks/useLayout';
-import useTitle from '@/hooks/useTitle';
-import useInterval from '@/hooks/useInterval';
-import Dashboard from '@/layouts/Dashboard';
-import DashboardWrapper from '@/components/DashboardWrapper';
-import { getJobsState, getCountData } from '@/states';
-import { useDispatch, useGlobalState } from '@/components/State';
-import { updateQueue, fetchJobs, updateJob, fetchJobById } from '@/api';
+import useLayout from '../hooks/useLayout';
+import useTitle from '../hooks/useTitle';
+import useInterval from '../hooks/useInterval';
+import Dashboard from '../layouts/Dashboard';
+import DashboardWrapper from '../components/DashboardWrapper';
+import { getJobsState, getCountData } from '../states';
+import { useDispatch, useGlobalState } from '../components/State';
+import { updateQueue, fetchJobs, updateJob, fetchJobById } from '../api';
 import { DATE_FORMAT } from '../constants';
 
 const PseudoButton = ({ children, ...props }) => {
@@ -391,7 +391,7 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
     currentPage + 1,
     currentPage + 2,
   ].filter((page) => page <= totalPages && page > 0);
-
+  /* eslint-disable react-hooks/exhaustive-deps */
   const fetchData = async (refetch = false) => {
     try {
       setIsLoading(true);
@@ -408,10 +408,11 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
 
     setIsLoading(false);
   };
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   useEffect(() => {
     fetchData();
-  }, [params]);
+  }, [fetchData, params]);
 
   const handleChangePage = (page) => {
     const skip = params.limit * (page - 1);
