@@ -153,7 +153,6 @@ module.exports = async function(job) {
     Promise.resolve();
   } catch (error) {
     debug('FAILED ROUTE JOB', { error, job });
-    job.moveToFailed(error);
     Promise.reject(error);
   }
 };

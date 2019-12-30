@@ -408,11 +408,11 @@ const JobsDataGrid = ({ params, handleChangeParams }) => {
 
     setIsLoading(false);
   };
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, params]);
+  }, [params]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const handleChangePage = (page) => {
     const skip = params.limit * (page - 1);

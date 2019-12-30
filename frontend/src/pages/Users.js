@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Icon } from '@chakra-ui/core';
-import DashboardWrapper from '@/components/DashboardWrapper';
-import useTitle from '@/hooks/useTitle';
+import DashboardWrapper from '../components/DashboardWrapper';
+import { useDispatch, useGlobalState } from '../components/State';
+import useTitle from '../hooks/useTitle';
+import { getUsers } from '../states/users';
 
 const Users = () => {
   useTitle(
@@ -9,6 +11,15 @@ const Users = () => {
       admin <Icon name="chevron-right" /> Users
     </>,
   );
+  const dispatch = useDispatch();
+
+  const state = useGlobalState();
+
+  console.log(state);
+
+  useEffect(() => {
+    dispatch(getUsers());
+  });
 
   return <DashboardWrapper>users</DashboardWrapper>;
 };

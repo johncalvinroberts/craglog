@@ -1,6 +1,6 @@
 import { addReducer } from '../components/State';
-import merge from '@/utils/merge';
-import { fetchUsers } from '@/api';
+import merge from '../utils/merge';
+import { fetchUsers } from '../api';
 
 const stateKey = 'users';
 
@@ -12,6 +12,8 @@ const initialState = {
 };
 
 addReducer(stateKey, initialState, merge);
+
+export const getState = (state) => state[stateKey] || initialState;
 
 export const getUsers = () => async (dispatch, getState) => {
   const state = getState();

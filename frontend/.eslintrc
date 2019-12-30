@@ -8,6 +8,7 @@
     "import/no-cycle": "off",
     "react/jsx-props-no-spreading": "off",
     "no-case-declarations": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "no-shadow": "off"
   }
 }

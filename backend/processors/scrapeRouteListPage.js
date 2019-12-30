@@ -65,7 +65,6 @@ module.exports = async function(job) {
     Promise.resolve();
   } catch (error) {
     debug('FAILED LIST JOB', { error, job });
-    job.moveToFailed(error);
     Promise.reject(error);
   }
 };

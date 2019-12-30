@@ -25,12 +25,12 @@ module.exports = async function(fastify) {
     fastify.get('/search', { schema: searchSchema }, searchHandler);
   });
 
-  fastify.register(async function(fastify) {
-    fastify.addHook('preHandler', async function(request, reply) {
-      fastify.aclPreHandler(request, reply, ['admin']);
-    });
-    fastify.get('/', { schema: getUsersSchema }, getUsersList);
-  });
+  // fastify.register(async function(fastify) {
+  //   fastify.addHook('preHandler', async function(request, reply) {
+  //     fastify.aclPreHandler(request, reply, ['admin']);
+  //   });
+  // });
+  fastify.get('/', { schema: getUsersSchema }, getUsersList);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
