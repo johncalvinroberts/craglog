@@ -19,7 +19,7 @@ const Users = () => {
 
   useEffect(() => {
     dispatch(getUsers());
-  });
+  }, [dispatch]);
 
   return <DashboardWrapper>users</DashboardWrapper>;
 };
