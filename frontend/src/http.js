@@ -1,4 +1,4 @@
-import { TOKEN_KEY, CACHE_LIMIT } from './constants';
+import { TOKEN_KEY, API_BASE_PATH } from './constants';
 
 const GET = 'GET';
 const POST = 'POST';
@@ -9,7 +9,6 @@ const DELETE = 'DELETE';
 class Http {
   constructor() {
     this.token = localStorage.getItem(TOKEN_KEY);
-    this.cache = {};
   }
 
   setToken = (token) => {
@@ -28,7 +27,7 @@ class Http {
       method,
       ...(method !== GET ? { body: JSON.stringify(body) } : null),
     };
-    const res = await fetch(url, options);
+    const res = await fetch(API_BASE_PATH + url, options);
     const value = await res.json();
     if (!res.ok) {
       throw new Error(value.message);
@@ -37,32 +36,13 @@ class Http {
     }
   };
 
-  get = async (url, refetch) => {
-    const now = new Date().valueOf();
-    const cached = this.cache[url];
+  get = async (url) => this.fetch({ url, method: GET });
 
-    if (cached && now - cached.fetchedAt < CACHE_LIMIT && !refetch) {
-      return cached.res;
-    }
-    const res = await this.fetch({ url, method: GET });
-    this.cache = {
-      ...this.cache,
-      [url]: { fetchedAt: new Date().valueOf(), res },
-    };
-    return res;
-  };
+  post = (url, body) => this.fetch({ url, method: POST, body });
 
-  post = (url, body) => {
-    return this.fetch({ url, method: POST, body });
-  };
+  patch = (url, body) => this.fetch({ url, method: PATCH, body });
 
-  patch = (url, body) => {
-    return this.fetch({ url, method: PATCH, body });
-  };
-
-  delete = (url) => {
-    return this.fetch({ url, method: DELETE });
-  };
+  delete = (url) => this.fetch({ url, method: DELETE });
 }
 
 export default new Http();

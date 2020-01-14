@@ -1,48 +1,72 @@
 import React, {
   createContext,
-  useContext,
   useState,
-  useCallback,
   useRef,
+  useCallback,
+  useContext,
+  memo,
 } from 'react';
 
-function combineReducers(reducers) {
-  const keys = Object.keys(reducers);
+export function merge(dest, src) {
+  if (dest === null || typeof dest !== 'object' || Array.isArray(dest)) {
+    return src;
+  }
 
-  return function combinedReducer(state, action) {
-    let hasChanged = false;
-    const nextState = {};
+  if (src === null || typeof src !== 'object' || Array.isArray(src)) {
+    return src;
+  }
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key of keys) {
-      const reducer = reducers[key];
-      const previousStateForKey = state[key];
-      const nextStateForKey = reducer(previousStateForKey, action);
-      nextState[key] = nextStateForKey;
-      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
-    }
+  const result = { ...dest };
 
-    return hasChanged ? nextState : state;
-  };
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key of Object.keys(src)) {
+    result[key] = merge(result[key], src[key]);
+  }
+
+  return result;
 }
 
-let rootReducer = (state, payload) => ({ ...state, ...payload });
+/**
+ * Root reducer
+ */
 
 const reducers = {};
+let reducersIterator = Object.entries(reducers);
 
-const StateContext = createContext();
-const DispatchContext = createContext();
+function rootReducer(state, action) {
+  let hasChanged = false;
+  const nextState = {};
 
-StateContext.displayName = 'StateContext';
-DispatchContext.displayName = 'DispatchContext';
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, reducer] of reducersIterator) {
+    const previousStateForKey = state[key];
+    const nextStateForKey = reducer(previousStateForKey, action);
+    nextState[key] = nextStateForKey;
+    hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    window.__state = nextState;
+  }
+  return hasChanged ? nextState : state;
+}
 
 export function addReducer(key, initialState, reducer) {
   reducers[key] = (state = initialState, action) => {
     if (!Object.prototype.hasOwnProperty.call(action, key)) return state;
     return reducer(state, action[key]);
   };
-  rootReducer = combineReducers(reducers);
+  reducersIterator = Object.entries(reducers);
 }
+
+/**
+ * Context provider and consumption hooks
+ */
+
+const StateContext = createContext();
+const DispatchContext = createContext();
+
+StateContext.displayName = 'StateContext';
+DispatchContext.displayName = 'DispatchContext';
 
 export default function State({ children }) {
   const [state, setState] = useState({});
@@ -59,7 +83,7 @@ export default function State({ children }) {
       stateRef.current = nextState;
       setState(nextState);
     },
-    [rootReducer, getState], //eslint-disable-line
+    [getState],
   );
 
   return (
@@ -73,3 +97,28 @@ export default function State({ children }) {
 
 export const useGlobalState = () => useContext(StateContext);
 export const useDispatch = () => useContext(DispatchContext);
+
+/**
+ * Consumption component with memoization
+ */
+
+export function connect(mapStateToProps, Component) {
+  const MemoizedComponent = memo(Component);
+
+  function Connected(props) {
+    const state = useContext(StateContext);
+    const dispatch = useContext(DispatchContext);
+
+    const finalProps = {
+      ...props,
+      ...mapStateToProps(state, props),
+      dispatch,
+    };
+
+    return <MemoizedComponent {...finalProps} />;
+  }
+
+  if (Component.name) Connected.displayName = `Connected${Component.name}`;
+
+  return Connected;
+}
