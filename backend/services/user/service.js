@@ -65,6 +65,10 @@ class UserService {
     return this.userCollection.find({ ...query }, { skip, limit }).toArray();
   }
 
+  countUsers({ skip, limit, ...query }) {
+    return this.userCollection.count({ ...query }, { skip, limit });
+  }
+
   async ensureIndexes(db) {
     await db.command({
       collMod: this.userCollection.collectionName,

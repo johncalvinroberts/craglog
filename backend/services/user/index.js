@@ -6,7 +6,8 @@ const {
   getProfile: getProfileSchema,
   search: searchSchema,
   me: meSchema,
-  getUsers: getUsersSchema
+  getUsers: getUsersSchema,
+  getCount: getCountSchema
 } = require('./schemas');
 
 module.exports = async function(fastify) {
@@ -30,7 +31,8 @@ module.exports = async function(fastify) {
   //     fastify.aclPreHandler(request, reply, ['admin']);
   //   });
   // });
-  fastify.get('/', { schema: getUsersSchema }, getUsersList);
+  fastify.get('/', { schema: getUsersSchema }, usersListHandler);
+  fastify.get('/count', { schema: getCountSchema }, usersCountHandler);
 };
 
 module.exports[Symbol.for('plugin-meta')] = {
@@ -76,6 +78,11 @@ async function searchHandler(req) {
   return this.userService.search(search);
 }
 
-async function getUsersList({ query }) {
+async function usersListHandler({ query }) {
   return this.userService.getUsers(query);
+}
+
+async function usersCountHandler({ query }) {
+  const count = await this.userService.countUsers(query);
+  return { count };
 }

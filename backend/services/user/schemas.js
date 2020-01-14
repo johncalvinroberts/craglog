@@ -133,12 +133,26 @@ const getUsers = {
       skip: { type: 'number', default: 0 },
       limit: { type: 'number', default: 20 }
     },
-    additionalProperties: false
+    additionalProperties: true
   },
   response: {
     200: {
       type: 'array',
       items: userProfileOutput
+    }
+  }
+};
+
+const getCount = {
+  tags: ['user'],
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        count: {
+          type: 'number'
+        }
+      }
     }
   }
 };
@@ -149,5 +163,6 @@ module.exports = {
   search,
   me,
   getProfile,
-  getUsers
+  getUsers,
+  getCount
 };
