@@ -1,9 +1,49 @@
 import React from 'react';
 import useSWR, { useSWRPages } from 'swr';
-import { Icon } from '@chakra-ui/core';
+import {
+  Box,
+  Spinner,
+  Icon,
+  Heading,
+  Button,
+  Text,
+  PseudoBox,
+} from '@chakra-ui/core';
 import DashboardWrapper from '../components/DashboardWrapper';
 import useTitle from '../hooks/useTitle';
 import http from '../http';
+
+const UserItem = ({ user }) => {
+  const { _id, ...rest } = user;
+  return (
+    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
+      <Box d="flex" width="100%">
+        <Box flex="1">
+          <Box d="flex" alignItems="flex-start" width="100%">
+            <Text fontWeight="bold" fontSize="xs">
+              ID:
+            </Text>
+            <Text mx={2} fontSize="xs">
+              {_id}
+            </Text>
+          </Box>
+          {Object.keys(rest).map((key) => {
+            return (
+              <Box d="flex" alignItems="flex-start" width="100%" key={key}>
+                <Text fontWeight="bold" fontSize="xs">
+                  {key}:{' '}
+                </Text>
+                <Text mx={2} fontSize="xs">
+                  {rest[key]}
+                </Text>
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 const Users = () => {
   useTitle(
@@ -28,7 +68,7 @@ const Users = () => {
         return <p>loading</p>;
       }
 
-      return users.map((user) => <p key={user._id}>{user.email}</p>);
+      return users.map((user) => <UserItem key={user._id} user={user} />);
     },
 
     // get next page's offset from the index of current page
@@ -44,19 +84,50 @@ const Users = () => {
     [],
   );
 
-  const {
-    data: { count },
-  } = useSWR('/users/count', http.get);
-
   return (
     <DashboardWrapper>
-      {pages}
-      <button onClick={loadMore} disabled={isReachingEnd || isLoadingMore}>
-        {/* eslint-disable no-nested-ternary */}
-        {isLoadingMore ? '. . .' : isReachingEnd ? 'no more data' : 'load more'}
-        {/* eslint-enable no-nested-ternary */}
-      </button>
-      <p>count: {count}</p>
+      <Box d="block" mb={8} borderWidth="1px" p={2}>
+        <Box mb={4}>
+          <Heading size="md">users</Heading>
+        </Box>
+        <Box>{pages}</Box>
+        {isLoadingMore && (
+          <Box
+            d="flex"
+            alignItems="center"
+            justifyContent="center"
+            minHeight="50px"
+          >
+            <Spinner size="md" />
+          </Box>
+        )}
+        {isReachingEnd && (
+          <Box
+            d="flex"
+            alignItems="center"
+            justifyContent="center"
+            minHeight="100px"
+          >
+            <Icon name="warning-2" mr={2} />
+            <Heading size="s">Nothing.</Heading>
+          </Box>
+        )}
+        {!isLoadingMore && (
+          <Box
+            d="flex"
+            alignItems="center"
+            justifyContent="center"
+            minHeight="100px"
+          >
+            <Button
+              onClick={loadMore}
+              disabled={isReachingEnd || isLoadingMore}
+            >
+              Load More
+            </Button>
+          </Box>
+        )}
+      </Box>
     </DashboardWrapper>
   );
 };
