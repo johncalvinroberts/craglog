@@ -4,6 +4,7 @@ const compare = require('secure-compare');
 const UserService = require('../services/user/service');
 const RouteService = require('../services/route/service');
 const JobService = require('../services/jobs/service');
+const ClimbService = require('../services/climb/service');
 const errors = require('../errors');
 
 const WORKER_ACCESS_TOKEN = process.env.WORKER_ACCESS_TOKEN;
@@ -17,9 +18,11 @@ module.exports = fp(async function(fastify) {
 
   const userCollection = await db.createCollection('users');
   const routeCollection = await db.createCollection('routes');
+  const climbCollection = await db.createCollection('climbs');
   const userService = new UserService(userCollection);
   const routeService = new RouteService(routeCollection);
   const jobService = new JobService(fastify.redis);
+  const climbService = new ClimbService(climbCollection);
 
   await userService.ensureIndexes(db);
   await routeService.ensureIndexes(db);
@@ -27,6 +30,7 @@ module.exports = fp(async function(fastify) {
   fastify.decorate('jobService', jobService);
   fastify.decorate('userService', userService);
   fastify.decorate('routeService', routeService);
+  fastify.decorate('climbService', climbService);
 
   fastify.decorate('authPreHandler', async function auth(request, reply) {
     try {
