@@ -41,8 +41,5 @@ async function getRoutesCount({ query }) {
 
 async function createRoute(req) {
   const res = await this.routeService.createRoute(req.body);
-  if (req.query.term) {
-    await this.searchService.appendIdToTerm(req.query.term, res._id);
-  }
   return res;
 }

@@ -75,13 +75,6 @@ const getRoute = {
 
 const createRoute = {
   tags: ['route'],
-  querystring: {
-    type: 'object',
-    properties: {
-      term: { type: 'string' }
-    },
-    additionalProperties: false
-  },
   body: routeOutput,
   response: {
     200: routeOutput
