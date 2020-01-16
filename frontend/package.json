@@ -47,7 +47,7 @@
     "react": "^16.10.0",
     "react-dev-utils": "^9.1.0",
     "react-dom": "^16.10.0",
-    "react-hook-form": "^3.29.4",
+    "react-hook-form": "^4.5.3",
     "react-hot-loader": "^4.12.14",
     "react-router-dom": "^5.1.1",
     "style-loader": "^1.1.2",

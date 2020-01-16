@@ -10,7 +10,7 @@ import {
   useToast,
 } from '@chakra-ui/core';
 import * as yup from 'yup';
-import useForm from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
 import useLayout from '../hooks/useLayout';
 import useTitle from '../hooks/useTitle';
