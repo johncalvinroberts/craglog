@@ -23,17 +23,18 @@
     "@nestjs/common": "^6.7.2",
     "@nestjs/config": "^0.0.9",
     "@nestjs/core": "^6.7.2",
-    "@nestjs/mongoose": "^6.2.1",
     "@nestjs/platform-express": "^6.7.2",
+    "@nestjs/typeorm": "^6.2.0",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "mongoose": "^5.8.7",
+    "mongodb": "^3.5.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
-    "rxjs": "^6.5.3"
+    "rxjs": "^6.5.3",
+    "typeorm": "^0.2.22"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.9.0",

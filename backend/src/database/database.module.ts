@@ -1,15 +1,21 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
+import { Route } from '../route/route.entity';
 
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('MONGODB_URI'),
-      }),
       inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mongodb' as 'mongodb',
+        host: configService.get('DATABASE_HOST'),
+        database: configService.get('DATABASE_NAME'),
+        port: configService.get('DATABASE_PORT'),
+        entities: [Route],
+        synchronize: true,
+      }),
     }),
   ],
 })
