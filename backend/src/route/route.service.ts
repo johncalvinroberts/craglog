@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { Route } from './route.entity';
+import { CreateRouteDto } from './dto/create-route.dto';
 
 @Injectable()
 export class RouteService {
@@ -14,7 +15,7 @@ export class RouteService {
     return this.routeRepository.find();
   }
 
-  create(route: Route): Promise<Route> {
+  create(route: CreateRouteDto): Promise<Route> {
     return this.routeRepository.save(route);
   }
 

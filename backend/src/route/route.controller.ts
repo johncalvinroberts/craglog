@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param } from '@nestjs/common';
 import { RouteService } from './route.service';
 import { Route } from './route.entity';
 
@@ -16,7 +16,7 @@ export class RouteController {
     return this.routeService.create(data);
   }
 
-  @Put(':id')
+  @Patch(':id')
   update(@Param('id') id, @Body() data): Promise<unknown> {
     return this.routeService.update({ ...data, id });
   }
