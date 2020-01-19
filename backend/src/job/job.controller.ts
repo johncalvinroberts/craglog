@@ -1,27 +1,27 @@
-import { InjectQueue } from '@nestjs/bull';
-import { Controller, Post, Get, Patch } from '@nestjs/common';
-import { Queue } from 'bull';
+import { Controller, Post, Get, Patch, Query, Body } from '@nestjs/common';
+import { Job } from 'bull';
+import { JobService } from './job.service';
+import { ListJobDto } from './dto/list-job.dto';
+import { CountJobResponseDto } from './dto/count-job.dto';
+import { CreateJobRequest, CreateJobResponse } from './dto/create-job.dto';
 
 @Controller('job')
 export class JobController {
-  constructor(
-    @InjectQueue('route') private readonly routeQueue: Queue,
-    @InjectQueue('list') private readonly listQueue: Queue,
-  ) {}
+  constructor(private readonly jobService: JobService) {}
 
   @Get()
-  findAll() {
-    //todo -> jobListHandler
+  findAll(@Query() query: ListJobDto): Promise<Job[]> {
+    return this.jobService.find(query);
   }
 
   @Get('count')
-  count() {
-    //todo -> jobCountHandler
+  count(): Promise<CountJobResponseDto> {
+    return this.jobService.count();
   }
 
   @Post()
-  create() {
-    //todo -> addHandler
+  create(@Body() payload: CreateJobRequest): Promise<CreateJobResponse> {
+    return this.jobService.add(payload);
   }
 
   @Patch()

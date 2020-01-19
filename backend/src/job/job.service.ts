@@ -1,15 +1,9 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
-import { Queue } from 'bull';
-
-interface CreateJobRequest {
-  type: string;
-  data: unknown;
-}
-
-interface CreateJobResponse {
-  success: boolean;
-}
+import { Queue, Job } from 'bull';
+import { ListJobDto } from './dto/list-job.dto';
+import { CountJobResponseDto } from './dto/count-job.dto';
+import { CreateJobRequest, CreateJobResponse } from './dto/create-job.dto';
 
 @Injectable()
 export class JobService {
@@ -33,7 +27,7 @@ export class JobService {
       // await execRedis(this.redisClient, 'incr', [CURRENT_SCRAPE_PAGE_KEY]);
       // await this.initNextPageScrape();
     } else {
-      this.listQueue.add({ page: data }, { jobId: data });
+      await this.listQueue.add('scrape', { page: data }, { jobId: data });
     }
     return { success: true };
   }
@@ -46,7 +40,7 @@ export class JobService {
       return { success: true };
     }
     const jobId = data.substring(data.lastIndexOf('/') + 1);
-    this.routeQueue.add({ href: data }, { jobId });
+    this.routeQueue.add('scrape', { href: data }, { jobId });
     return { success: true };
   }
 
@@ -61,12 +55,25 @@ export class JobService {
     }
   }
 
-  async count(): Promise<unknown> {
+  async count(): Promise<CountJobResponseDto> {
     const [route, list] = await Promise.all([
       this.routeQueue.getJobCounts(),
       this.listQueue.getJobCounts(),
     ]);
 
     return { list, route };
+  }
+
+  find(query: ListJobDto): Promise<Job[]> {
+    const { type, status, skip, limit } = query;
+    const start = skip;
+    const end = limit + skip - 1;
+    if (type === 'route') {
+      return this.routeQueue.getJobs([status], start, end);
+    }
+
+    if (type === 'list') {
+      return this.listQueue.getJobs([status], start, end);
+    }
   }
 }

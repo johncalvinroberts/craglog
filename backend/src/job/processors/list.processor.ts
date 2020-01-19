@@ -2,7 +2,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import * as cheerio from 'cheerio';
-import { JobService } from './job.service';
+import { JobService } from '../job.service';
 const baseUrl = 'https://thecrag.com';
 
 @Processor('list')

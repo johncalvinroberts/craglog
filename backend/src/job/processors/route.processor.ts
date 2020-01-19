@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import * as cheerio from 'cheerio';
 import * as climbingGrade from 'climbing-grade';
-import { RouteService } from '../route/route.service';
+import { RouteService } from '../../route/route.service';
 const baseUrl = 'https://thecrag.com';
 
 interface RouteScrapeResult {
