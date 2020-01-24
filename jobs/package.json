@@ -16,8 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@nestjs/config": "^0.0.9",
-    "bcryptjs": "^2.4.3",
     "bull": "^3.10.0",
     "cheerio": "^1.0.0-rc.3",
     "climbing-grade": "^1.1.1",
@@ -26,7 +24,6 @@
     "fastify-autoload": "^1.0.0",
     "fastify-cli": "^1.2.0",
     "fastify-jwt": "^1.0.0",
-    "fastify-mongodb": "^2.0.0",
     "fastify-plugin": "^1.5.0",
     "fastify-redis": "^3.1.1",
     "fastify-swagger": "^2.4.0",

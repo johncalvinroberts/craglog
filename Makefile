@@ -12,8 +12,11 @@ bootstrap-dev:
 start-backend:
 	cd backend && npm start
 dev-backend:
-	cd backend && npm run dev
+	cd backend && yarn dev
+dev-jobs:
+	cd jobs && yarn dev
+dev-all: dev-jobs dev-backend
 dev-frontend:
-	cd frontend && npm start
+	cd frontend && yarn start
 seed:
 	cd backend && node ./scripts/seed.js

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"jobs": "jobs",
+			"backend": "backend",
+			"frontend": "frontend"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

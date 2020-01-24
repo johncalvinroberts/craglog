@@ -51,3 +51,14 @@ API_BASE_URL=http://localhost:3000
 API_BASE_PATH=/api/v1
 ```
 
+### Make Commands
+`docker-up`
+`docker-down`
+`restart-docker`
+`bootstrap-dev`
+`start-backend`
+`dev-backend`
+`dev-jobs`
+`dev-all` - run with `make -j dev-all` to run backend and jobs
+`dev-frontend`
+`seed`

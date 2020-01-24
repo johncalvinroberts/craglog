@@ -11,10 +11,6 @@ const {
 
 module.exports = async function(fastify) {
   fastify.register(async function(fastify) {
-    fastify.addHook('preHandler', fastify.authPreHandler);
-    fastify.addHook('preHandler', async function(request, reply) {
-      fastify.aclPreHandler(request, reply, ['admin']);
-    });
     fastify.get('/', { schema: jobListSchema }, jobListHandler);
     fastify.post('/', { schema: addJobSchema }, addHandler);
     fastify.get('/:jobId', { schema: findJobSchema }, findJobHandler);
@@ -28,13 +24,7 @@ module.exports = async function(fastify) {
   });
 };
 
-module.exports[Symbol.for('plugin-meta')] = {
-  decorators: {
-    fastify: ['authPreHandler', 'aclPreHandler', 'transformStringIntoObjectId']
-  }
-};
-
-module.exports.autoPrefix = '/jobs';
+module.exports.autoPrefix = '/job';
 
 function jobListHandler({ query }) {
   return this.jobService.getScraperJobs(query);

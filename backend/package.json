@@ -20,7 +20,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/bull": "^0.0.1",
     "@nestjs/common": "^6.7.2",
     "@nestjs/config": "^0.0.9",
     "@nestjs/core": "^6.7.2",
@@ -30,9 +29,6 @@
     "@types/node-fetch": "^2.5.4",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
-    "bull": "^3.12.1",
-    "cheerio": "^1.0.0-rc.3",
-    "climbing-grade": "^1.1.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
