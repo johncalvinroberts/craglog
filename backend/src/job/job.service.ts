@@ -76,4 +76,20 @@ export class JobService {
       return this.listQueue.getJobs([status], start, end);
     }
   }
+
+  async findById(id: string, type: string): Promise<Job> {
+    const works = [];
+    if (type === 'route') {
+      works.push(this.routeQueue.getJob(id));
+      works.push(this.routeQueue.getJobLogs(id));
+    }
+
+    if (type === 'list') {
+      works.push(this.listQueue.getJob(id));
+      works.push(this.listQueue.getJobLogs(id));
+    }
+    const [job, logs] = await Promise.all(works);
+    console.log({job});
+    return { ...job, logs };    
+  }
 }

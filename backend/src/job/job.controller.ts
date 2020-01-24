@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Patch, Query, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Query,
+  Body,
+  Param,
+} from '@nestjs/common';
 import { Job } from 'bull';
 import { JobService } from './job.service';
 import { ListJobDto } from './dto/list-job.dto';
@@ -30,12 +38,16 @@ export class JobController {
   }
 
   @Get(':id')
-  findById() {
-    //todo -> findJobHandler
+  async findById(
+    @Param('id') id,
+    @Query() query: { type: string },
+  ): Promise<Job> {
+    const { type } = query;
+    return await this.jobService.findById(id, type);
   }
 
   @Patch(':id')
-  updateById() {
-    //todo -> jobCommandHandler
+  updateById(@Param('id') id, @Body() data): Promise<unknown> {
+    return Promise.resolve(data);
   }
 }
