@@ -17,7 +17,7 @@ module.exports = function(fastify, opts, next) {
   // define your routes in one of these
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'services'),
-    options: { ...opts, prefix: '/api/v1' }
+    options: { ...opts, prefix: '/api' }
   });
   // Make sure to call next when done
   next();

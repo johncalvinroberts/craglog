@@ -1,25 +1,28 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  ObjectIdColumn,
+  ObjectID,
   Column,
   BeforeInsert,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as crypto from 'crypto';
 
 @Entity('user')
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: ObjectID;
 
   @Column()
+  @Index({ unique: true })
   username: string;
 
   @Column()
   @IsEmail()
+  @Index({ unique: true })
   email: string;
 
   @Column({ default: '' })
@@ -32,7 +35,13 @@ export class UserEntity {
   password: string;
 
   @BeforeInsert()
-  hashPassword() {
+  hashPassword(): void {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }

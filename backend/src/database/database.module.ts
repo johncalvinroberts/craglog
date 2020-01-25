@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
-import { Route } from '../route/route.entity';
+import { RouteEntity } from '../route/route.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Route } from '../route/route.entity';
         host: configService.get('DATABASE_HOST'),
         database: configService.get('DATABASE_NAME'),
         port: configService.get('DATABASE_PORT'),
-        entities: [Route],
+        entities: [RouteEntity, UserEntity],
         synchronize: true,
       }),
     }),

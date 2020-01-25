@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
-export class Route {
+@Entity('route')
+export class RouteEntity {
   @ObjectIdColumn()
   id: ObjectID;
 
