@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const fetch = require('node-fetch');
 const baseUrl = 'https://thecrag.com';
 const debug = require('debug')('scraper:page');
-const apiUrl = process.env.API_URL;
+const apiUrl = process.env.JOBS_API_URL;
 const WORKER_ACCESS_TOKEN = process.env.WORKER_ACCESS_TOKEN;
 
 async function scrapeRouteListPage(page) {
@@ -22,7 +22,7 @@ async function scrapeRouteListPage(page) {
     })
     .filter(item => !!item);
   debug({ routeHrefs: routeHrefs.length });
-  const url = `${apiUrl}/jobs`;
+  const url = `${apiUrl}/job`;
 
   const works = [];
   works.push(

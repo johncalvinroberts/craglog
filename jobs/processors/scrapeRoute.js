@@ -125,7 +125,7 @@ async function scrapeSingleRoute(href) {
   const data = await fetchAndFormatRoute(href);
   debug('completed scrape of single route, gonna, um, write it down now', data);
 
-  const url = `${apiUrl}/routes`;
+  const url = `${apiUrl}/route`;
 
   const res = await fetch(url, {
     method: 'POST',
