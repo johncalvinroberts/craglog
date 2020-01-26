@@ -34,9 +34,13 @@ export class UserEntity {
   @Column()
   password: string;
 
+  @Column({ default: ['user'] })
+  roles: string[];
+
   @BeforeInsert()
-  hashPassword(): void {
+  setDefaults(): void {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
+    if (!this.roles) this.roles = ['user'];
   }
 
   @CreateDateColumn({ type: 'timestamp' })

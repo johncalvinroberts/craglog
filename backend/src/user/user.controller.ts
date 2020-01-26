@@ -11,10 +11,11 @@ import {
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { UserRO } from './user.interface';
-import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
+import { UserData } from './user.interface';
+import { UpdateUserDto, LoginUserDto } from './dto';
 import { User } from './user.decorator';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
+import { UserEntity } from './user.entity';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -22,20 +23,20 @@ import { ValidationPipe } from '../shared/pipes/validation.pipe';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  async findMe(@User('email') email: string): Promise<UserRO> {
+  @Get('me')
+  async findMe(@User('email') email: string): Promise<UserData> {
     return await this.userService.findByEmail(email);
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Post()
+  async create(@Body() userData: UserEntity) {
+    return this.userService.create(userData);
   }
 
   @Put()
   async update(@User('id') userId: number, @Body() userData: UpdateUserDto) {
     return await this.userService.update(userId, userData);
-  }
-
-  @UsePipes(new ValidationPipe())
-  @Post()
-  async create(@Body() userData: CreateUserDto) {
-    return this.userService.create(userData);
   }
 
   @Delete(':slug')
@@ -45,7 +46,7 @@ export class UserController {
 
   @UsePipes(new ValidationPipe())
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<UserData> {
     const maybeUser = await this.userService.findOne(loginUserDto);
 
     const errors = { User: ' not found' };
@@ -53,7 +54,6 @@ export class UserController {
 
     const token = await this.userService.generateJWT(maybeUser);
     const { email, username, bio, image } = maybeUser;
-    const user = { email, token, username, bio, image };
-    return { user };
+    return { email, token, username, bio, image };
   }
 }

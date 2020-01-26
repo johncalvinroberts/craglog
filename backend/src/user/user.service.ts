@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import * as jwt from 'jsonwebtoken';
-import { UserRO } from './user.interface';
+import { UserData } from './user.interface';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
@@ -34,14 +34,13 @@ export class UserService {
     return await this.userRepository.findOne(findOneOptions);
   }
 
-  async create(dto: CreateUserDto): Promise<UserRO> {
-    //TODO: check uniqueness of username/email
+  async create(dto: CreateUserDto): Promise<UserData> {
     const { username, email, password } = dto;
 
     // create new user
     const newUser = new UserEntity();
     newUser.username = username;
-    newUser.email = email;
+    newUser.email = email.toLowerCase();
     newUser.password = password;
     const errors = await validate(newUser);
     if (errors.length > 0) {
@@ -84,7 +83,7 @@ export class UserService {
     return await this.userRepository.delete({ email: email });
   }
 
-  async findById(id: number): Promise<UserRO> {
+  async findById(id: number): Promise<UserData> {
     const user = await this.userRepository.findOne(id);
 
     if (!user) {
@@ -95,7 +94,7 @@ export class UserService {
     return this.buildUserRO(user);
   }
 
-  async findByEmail(email: string): Promise<UserRO> {
+  async findByEmail(email: string): Promise<UserData> {
     const user = await this.userRepository.findOne({ email: email });
     return this.buildUserRO(user);
   }
@@ -110,6 +109,7 @@ export class UserService {
         id: user.id,
         username: user.username,
         email: user.email,
+        roles: user.roles,
         exp: exp.getTime() / 1000,
       },
       this.configService.get('JWT_SECRET'),
@@ -123,8 +123,9 @@ export class UserService {
       bio: user.bio,
       token: this.generateJWT(user),
       image: user.image,
+      roles: user.roles,
     };
 
-    return { user: userRO };
+    return userRO;
   }
 }

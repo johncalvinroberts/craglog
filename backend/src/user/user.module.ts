@@ -22,7 +22,7 @@ export class UserModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
-        { path: 'user', method: RequestMethod.GET },
+        { path: 'user/me', method: RequestMethod.GET },
         { path: 'user', method: RequestMethod.PUT },
       );
   }
