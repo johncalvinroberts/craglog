@@ -24,6 +24,7 @@ export class UserModule implements NestModule {
       .forRoutes(
         { path: 'user/me', method: RequestMethod.GET },
         { path: 'user', method: RequestMethod.PUT },
+        { path: 'user', method: RequestMethod.GET },
       );
   }
 }

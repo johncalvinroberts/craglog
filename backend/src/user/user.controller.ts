@@ -7,6 +7,7 @@ import {
   Param,
   Controller,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -16,12 +17,21 @@ import { UpdateUserDto, LoginUserDto } from './dto';
 import { User } from './user.decorator';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { UserEntity } from './user.entity';
+import { RolesGuard } from '../shared/roles.guard';
+import { Roles } from '../shared/roles.decorator';
 
 @ApiBearerAuth()
 @ApiTags('user')
 @Controller('user')
+@UseGuards(RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get()
+  @Roles('admin')
+  async find() {
+    return this.userService.findAll();
+  }
 
   @Get('me')
   async findMe(@User('email') email: string): Promise<UserData> {
