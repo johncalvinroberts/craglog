@@ -11,8 +11,8 @@ import { UserService } from '../../user/user.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly userService: UserService,
+    readonly configService: ConfigService,
+    readonly userService: UserService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -31,7 +31,6 @@ export class AuthGuard implements CanActivate {
     if (!user) {
       throw new UnauthorizedException();
     }
-
     request.user = user;
     return true;
   }

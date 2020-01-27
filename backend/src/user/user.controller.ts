@@ -29,7 +29,6 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
   @Roles('admin')
   async find() {
     return this.userService.findAll();
@@ -37,24 +36,24 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get('me')
-  async findMe(@User('email') email: string): Promise<UserData> {
-    return await this.userService.findByEmail(email);
+  findMe(@User('email') email: string): Promise<UserData> {
+    return this.userService.findByEmail(email);
   }
 
   @UsePipes(new ValidationPipe())
   @Post()
-  async create(@Body() userData: UserEntity) {
+  create(@Body() userData: UserEntity) {
     return this.userService.create(userData);
   }
 
   @Put()
-  async update(@User('id') userId: number, @Body() userData: UpdateUserDto) {
-    return await this.userService.update(userId, userData);
+  update(@User('id') userId: number, @Body() userData: UpdateUserDto) {
+    return this.userService.update(userId, userData);
   }
 
   @Delete(':slug')
-  async delete(@Param() params) {
-    return await this.userService.delete(params.slug);
+  delete(@Param() params) {
+    return this.userService.delete(params.slug);
   }
 
   @UsePipes(new ValidationPipe())
