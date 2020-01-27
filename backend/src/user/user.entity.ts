@@ -25,22 +25,21 @@ export class UserEntity {
   @Index({ unique: true })
   email: string;
 
-  @Column({ default: '' })
-  bio: string;
+  @Column()
+  bio = '';
 
-  @Column({ default: '' })
-  image: string;
+  @Column()
+  image = '';
 
   @Column()
   password: string;
 
-  @Column('array', { default: ['user'] })
-  roles: string[];
+  @Column()
+  roles: string[] = ['user'];
 
   @BeforeInsert()
   setDefaults(): void {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
-    if (!this.roles) this.roles = ['user'];
   }
 
   @CreateDateColumn({ type: 'timestamp' })

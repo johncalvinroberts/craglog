@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
+import { LoginUserDto, UpdateUserDto } from './dto';
 import * as jwt from 'jsonwebtoken';
 import { UserData } from './user.interface';
-import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
+import { PaginationDto } from 'src/shared/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -19,11 +19,12 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
-  async findAll(): Promise<UserEntity[]> {
-    return await this.userRepository.find();
+  findAll(query: PaginationDto): Promise<UserEntity[]> {
+    console.log(query);
+    return this.userRepository.find(query);
   }
 
-  async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
+  findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const findOneOptions = {
       email: loginUserDto.email,
       password: crypto
@@ -31,10 +32,10 @@ export class UserService {
         .digest('hex'),
     };
 
-    return await this.userRepository.findOne(findOneOptions);
+    return this.userRepository.findOne(findOneOptions);
   }
 
-  async create(dto: CreateUserDto): Promise<UserData> {
+  async create(dto: UserEntity): Promise<UserData> {
     const { username, email, password } = dto;
 
     // create new user
@@ -42,31 +43,20 @@ export class UserService {
     newUser.username = username;
     newUser.email = email.toLowerCase();
     newUser.password = password;
-    const errors = await validate(newUser);
-    if (errors.length > 0) {
-      throw new HttpException(
-        {
-          message: 'Input data validation failed',
-          errors: { username: 'Userinput is not valid.' },
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    } else {
-      try {
-        const savedUser = await this.userRepository.save(newUser);
-        return this.buildUserRO(savedUser);
-      } catch (error) {
-        console.log(error);
-        if (error.code === 11000) {
-          throw new HttpException(
-            {
-              message: 'Username or email is taken',
-            },
-            HttpStatus.CONFLICT,
-          );
-        } else {
-          throw error;
-        }
+    try {
+      const savedUser = await this.userRepository.save(newUser);
+      return this.buildUserRO(savedUser);
+    } catch (error) {
+      console.log(error);
+      if (error.code === 11000) {
+        throw new HttpException(
+          {
+            message: 'Username or email is taken',
+          },
+          HttpStatus.CONFLICT,
+        );
+      } else {
+        throw error;
       }
     }
   }
@@ -79,8 +69,8 @@ export class UserService {
     return await this.userRepository.save(updated);
   }
 
-  async delete(email: string): Promise<DeleteResult> {
-    return await this.userRepository.delete({ email: email });
+  delete(email: string): Promise<DeleteResult> {
+    return this.userRepository.delete({ email: email });
   }
 
   async findById(id: number): Promise<UserData> {
@@ -90,8 +80,6 @@ export class UserService {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-
-    console.log({ user });
 
     return this.buildUserRO(user);
   }

@@ -7,6 +7,7 @@ import {
   Param,
   Controller,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -18,6 +19,7 @@ import { UserEntity } from './user.entity';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
+import { PaginationDto } from 'src/shared/pagination.dto';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -28,8 +30,8 @@ export class UserController {
   @Get()
   @UseGuards(RolesGuard)
   @Roles('admin')
-  async find() {
-    return this.userService.findAll();
+  async find(@Query() query: PaginationDto) {
+    return this.userService.findAll(query);
   }
 
   @UseGuards(AuthGuard)
