@@ -34,7 +34,7 @@ export class UserEntity {
   @Column()
   password: string;
 
-  @Column({ default: ['user'] })
+  @Column('array', { default: ['user'] })
   roles: string[];
 
   @BeforeInsert()

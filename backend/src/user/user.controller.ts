@@ -6,7 +6,6 @@ import {
   Delete,
   Param,
   Controller,
-  UsePipes,
   UseGuards,
 } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
@@ -15,7 +14,6 @@ import { UserService } from './user.service';
 import { UserData } from './user.interface';
 import { UpdateUserDto, LoginUserDto } from './dto';
 import { User } from '../shared/decorators/user.decorator';
-import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { UserEntity } from './user.entity';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { AuthGuard } from '../shared/guards/auth.guard';
@@ -24,11 +22,11 @@ import { Roles } from '../shared/decorators/roles.decorator';
 @ApiBearerAuth()
 @ApiTags('user')
 @Controller('user')
-@UseGuards(RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @UseGuards(RolesGuard)
   @Roles('admin')
   async find() {
     return this.userService.findAll();
@@ -40,7 +38,6 @@ export class UserController {
     return this.userService.findByEmail(email);
   }
 
-  @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() userData: UserEntity) {
     return this.userService.create(userData);
@@ -56,7 +53,6 @@ export class UserController {
     return this.userService.delete(params.slug);
   }
 
-  @UsePipes(new ValidationPipe())
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<UserData> {
     const maybeUser = await this.userService.findOne(loginUserDto);
