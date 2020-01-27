@@ -14,11 +14,12 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserData } from './user.interface';
 import { UpdateUserDto, LoginUserDto } from './dto';
-import { User } from './user.decorator';
+import { User } from '../shared/decorators/user.decorator';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 import { UserEntity } from './user.entity';
-import { RolesGuard } from '../shared/roles.guard';
-import { Roles } from '../shared/roles.decorator';
+import { RolesGuard } from '../shared/guards/roles.guard';
+import { AuthGuard } from '../shared/guards/auth.guard';
+import { Roles } from '../shared/decorators/roles.decorator';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -28,11 +29,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   @Roles('admin')
   async find() {
     return this.userService.findAll();
   }
 
+  @UseGuards(AuthGuard)
   @Get('me')
   async findMe(@User('email') email: string): Promise<UserData> {
     return await this.userService.findByEmail(email);

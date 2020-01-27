@@ -91,6 +91,8 @@ export class UserService {
       throw new HttpException({ errors }, 401);
     }
 
+    console.log({ user });
+
     return this.buildUserRO(user);
   }
 
