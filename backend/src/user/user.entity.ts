@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import * as crypto from 'crypto';
 
 @Entity('user')
@@ -18,10 +18,12 @@ export class UserEntity {
 
   @Column()
   @Index({ unique: true })
+  @IsNotEmpty()
   username: string;
 
   @Column()
   @IsEmail()
+  @IsNotEmpty()
   @Index({ unique: true })
   email: string;
 
@@ -32,6 +34,7 @@ export class UserEntity {
   image = '';
 
   @Column()
+  @IsNotEmpty()
   password: string;
 
   @Column()

@@ -2,7 +2,7 @@ import {
   Get,
   Post,
   Body,
-  Put,
+  Patch,
   Delete,
   Param,
   Controller,
@@ -13,13 +13,13 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserData } from './user.interface';
-import { UpdateUserDto, LoginUserDto } from './dto';
+import { UpdateUserDto, LoginUserDto, CreateUserDto } from './dto';
 import { User } from '../shared/decorators/user.decorator';
-import { UserEntity } from './user.entity';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { PaginationDto } from 'src/shared/pagination.dto';
+import { UserEntity } from './user.entity';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -41,13 +41,15 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() userData: UserEntity) {
+  create(@Body() userData: CreateUserDto) {
     return this.userService.create(userData);
   }
 
-  @Put()
-  update(@User('id') userId: number, @Body() userData: UpdateUserDto) {
-    return this.userService.update(userId, userData);
+  @Patch()
+  @UseGuards(AuthGuard)
+  update(@User() user, @Body() userData: UpdateUserDto): Promise<UserEntity> {
+    console.log('i is here');
+    return this.userService.update(user, userData);
   }
 
   @Delete(':slug')
