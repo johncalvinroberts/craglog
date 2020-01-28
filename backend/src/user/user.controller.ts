@@ -8,18 +8,22 @@ import {
   Controller,
   UseGuards,
   Query,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { UserData } from './user.interface';
-import { UpdateUserDto, LoginUserDto, CreateUserDto } from './dto';
+import {
+  UpdateUserDto,
+  LoginUserDto,
+  CreateUserDto,
+  FindUserDto,
+  AuthenticateUserRo,
+} from './dto';
 import { User } from '../shared/decorators/user.decorator';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
 import { PaginationDto } from 'src/shared/pagination.dto';
-import { UserEntity } from './user.entity';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -36,20 +40,19 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get('me')
-  findMe(@User('email') email: string): Promise<UserData> {
+  findMe(@User('email') email: string): Promise<FindUserDto> {
     return this.userService.findByEmail(email);
   }
 
   @Post()
-  create(@Body() userData: CreateUserDto) {
-    return this.userService.create(userData);
+  create(@Body() payload: CreateUserDto) {
+    return this.userService.create(payload);
   }
 
   @Patch()
   @UseGuards(AuthGuard)
-  update(@User() user, @Body() userData: UpdateUserDto): Promise<UserEntity> {
-    console.log('i is here');
-    return this.userService.update(user, userData);
+  update(@User() user, @Body() payload: UpdateUserDto): Promise<FindUserDto> {
+    return this.userService.update(user, payload);
   }
 
   @Delete(':slug')
@@ -58,14 +61,12 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto): Promise<UserData> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<AuthenticateUserRo> {
     const maybeUser = await this.userService.findOne(loginUserDto);
 
     const errors = { User: ' not found' };
-    if (!maybeUser) throw new HttpException({ errors }, 401);
+    if (!maybeUser) throw new UnauthorizedException({ errors });
 
-    const token = await this.userService.generateJWT(maybeUser);
-    const { email, username, bio, image } = maybeUser;
-    return { email, token, username, bio, image };
+    return this.userService.buildAuthRO(maybeUser);
   }
 }

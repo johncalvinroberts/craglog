@@ -1,12 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { LoginUserDto, UpdateUserDto } from './dto';
+import {
+  LoginUserDto,
+  UpdateUserDto,
+  CreateUserDto,
+  AuthenticateUserRo,
+  FindUserDto,
+} from './dto';
 import * as jwt from 'jsonwebtoken';
-import { UserData } from './user.interface';
-import { HttpException } from '@nestjs/common/exceptions/http.exception';
-import { HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { PaginationDto } from 'src/shared/pagination.dto';
@@ -35,7 +42,7 @@ export class UserService {
     return this.userRepository.findOne(findOneOptions);
   }
 
-  async create(dto: UserEntity): Promise<UserData> {
+  async create(dto: CreateUserDto): Promise<AuthenticateUserRo> {
     const { username, email, password } = dto;
 
     // create new user
@@ -43,48 +50,44 @@ export class UserService {
     newUser.username = username;
     newUser.email = email.toLowerCase();
     newUser.password = password;
+
     try {
       const savedUser = await this.userRepository.save(newUser);
-      return this.buildUserRO(savedUser);
+      return this.buildAuthRO(savedUser);
     } catch (error) {
-      console.log(error);
       if (error.code === 11000) {
-        throw new HttpException(
-          {
-            message: 'Username or email is taken',
-          },
-          HttpStatus.CONFLICT,
-        );
+        throw new ConflictException({
+          message: 'Username or email is taken',
+        });
       } else {
         throw error;
       }
     }
   }
 
-  async update(id: number, dto: UpdateUserDto): Promise<UserEntity> {
-    const toUpdate = await this.userRepository.findOne(id);
-    delete toUpdate.password;
-
-    const updated = Object.assign(toUpdate, dto);
-    return await this.userRepository.save(updated);
+  async update(user: UserEntity, dto: UpdateUserDto): Promise<FindUserDto> {
+    const update = Object.assign(user, dto);
+    console.log(update);
+    const updated = await this.userRepository.save(update);
+    return this.buildUserRO(updated);
   }
 
   delete(email: string): Promise<DeleteResult> {
     return this.userRepository.delete({ email: email });
   }
 
-  async findById(id: number): Promise<UserData> {
+  async findById(id: number): Promise<FindUserDto> {
     const user = await this.userRepository.findOne(id);
 
     if (!user) {
       const errors = { User: ' not found' };
-      throw new HttpException({ errors }, 401);
+      throw new UnauthorizedException({ errors });
     }
 
     return this.buildUserRO(user);
   }
 
-  async findByEmail(email: string): Promise<UserData> {
+  async findByEmail(email: string): Promise<FindUserDto> {
     const user = await this.userRepository.findOne({ email: email });
     return this.buildUserRO(user);
   }
@@ -106,8 +109,9 @@ export class UserService {
     );
   }
 
-  private buildUserRO(user: UserEntity) {
-    const userRO = {
+  buildAuthRO(user: UserEntity): AuthenticateUserRo {
+    return {
+      id: user.id,
       username: user.username,
       email: user.email,
       bio: user.bio,
@@ -115,7 +119,16 @@ export class UserService {
       image: user.image,
       roles: user.roles,
     };
+  }
 
-    return userRO;
+  buildUserRO(user: UserEntity): FindUserDto {
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      image: user.image,
+      roles: user.roles,
+    };
   }
 }
