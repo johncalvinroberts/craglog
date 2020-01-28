@@ -23,7 +23,7 @@ import { User } from '../shared/decorators/user.decorator';
 import { RolesGuard } from '../shared/guards/roles.guard';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { Roles } from '../shared/decorators/roles.decorator';
-import { PaginationDto } from 'src/shared/pagination.dto';
+import { PaginationDto } from '../shared/pagination.dto';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -34,7 +34,7 @@ export class UserController {
   @Get()
   @UseGuards(RolesGuard)
   @Roles('admin')
-  async find(@Query() query: PaginationDto) {
+  find(@Query() query: PaginationDto) {
     return this.userService.findAll(query);
   }
 

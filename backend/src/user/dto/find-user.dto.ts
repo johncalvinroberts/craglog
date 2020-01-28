@@ -6,4 +6,6 @@ export class FindUserDto {
   readonly image?: string;
   readonly roles?: string[];
   readonly id: ObjectID;
+  readonly updatedAt: Date;
+  readonly createdAt: Date;
 }

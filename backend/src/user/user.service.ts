@@ -26,9 +26,9 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
-  findAll(query: PaginationDto): Promise<UserEntity[]> {
-    console.log(query);
-    return this.userRepository.find(query);
+  async findAll(query: PaginationDto): Promise<FindUserDto[]> {
+    const res = await this.userRepository.find(query);
+    return res.map(item => this.buildUserRO(item));
   }
 
   findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
@@ -67,7 +67,6 @@ export class UserService {
 
   async update(user: UserEntity, dto: UpdateUserDto): Promise<FindUserDto> {
     const update = Object.assign(user, dto);
-    console.log(update);
     const updated = await this.userRepository.save(update);
     return this.buildUserRO(updated);
   }
@@ -129,6 +128,8 @@ export class UserService {
       bio: user.bio,
       image: user.image,
       roles: user.roles,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   }
 }

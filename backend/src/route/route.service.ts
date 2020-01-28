@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { RouteEntity } from './route.entity';
 import { CreateRouteDto } from './dto/create-route.dto';
+import { AuthGuard } from '../shared/guards';
+import { PaginationDto } from 'src/shared/pagination.dto';
 
 @Injectable()
+@UseGuards(AuthGuard)
 export class RouteService {
   constructor(
     @InjectRepository(RouteEntity)
     private readonly routeRepository: Repository<RouteEntity>,
   ) {}
 
-  findAll(): Promise<RouteEntity[]> {
-    return this.routeRepository.find();
+  findAll(query: PaginationDto): Promise<RouteEntity[]> {
+    return this.routeRepository.find(query);
   }
 
   create(route: CreateRouteDto): Promise<RouteEntity> {

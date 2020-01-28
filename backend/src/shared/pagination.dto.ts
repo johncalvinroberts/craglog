@@ -1,13 +1,19 @@
-import { IsInt } from 'class-validator';
+import { IsInt, Max, Min, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 export class PaginationDto {
   @IsInt()
+  @Min(0)
+  @IsOptional()
   @Transform(parseInt)
-  offset = 0;
+  skip = 0;
 
   @IsInt()
+  @Min(0)
+  @IsOptional()
+  @Max(100)
   @Transform(parseInt)
-  limit = 25;
+  take = 25;
 
+  @IsOptional()
   where: any;
 }
