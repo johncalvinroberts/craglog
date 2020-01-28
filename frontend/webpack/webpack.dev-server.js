@@ -1,5 +1,5 @@
 // options to pass to WebpackDevServer
-module.exports = env => {
+module.exports = (env) => {
   const { isHot, CONTENT_BASE, PUBLIC_PATH } = env;
 
   return {
@@ -10,7 +10,8 @@ module.exports = env => {
     hotOnly: isHot,
     historyApiFallback: true,
     proxy: {
-      '/api': process.env.API_BASE_URL
+      '/api': process.env.API_BASE_URL,
+      '/api/jobs': process.env.JOBS_BASE_URL,
     },
     stats: {
       entrypoints: false,
@@ -32,7 +33,7 @@ module.exports = env => {
       version: false,
       builtAt: false,
       timings: false,
-      usedExports: true
-    }
+      usedExports: true,
+    },
   };
 };
