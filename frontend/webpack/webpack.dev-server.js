@@ -11,7 +11,6 @@ module.exports = (env) => {
     historyApiFallback: true,
     proxy: {
       '/api': process.env.API_BASE_URL,
-      '/api/jobs': process.env.JOBS_BASE_URL,
     },
     stats: {
       entrypoints: false,
