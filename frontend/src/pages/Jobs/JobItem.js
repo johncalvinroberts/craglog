@@ -25,7 +25,7 @@ const JobLogs = ({ item, type }) => {
   const { colorMode } = useColorMode();
   const logsBg = { light: 'gray.200', dark: 'gray.900' };
   const toast = useToast();
-  const { data, error } = useSWR(`/jobs/${item.id}?type=${type}`, http.get);
+  const { data, error } = useSWR(`/job/${item.id}?type=${type}`, http.get);
 
   useEffect(() => {
     if (error) toast({ message: error.message, status: 'error' });
@@ -61,7 +61,7 @@ const JobItem = ({ item, type }) => {
 
   const handleCommand = async (command) => {
     try {
-      await http.patch(`/jobs/${item.id}`, { command, id: item.id, type });
+      await http.patch(`/job/${item.id}`, { command, id: item.id, type });
     } catch (error) {
       toast({
         description: error.message,

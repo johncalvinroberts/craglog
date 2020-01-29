@@ -66,7 +66,7 @@ const Register = () => {
       await dispatch(performRegistration(formValues));
       await dispatch(
         performLogin({
-          username: formValues.username,
+          email: formValues.email,
           password: formValues.password,
         }),
       );

@@ -45,21 +45,21 @@ export const performRegistration = (payload) => async (dispatch) => {
 export const performLogin = (payload) => async (dispatch) => {
   dispatch({ [stateKey]: { isLoading: true } });
   try {
-    const { jwt } = await postLogin(payload);
-    http.setToken(jwt);
-    localStorage.setItem(TOKEN_KEY, jwt);
-    const user = decodeJwt(jwt);
+    const { token } = await postLogin(payload);
+    http.setToken(token);
+    localStorage.setItem(TOKEN_KEY, token);
+    const user = decodeJwt(token);
     const isAdmin = user.roles.includes('admin');
     dispatch({
       [stateKey]: {
         isLoading: false,
         isAuthenticated: true,
         user,
-        token: jwt,
+        token,
         isAdmin,
       },
     });
-    return jwt;
+    return token;
   } catch (error) {
     dispatch({
       [stateKey]: { isLoading: false, isAuthenticated: false, errors: [error] },

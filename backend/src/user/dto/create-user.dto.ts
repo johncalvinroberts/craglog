@@ -1,14 +1,20 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 import { ObjectID } from 'typeorm';
 
 export class CreateUserDto {
   @IsNotEmpty()
+  @MinLength(6)
+  @MaxLength(250)
   readonly username: string;
 
   @IsNotEmpty()
+  @MinLength(6)
+  @MaxLength(250)
   readonly email: string;
 
   @IsNotEmpty()
+  @MinLength(8)
+  @MaxLength(250)
   readonly password: string;
 }
 

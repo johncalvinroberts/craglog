@@ -14,7 +14,7 @@ import useTitle from '../hooks/useTitle';
 import http from '../http';
 
 const UserItem = ({ user }) => {
-  const { _id, ...rest } = user;
+  const { id, ...rest } = user;
   return (
     <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
       <Box d="flex" width="100%">
@@ -24,7 +24,7 @@ const UserItem = ({ user }) => {
               ID:
             </Text>
             <Text mx={2} fontSize="xs">
-              {_id}
+              {id}
             </Text>
           </Box>
           {Object.keys(rest).map((key) => {
@@ -59,7 +59,7 @@ const Users = () => {
     ({ offset, withSWR }) => {
       const { data: users } = withSWR(
         // use the wrapper to wrap the *pagination API SWR*
-        useSWR(`/users?skip=${offset || 0}&limit=25`, http.get),
+        useSWR(`/user?skip=${offset || 0}&take=25`, http.get),
       );
       /* eslint-enable react-hooks/rules-of-hooks */
       // you can still use other SWRs outside
@@ -68,7 +68,7 @@ const Users = () => {
         return <p>loading</p>;
       }
 
-      return users.map((user) => <UserItem key={user._id} user={user} />);
+      return users.map((user) => <UserItem key={user.id} user={user} />);
     },
 
     // get next page's offset from the index of current page

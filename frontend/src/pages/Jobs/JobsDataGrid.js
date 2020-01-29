@@ -14,7 +14,7 @@ const JobsDataGrid = ({ params }) => {
       const { data } = withSWR(
         // use the wrapper to wrap the *pagination API SWR*
         useSWR(
-          `/jobs?skip=${offset || 0}&limit=25&type=${params.type}&status=${
+          `/job?skip=${offset || 0}&limit=25&type=${params.type}&status=${
             params.status
           }`,
           http.get,

@@ -7,7 +7,6 @@ import { Roles } from '../shared/decorators';
 
 @Controller('job')
 @UseGuards(RolesGuard)
-@Roles('admin')
 export class JobController {
   private server: Server;
   constructor(private readonly configService: ConfigService) {
@@ -15,6 +14,7 @@ export class JobController {
   }
 
   @All()
+  @Roles('admin')
   proxyAll(@Req() request: Request, @Res() response: Response): void {
     this.server.web(request, response, {
       changeOrigin: false,

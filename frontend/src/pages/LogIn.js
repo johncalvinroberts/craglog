@@ -22,10 +22,11 @@ import { useDispatch } from '../components/State';
 import Form from '../components/Form';
 
 const validationSchema = yup.object().shape({
-  username: yup
+  email: yup
     .string()
+    .email()
     .required()
-    .min(6)
+    .min(5)
     .max(250),
   password: yup
     .string()
@@ -35,7 +36,7 @@ const validationSchema = yup.object().shape({
 });
 
 const defaultValues = {
-  username: '',
+  email: '',
   password: '',
 };
 
@@ -92,7 +93,7 @@ const LogIn = () => {
           methods={formMethods}
           defaultValues={defaultValues}
         >
-          <TextField label="Username" name="username" input required />
+          <TextField label="Email" name="email" input required />
           <TextField
             label="Password"
             name="password"

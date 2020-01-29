@@ -47,7 +47,7 @@ const JobsCountData = ({ params, handleChangeParams }) => {
         [type]: { ...buttonLoadingStates[type], [command]: true },
       });
 
-      await http.patch(`/jobs/queue`, { type, command });
+      await http.patch(`/job/queue`, { type, command });
 
       setButtonLoadingStates({
         ...buttonLoadingStates,
@@ -64,7 +64,7 @@ const JobsCountData = ({ params, handleChangeParams }) => {
     }
   };
 
-  const { data: countData, error } = useSWR('/jobs/count', http.get);
+  const { data: countData, error } = useSWR('/job/count', http.get);
 
   useEffect(() => {
     if (error) toast({ message: error.message, status: 'error' });
