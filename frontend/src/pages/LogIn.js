@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import {
   Box,
   Heading,
-  Icon,
   Button,
   InputRightElement,
   IconButton,
@@ -84,7 +83,21 @@ const LogIn = () => {
   return (
     <>
       <Box mb={4} d="block">
-        <Icon name="logo" size="60px" />
+        <Box
+          as={Link}
+          style={{ display: 'block' }}
+          to="/"
+          aria-label="Craglog, back to landing page"
+          mr={2}
+        >
+          <IconButton
+            variant="ghost"
+            color="current"
+            fontSize="40px"
+            rounded="full"
+            icon="logo"
+          />
+        </Box>
         <Heading>Log in to craglog</Heading>
       </Box>
       <Box w="100%" borderWidth="1px" rounded="sm" overflow="hidden" p="4">

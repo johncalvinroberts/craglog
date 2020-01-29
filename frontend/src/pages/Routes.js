@@ -1,74 +1,35 @@
 import React from 'react';
 import useSWR, { useSWRPages } from 'swr';
-import {
-  Box,
-  Spinner,
-  Icon,
-  Heading,
-  Button,
-  Text,
-  PseudoBox,
-} from '@chakra-ui/core';
+import { Box, Spinner, Icon, Heading, Button } from '@chakra-ui/core';
 import DashboardWrapper from '../components/DashboardWrapper';
+import RouteCard from '../components/RouteCard';
 import useTitle from '../hooks/useTitle';
 import http from '../http';
 
-const UserItem = ({ user }) => {
-  const { id, ...rest } = user;
-  return (
-    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
-      <Box d="flex" width="100%">
-        <Box flex="1">
-          <Box d="flex" alignItems="flex-start" width="100%">
-            <Text fontWeight="bold" fontSize="xs">
-              ID:
-            </Text>
-            <Text mx={2} fontSize="xs">
-              {id}
-            </Text>
-          </Box>
-          {Object.keys(rest).map((key) => {
-            return (
-              <Box d="flex" alignItems="flex-start" width="100%" key={key}>
-                <Text fontWeight="bold" fontSize="xs">
-                  {key}:{' '}
-                </Text>
-                <Text mx={2} fontSize="xs">
-                  {rest[key]}
-                </Text>
-              </Box>
-            );
-          })}
-        </Box>
-      </Box>
-    </Box>
-  );
-};
-
-const Users = () => {
+export default function Routes() {
   useTitle(
     <>
-      admin <Icon name="chevron-right" /> Users
+      admin <Icon name="chevron-right" /> Routes
     </>,
   );
   const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
     // page key
-    'admin-users',
+    'admin-routes',
     /* eslint-disable react-hooks/rules-of-hooks */
     // page component
     ({ offset, withSWR }) => {
-      const { data: users } = withSWR(
+      const { data } = withSWR(
         // use the wrapper to wrap the *pagination API SWR*
-        useSWR(`/user?skip=${offset || 0}&take=25`, http.get),
+        useSWR(`/route?skip=${offset || 0}&take=25`, http.get),
       );
       /* eslint-enable react-hooks/rules-of-hooks */
       // you can still use other SWRs outside
 
-      if (!users) {
+      if (!data) {
         return <p>loading</p>;
       }
 
-      return users.map((user) => <UserItem key={user.id} user={user} />);
+      return data.map((item) => <RouteCard key={item.id} route={item} />);
     },
 
     // get next page's offset from the index of current page
@@ -83,12 +44,11 @@ const Users = () => {
     // deps of the page component
     [],
   );
-
   return (
     <DashboardWrapper>
       <Box d="block" mb={8} borderWidth="1px" p={2}>
         <Box mb={4}>
-          <Heading size="md">users</Heading>
+          <Heading size="md">Routes</Heading>
         </Box>
         <Box>{pages}</Box>
         {isLoadingMore && (
@@ -130,6 +90,4 @@ const Users = () => {
       </Box>
     </DashboardWrapper>
   );
-};
-
-export default Users;
+}

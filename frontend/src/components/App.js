@@ -15,6 +15,7 @@ const LogIn = lazy(() => import('../pages/LogIn'));
 const Register = lazy(() => import('../pages/Register'));
 const Jobs = lazy(() => import('../pages/Jobs'));
 const Users = lazy(() => import('../pages/Users'));
+const Routes = lazy(() => import('../pages/Routes'));
 
 export default () => {
   return (
@@ -23,7 +24,7 @@ export default () => {
         <Suspense fallback={<Loading />}>
           <CSSReset />
           <State>
-            <SWRConfig value={{ refreshInterval: 3000 }}>
+            <SWRConfig value={{ refreshInterval: 10000 }}>
               <Router>
                 <Layout>
                   <Switch>
@@ -42,6 +43,12 @@ export default () => {
                       exact
                       rolesNeeded={['admin']}
                       component={Users}
+                    />
+                    <ProtectedRoute
+                      path="/app/admin/routes"
+                      exact
+                      rolesNeeded={['admin']}
+                      component={Routes}
                     />
                     <Route component={NotFound} />
                   </Switch>

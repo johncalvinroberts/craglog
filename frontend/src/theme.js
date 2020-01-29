@@ -36,6 +36,42 @@ const customIcons = {
     ),
     viewBox: '0 0 19 95',
   },
+  grade: {
+    path: (
+      <svg fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line
+          x1="32.0318"
+          y1="110.645"
+          x2="45.0318"
+          y2="38.6446"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <line
+          x1="49"
+          y1="111"
+          x2="49"
+          y2="26"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <line
+          x1="72.0463"
+          y1="110.428"
+          x2="49.0463"
+          y2="5.42795"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          d="M36 53L5.99999 109H43.2553H109L56.5 13"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+      </svg>
+    ),
+    viewBox: '0 0 116 116',
+  },
 };
 
 const customTheme = {

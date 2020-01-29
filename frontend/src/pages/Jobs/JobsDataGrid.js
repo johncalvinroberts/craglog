@@ -7,7 +7,7 @@ import http from '../../http';
 const JobsDataGrid = ({ params }) => {
   const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
     // page key
-    'jobs',
+    'admin-jobs',
     /* eslint-disable react-hooks/rules-of-hooks */
     // page component
     ({ offset, withSWR }) => {
