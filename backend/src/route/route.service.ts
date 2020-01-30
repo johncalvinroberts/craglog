@@ -4,7 +4,7 @@ import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { RouteEntity } from './route.entity';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { AuthGuard } from '../shared/guards';
-import { PaginationDto } from 'src/shared/pagination.dto';
+import { RouteQueryDto } from './dto/route-query.dto';
 
 @Injectable()
 @UseGuards(AuthGuard)
@@ -14,7 +14,7 @@ export class RouteService {
     private readonly routeRepository: Repository<RouteEntity>,
   ) {}
 
-  findAll(query: PaginationDto): Promise<RouteEntity[]> {
+  findAll(query: RouteQueryDto): Promise<RouteEntity[]> {
     return this.routeRepository.find(query);
   }
 

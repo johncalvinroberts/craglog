@@ -1,5 +1,11 @@
-import { IsInt, Max, Min, IsOptional } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsInt, Max, Min, IsOptional, IsEnum } from 'class-validator';
+import { Transform, Exclude, Expose } from 'class-transformer';
+
+enum SortEnum {
+  DESC = 'DESC',
+  ASC = 'ASC',
+}
+
 export class PaginationDto {
   @IsInt()
   @Min(0)
@@ -15,8 +21,18 @@ export class PaginationDto {
   take = 25;
 
   @IsOptional()
-  where: any;
+  @Exclude()
+  orderBy: string;
 
   @IsOptional()
-  order: any;
+  @IsEnum(SortEnum)
+  @Exclude()
+  sort: string;
+
+  @Expose()
+  @IsOptional()
+  @Transform((val, obj: PaginationDto) =>
+    obj.orderBy ? { [obj.orderBy]: obj.sort } : undefined,
+  )
+  order: object;
 }

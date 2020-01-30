@@ -1,56 +1,49 @@
 import {
   Column,
   Entity,
-  ObjectID,
-  ObjectIdColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('route')
 export class RouteEntity {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
 
-  @Column()
-  externalId: string;
+  @Column('varchar', { nullable: true })
+  externalId = '';
 
-  @Column()
-  bolts: number;
+  @Column('varchar', { nullable: true })
+  bolts = 0;
 
-  @Column()
-  height: number;
+  @Column('point', { nullable: true })
+  location = '';
 
-  @Column()
-  latitude: string;
+  @Column('varchar', { nullable: true })
+  grade = '';
 
-  @Column()
-  longitude: string;
+  @Column('varchar', { nullable: true })
+  name = '';
 
-  @Column()
-  grade: string;
+  @Column('varchar', { nullable: true })
+  style = '';
 
-  @Column()
-  name: string;
+  @Column('varchar', { nullable: true })
+  region = '';
 
-  @Column()
-  style: string;
+  @Column('varchar', { nullable: true })
+  area = '';
 
-  @Column()
-  region: string;
+  @Column('varchar', { nullable: true })
+  cragName = '';
 
-  @Column()
-  area: string;
+  @Column('varchar', { nullable: true })
+  externalCragId = '';
 
-  @Column()
-  cragName: string;
-
-  @Column()
-  externalCragId: string;
-
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn()
   updatedAt: Date;
 }

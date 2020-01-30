@@ -1,5 +1,4 @@
 import { IsNotEmpty, MinLength, MaxLength } from 'class-validator';
-import { ObjectID } from 'typeorm';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -25,5 +24,5 @@ export class AuthenticateUserRo {
   bio?: string;
   image?: string;
   roles: string[];
-  readonly id: ObjectID;
+  readonly id: number;
 }

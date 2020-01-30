@@ -6,8 +6,7 @@ export class CreateRouteDto {
   readonly region?: string;
   readonly area?: string;
   readonly grade?: string;
-  readonly latitude?: string;
-  readonly longitude?: string;
+  readonly location?: string;
   readonly height?: number;
   readonly bolts?: number;
   readonly style?: string;

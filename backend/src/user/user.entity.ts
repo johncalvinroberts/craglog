@@ -1,7 +1,6 @@
 import {
   Entity,
-  ObjectIdColumn,
-  ObjectID,
+  PrimaryGeneratedColumn,
   Column,
   BeforeInsert,
   CreateDateColumn,
@@ -13,31 +12,31 @@ import * as crypto from 'crypto';
 
 @Entity('user')
 export class UserEntity {
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
 
-  @Column()
+  @Column('varchar', { length: 500 })
   @Index({ unique: true })
   @IsNotEmpty()
   username: string;
 
-  @Column()
+  @Column('varchar', { length: 500 })
   @IsEmail()
   @IsNotEmpty()
   @Index({ unique: true })
   email: string;
 
-  @Column()
+  @Column('text')
   bio = '';
 
-  @Column()
+  @Column('varchar', { length: 500 })
   image = '';
 
-  @Column()
+  @Column('varchar', { length: 500 })
   @IsNotEmpty()
   password: string;
 
-  @Column()
+  @Column('varchar', { array: true })
   roles: string[] = ['user'];
 
   @BeforeInsert()
@@ -45,9 +44,9 @@ export class UserEntity {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn()
   updatedAt: Date;
 }

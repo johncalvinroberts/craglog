@@ -50,7 +50,6 @@
     "react-hook-form": "^4.5.3",
     "react-hot-loader": "^4.12.14",
     "react-router-dom": "^5.1.1",
-    "react-use": "^13.22.3",
     "style-loader": "^1.1.2",
     "swr": "^0.1.16",
     "terser-webpack-plugin": "^2.3.2",

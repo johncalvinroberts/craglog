@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useSWR, { useSWRPages, mutate } from 'swr';
 import { Box, Spinner, Icon, Heading, Button, Input } from '@chakra-ui/core';
+import useThrottle from '../hooks/useThrottle';
 import DashboardWrapper from '../components/DashboardWrapper';
 import RouteCard from '../components/RouteCard';
 import useTitle from '../hooks/useTitle';
@@ -12,8 +13,9 @@ const composeUrlString = ({ query, offset }) => {
   const params = new URLSearchParams({
     skip: offset || 0,
     take: 25,
-    ...(query ? { where: query } : null),
-    order: { createdAt: 'ASC' },
+    ...(query ? { name: query } : null),
+    orderBy: 'createdAt',
+    sort: 'DESC',
   });
   return `/route?${params.toString()}`;
 };
@@ -26,11 +28,10 @@ export default function Routes() {
   );
 
   const [query, setQuery] = useState('');
+  const throttledQuery = useThrottle(query, 800);
   useEffect(() => {
-    if (query) {
-      mutate(`_swr_page_count_${PAGE_KEY}`, 0);
-      mutate(`_swr_page_offset_${PAGE_KEY}`, 0);
-    }
+    mutate(`_swr_page_count_${PAGE_KEY}`, 0);
+    mutate(`_swr_page_offset_${PAGE_KEY}`, 0);
   }, [query]);
 
   const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
@@ -41,7 +42,7 @@ export default function Routes() {
     ({ offset, withSWR }) => {
       const { data } = withSWR(
         // use the wrapper to wrap the *pagination API SWR*
-        useSWR(composeUrlString({ offset, query }), http.get),
+        useSWR(composeUrlString({ offset, query: throttledQuery }), http.get),
       );
       /* eslint-enable react-hooks/rules-of-hooks */
       // you can still use other SWRs outside
@@ -59,11 +60,11 @@ export default function Routes() {
       if (SWR.data && SWR.data.length === 0) return null;
 
       // offset = pageCount × pageSize
-      return (index + 1) * 3;
+      return (index + 1) * 25;
     },
 
     // deps of the page component
-    [query],
+    [throttledQuery],
   );
 
   return (
