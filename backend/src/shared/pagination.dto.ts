@@ -16,4 +16,7 @@ export class PaginationDto {
 
   @IsOptional()
   where: any;
+
+  @IsOptional()
+  order: any;
 }
