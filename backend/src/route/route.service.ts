@@ -15,6 +15,14 @@ export class RouteService {
   ) {}
 
   findAll(query: RouteQueryDto): Promise<RouteEntity[]> {
+    if (query.name) {
+      return this.routeRepository
+        .createQueryBuilder('route')
+        .where('route.name ILIKE :name', { name: query.name })
+        .skip(query.skip)
+        .take(query.take)
+        .getMany();
+    }
     return this.routeRepository.find(query);
   }
 

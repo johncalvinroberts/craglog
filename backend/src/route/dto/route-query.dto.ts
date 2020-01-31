@@ -1,6 +1,5 @@
 import { IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { Like } from 'typeorm';
 import { PaginationDto } from '../../shared/pagination.dto';
 
 export class RouteQueryDto extends PaginationDto {
@@ -9,6 +8,6 @@ export class RouteQueryDto extends PaginationDto {
   }
 
   @IsOptional()
-  @Transform(val => (val ? Like(`%${val}#%`) : undefined))
-  name = 25;
+  @Transform(val => (val ? `%${val}%` : undefined))
+  name = '';
 }
