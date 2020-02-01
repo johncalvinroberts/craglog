@@ -9,6 +9,7 @@ import theme from '../theme';
 import ProtectedRoute from './ProtectedRoute';
 import NotFound from '../pages/NotFound';
 import Landing from '../pages/Landing';
+import ErrorBoundary from './ErrorBoundary';
 
 const Home = lazy(() => import('../pages/Home'));
 const LogIn = lazy(() => import('../pages/LogIn'));
@@ -19,45 +20,47 @@ const Routes = lazy(() => import('../pages/Routes'));
 
 export default () => {
   return (
-    <ThemeProvider theme={theme}>
-      <ColorModeProvider>
-        <Suspense fallback={<Loading />}>
-          <CSSReset />
-          <State>
-            <SWRConfig value={{ refreshInterval: 10000 }}>
-              <Router>
-                <Layout>
-                  <Switch>
-                    <Route path="/" exact component={Landing} />
-                    <Route path="/login" exact component={LogIn} />
-                    <Route path="/register" exact component={Register} />
-                    <ProtectedRoute path="/app" exact component={Home} />
-                    <ProtectedRoute
-                      path="/app/admin/jobs"
-                      exact
-                      rolesNeeded={['admin']}
-                      component={Jobs}
-                    />
-                    <ProtectedRoute
-                      path="/app/admin/users"
-                      exact
-                      rolesNeeded={['admin']}
-                      component={Users}
-                    />
-                    <ProtectedRoute
-                      path="/app/admin/routes"
-                      exact
-                      rolesNeeded={['admin']}
-                      component={Routes}
-                    />
-                    <Route component={NotFound} />
-                  </Switch>
-                </Layout>
-              </Router>
-            </SWRConfig>
-          </State>
-        </Suspense>
-      </ColorModeProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <ColorModeProvider>
+          <Suspense fallback={<Loading />}>
+            <CSSReset />
+            <State>
+              <SWRConfig value={{ refreshInterval: 10000 }}>
+                <Router>
+                  <Layout>
+                    <Switch>
+                      <Route path="/" exact component={Landing} />
+                      <Route path="/login" exact component={LogIn} />
+                      <Route path="/register" exact component={Register} />
+                      <ProtectedRoute path="/app" exact component={Home} />
+                      <ProtectedRoute
+                        path="/app/admin/jobs"
+                        exact
+                        rolesNeeded={['admin']}
+                        component={Jobs}
+                      />
+                      <ProtectedRoute
+                        path="/app/admin/users"
+                        exact
+                        rolesNeeded={['admin']}
+                        component={Users}
+                      />
+                      <ProtectedRoute
+                        path="/app/admin/routes"
+                        exact
+                        rolesNeeded={['admin']}
+                        component={Routes}
+                      />
+                      <Route component={NotFound} />
+                    </Switch>
+                  </Layout>
+                </Router>
+              </SWRConfig>
+            </State>
+          </Suspense>
+        </ColorModeProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 };

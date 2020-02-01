@@ -6,9 +6,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import * as crypto from 'crypto';
+import { EntryEntity } from '../entry/entry.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -43,6 +45,12 @@ export class UserEntity {
   setDefaults(): void {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
+
+  @OneToMany(
+    type => EntryEntity,
+    entry => entry.user,
+  )
+  entries: EntryEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { RouteModule } from './route/route.module';
 import { UserModule } from './user/user.module';
 import { JobModule } from './job/job.module';
+import { EntryModule } from './entry/entry.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { JobModule } from './job/job.module';
     RouteModule,
     UserModule,
     JobModule,
+    EntryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { RouteEntity } from '../route/route.entity';
 import { UserEntity } from '../user/user.entity';
+import { EntryEntity } from '../entry/entry.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { UserEntity } from '../user/user.entity';
         database: configService.get('POSTGRES_DB'),
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
-        entities: [RouteEntity, UserEntity],
+        entities: [RouteEntity, UserEntity, EntryEntity],
         synchronize: true,
       }),
     }),
