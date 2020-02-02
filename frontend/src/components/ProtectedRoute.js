@@ -10,7 +10,6 @@ const ProtectedRoute = ({
 }) => {
   const { isAuthenticated, user } = useAuthState();
   const toast = useToast();
-
   if (!isAuthenticated) {
     toast({
       title: 'Please login first.',

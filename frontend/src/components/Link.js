@@ -1,5 +1,5 @@
 import React, { cloneElement, forwardRef } from 'react';
-import { Box, PseudoBox, useColorMode } from '@chakra-ui/core';
+import { PseudoBox, useColorMode, Text } from '@chakra-ui/core';
 import { useLocation } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -34,32 +34,18 @@ export const SideNavLink = forwardRef(({ children, icon, ...props }, ref) => {
       _notFirst={{ mt: 1 }}
       {...props}
     >
-      {icon && cloneElement(icon, { mr: 3 })}
-      <Box>{children}</Box>
+      <Text fontSize="xl">
+        {children}
+        {icon && cloneElement(icon, { ml: 2 })}
+      </Text>
     </PseudoBox>
   );
 });
 
-export const QuietLink = forwardRef(({ to, ...props }, ref) => {
-  return (
-    <NavLink to={to}>
-      {(isActive) => (
-        <SideNavLink
-          ref={ref}
-          aria-current={isActive ? 'page' : undefined}
-          _hover={{ color: !isActive ? 'inherit' : null }}
-          {...(isActive && { color: 'teal.500', fontWeight: 'semibold' })}
-          {...props}
-        />
-      )}
-    </NavLink>
-  );
-});
-
-export const ListLink = forwardRef(({ to, ...props }, ref) => {
+export const MenuLink = forwardRef(({ to, ...props }, ref) => {
   const { colorMode } = useColorMode();
   const hoverColor = { light: 'gray.900', dark: 'whiteAlpha.900' };
-  const activeColor = { light: 'teal.800', dark: 'teal.200' };
+  const activeColor = { light: 'teal.400', dark: 'teal.200' };
 
   return (
     <NavLink to={to}>

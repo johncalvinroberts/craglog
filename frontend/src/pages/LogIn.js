@@ -11,10 +11,9 @@ import {
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
-import useLayout from '../hooks/useLayout';
+import { LoginLayout } from '../layouts';
 import useAuthState from '../hooks/useAuthState';
 import useTitle from '../hooks/useTitle';
-import LoginLayout from '../layouts/LogIn';
 import TextField from '../fields/TextField';
 import { performLogin } from '../states';
 import { useDispatch } from '../components/State';
@@ -40,7 +39,6 @@ const defaultValues = {
 };
 
 const LogIn = () => {
-  useLayout(LoginLayout);
   useTitle('Login');
   const { isOpen, onToggle } = useDisclosure();
   const history = useHistory();
@@ -81,7 +79,7 @@ const LogIn = () => {
   }, [history, isAuthenticated, toast]);
 
   return (
-    <>
+    <LoginLayout>
       <Box mb={4} d="block">
         <Box
           as={Link}
@@ -152,7 +150,7 @@ const LogIn = () => {
           Forgot your password?
         </Button>
       </Box>
-    </>
+    </LoginLayout>
   );
 };
 

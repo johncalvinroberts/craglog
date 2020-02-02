@@ -35,7 +35,7 @@ const composeUrlString = ({ query, offset }) => {
 export default function Routes() {
   useTitle(
     <>
-      admin <Icon name="chevron-right" /> Routes
+      Admin <Icon name="chevron-right" /> Routes
     </>,
   );
 

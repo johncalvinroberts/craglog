@@ -1,14 +1,8 @@
 import React from 'react';
 import { Box, Icon, Heading, Text, Link } from '@chakra-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-import useLayout from '@/hooks/useLayout';
-
-const LandingLayout = ({ children }) => {
-  return <>{children}</>;
-};
 
 const Landing = () => {
-  useLayout(LandingLayout);
   return (
     <Box
       minHeight="100vh"

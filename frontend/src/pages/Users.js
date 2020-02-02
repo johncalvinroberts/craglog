@@ -53,7 +53,7 @@ const UserItem = ({ user }) => {
 const Users = () => {
   useTitle(
     <>
-      admin <Icon name="chevron-right" /> Users
+      Admin <Icon name="chevron-right" /> Users
     </>,
   );
 

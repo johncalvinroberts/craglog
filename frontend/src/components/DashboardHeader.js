@@ -42,7 +42,7 @@ const DashboardHeader = (props) => {
               icon="logo"
             />
           </Box>
-          <Heading size="l">{Title}</Heading>
+          <Heading size="xl">{Title}</Heading>
         </Flex>
         <Flex
           flex={{ xs: '1' }}

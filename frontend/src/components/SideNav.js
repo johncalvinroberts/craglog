@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Heading } from '@chakra-ui/core';
 import useAuthState from '../hooks/useAuthState';
-import { ListLink } from './Link';
+import { MenuLink } from './Link';
 
 const NavGroupHeading = (props) => (
   <Heading
@@ -34,13 +34,17 @@ export const SideNavContent = ({
         fontSize="sm"
         p="6"
       >
+        <Box mb="10">
+          <MenuLink to="/app/log/new">Add Log</MenuLink>
+          <MenuLink to="/app/hangboard">Hangboard</MenuLink>
+        </Box>
         {isAdmin && (
           <Box mb="10">
             <NavGroupHeading>Admin</NavGroupHeading>
             <Box mb="10">
-              <ListLink to="/app/admin/jobs">jobs</ListLink>
-              <ListLink to="/app/admin/users">users</ListLink>
-              <ListLink to="/app/admin/routes">routes</ListLink>
+              <MenuLink to="/app/admin/jobs">jobs</MenuLink>
+              <MenuLink to="/app/admin/users">users</MenuLink>
+              <MenuLink to="/app/admin/routes">routes</MenuLink>
             </Box>
           </Box>
         )}

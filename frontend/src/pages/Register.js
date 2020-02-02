@@ -11,10 +11,9 @@ import {
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
-import useLayout from '../hooks/useLayout';
+import { LoginLayout } from '../layouts';
 import useTitle from '../hooks/useTitle';
 import { useDispatch } from '../components/State';
-import LoginLayout from '../layouts/LogIn';
 import TextField from '../fields/TextField';
 import Form from '../components/Form';
 import { performRegistration, performLogin } from '../states';
@@ -48,7 +47,6 @@ const defaultValues = {
 // TODO: terms & conditions, privacy etc.
 
 const Register = () => {
-  useLayout(LoginLayout);
   useTitle('Register');
   const { isAuthenticated } = useAuthState();
 
@@ -98,7 +96,7 @@ const Register = () => {
   }, [history, isAuthenticated, toast]);
 
   return (
-    <>
+    <LoginLayout>
       <Box mb={4} d="block">
         <Box
           as={Link}
@@ -162,7 +160,7 @@ const Register = () => {
           Already have an account?
         </Button>
       </Box>
-    </>
+    </LoginLayout>
   );
 };
 
