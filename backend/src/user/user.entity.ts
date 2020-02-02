@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import * as crypto from 'crypto';
-import { EntryEntity } from '../entry/entry.entity';
+import { TickEntity } from '../tick/tick.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -47,10 +47,10 @@ export class UserEntity {
   }
 
   @OneToMany(
-    type => EntryEntity,
-    entry => entry.user,
+    type => TickEntity,
+    tick => tick.user,
   )
-  entries: EntryEntity[];
+  ticks: TickEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

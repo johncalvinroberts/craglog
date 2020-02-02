@@ -37,4 +37,25 @@ export class RouteService {
   delete(id): Promise<DeleteResult> {
     return this.routeRepository.delete(id);
   }
+
+  async getStats() {
+    const totalPromise = this.routeRepository.count();
+    const boulderPromise = this.routeRepository.count({
+      where: { style: 'boulder' },
+    });
+    const sportPromise = this.routeRepository.count({
+      where: { style: 'sport' },
+    });
+    const tradPromise = this.routeRepository.count({
+      where: { style: 'trad' },
+    });
+
+    const [total, boulder, sport, trad] = await Promise.all([
+      totalPromise,
+      boulderPromise,
+      sportPromise,
+      tradPromise,
+    ]);
+    return { total, boulder, sport, trad };
+  }
 }

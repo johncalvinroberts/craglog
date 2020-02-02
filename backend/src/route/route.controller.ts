@@ -32,4 +32,9 @@ export class RouteController {
   update(@Param('id') id, @Body() data): Promise<unknown> {
     return this.routeService.update({ ...data, id });
   }
+
+  @Get('stats')
+  stats() {
+    return this.routeService.getStats();
+  }
 }

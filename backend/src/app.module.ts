@@ -6,7 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { RouteModule } from './route/route.module';
 import { UserModule } from './user/user.module';
 import { JobModule } from './job/job.module';
-import { EntryModule } from './entry/entry.module';
+import { TickModule } from './tick/tick.module';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { EntryModule } from './entry/entry.module';
     RouteModule,
     UserModule,
     JobModule,
-    EntryModule,
+    TickModule,
   ],
   controllers: [AppController],
   providers: [AppService],

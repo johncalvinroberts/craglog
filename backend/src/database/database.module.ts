@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { RouteEntity } from '../route/route.entity';
 import { UserEntity } from '../user/user.entity';
-import { EntryEntity } from '../entry/entry.entity';
+import { TickEntity } from '../tick/tick.entity';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { EntryEntity } from '../entry/entry.entity';
         database: configService.get('POSTGRES_DB'),
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
-        entities: [RouteEntity, UserEntity, EntryEntity],
+        entities: [RouteEntity, UserEntity, TickEntity],
         synchronize: true,
       }),
     }),

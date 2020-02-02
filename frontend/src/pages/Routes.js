@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import useSWR, { useSWRPages, mutate } from 'swr';
-import { Box, Spinner, Icon, Heading, Button, Input } from '@chakra-ui/core';
+import {
+  Box,
+  Spinner,
+  Icon,
+  Heading,
+  Button,
+  Input,
+  StatGroup,
+  Stat,
+  StatNumber,
+  StatHelpText,
+  useToast,
+} from '@chakra-ui/core';
 import useThrottle from '../hooks/useThrottle';
 import DashboardWrapper from '../components/DashboardWrapper';
 import RouteCard from '../components/RouteCard';
@@ -33,6 +45,15 @@ export default function Routes() {
     mutate(`_swr_page_count_${PAGE_KEY}`, 0);
     mutate(`_swr_page_offset_${PAGE_KEY}`, 0);
   }, [query]);
+
+  const toast = useToast();
+  const { data: stats, error: statsError } = useSWR('/route/stats', http.get);
+
+  useEffect(() => {
+    if (statsError) {
+      toast({ message: statsError, status: 'error' });
+    }
+  }, [statsError, toast]);
 
   const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
     // page key
@@ -72,12 +93,38 @@ export default function Routes() {
       <Box d="block" mb={8} borderWidth="1px" p={2}>
         <Box mb={4}>
           <Heading size="md">Routes</Heading>
-          <Box my={2}>
-            <Input
-              placeholder="Search for routes"
-              onChange={(e) => setQuery(e.currentTarget.value)}
-            />
-          </Box>
+        </Box>
+        <StatGroup mb={4}>
+          <Stat>
+            <StatNumber as="div">
+              {!stats ? <Spinner size="xl" /> : stats.total}
+            </StatNumber>
+            <StatHelpText textTransform="uppercase">Total</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber as="div">
+              {!stats ? <Spinner size="xl" /> : stats.boulder}
+            </StatNumber>
+            <StatHelpText textTransform="uppercase">Boulders</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber as="div">
+              {!stats ? <Spinner size="xl" /> : stats.sport}
+            </StatNumber>
+            <StatHelpText textTransform="uppercase">Sport</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber as="div">
+              {!stats ? <Spinner size="xl" /> : stats.trad}
+            </StatNumber>
+            <StatHelpText textTransform="uppercase">Trad</StatHelpText>
+          </Stat>
+        </StatGroup>
+        <Box my={2}>
+          <Input
+            placeholder="Search for routes"
+            onChange={(e) => setQuery(e.currentTarget.value)}
+          />
         </Box>
         <Box>{pages}</Box>
         {isLoadingMore && (

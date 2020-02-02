@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useSWR, { useSWRPages } from 'swr';
 import {
   Box,
@@ -8,6 +8,11 @@ import {
   Button,
   Text,
   PseudoBox,
+  StatGroup,
+  Stat,
+  StatNumber,
+  StatHelpText,
+  useToast,
 } from '@chakra-ui/core';
 import DashboardWrapper from '../components/DashboardWrapper';
 import useTitle from '../hooks/useTitle';
@@ -51,6 +56,9 @@ const Users = () => {
       admin <Icon name="chevron-right" /> Users
     </>,
   );
+
+  const toast = useToast();
+
   const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
     // page key
     'admin-users',
@@ -84,12 +92,40 @@ const Users = () => {
     [],
   );
 
+  const { data: stats, error: statsError } = useSWR('/user/stats', http.get);
+
+  useEffect(() => {
+    if (statsError) {
+      toast({ message: statsError, status: 'error' });
+    }
+  }, [statsError, toast]);
+
   return (
     <DashboardWrapper>
       <Box d="block" mb={8} borderWidth="1px" p={2}>
         <Box mb={4}>
-          <Heading size="md">users</Heading>
+          <Heading size="md">Users</Heading>
         </Box>
+        <StatGroup mb={4}>
+          <Stat>
+            <StatNumber as="div">
+              {!stats ? <Spinner size="xl" /> : stats.total}
+            </StatNumber>
+            <StatHelpText textTransform="uppercase">Total</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber as="div">
+              {!stats ? <Spinner size="xl" /> : stats.week}
+            </StatNumber>
+            <StatHelpText textTransform="uppercase">This Week</StatHelpText>
+          </Stat>
+          <Stat>
+            <StatNumber as="div">
+              {!stats ? <Spinner size="xl" /> : stats.month}
+            </StatNumber>
+            <StatHelpText textTransform="uppercase">This month</StatHelpText>
+          </Stat>
+        </StatGroup>
         <Box>{pages}</Box>
         {isLoadingMore && (
           <Box

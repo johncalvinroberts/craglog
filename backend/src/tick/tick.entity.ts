@@ -9,7 +9,7 @@ import {
 import { IsEnum } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
 
-enum EntryTypeEnum {
+enum TickTypeEnum {
   lead,
   flash,
   onsight,
@@ -27,7 +27,7 @@ enum EntryTypeEnum {
   utterFailure,
 }
 
-enum StyleEnum {
+enum TickStyleEnum {
   hangboard,
   gym,
   solo,
@@ -38,8 +38,8 @@ enum StyleEnum {
   trad,
 }
 
-@Entity('entry')
-export class EntryEntity {
+@Entity('tick')
+export class TickEntity {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
@@ -47,16 +47,16 @@ export class EntryEntity {
   notes = '';
 
   @Column('varchar', { length: 500 })
-  @IsEnum(EntryTypeEnum)
+  @IsEnum(TickTypeEnum)
   type = '';
 
   @Column('varchar', { length: 500 })
-  @IsEnum(StyleEnum)
+  @IsEnum(TickStyleEnum)
   style = '';
 
   @ManyToOne(
     type => UserEntity,
-    user => user.entries,
+    user => user.ticks,
   )
   user: UserEntity;
 
