@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, MoreThan } from 'typeorm';
 import { UserEntity } from './user.entity';
 import {
   LoginUserDto,
@@ -16,7 +16,7 @@ import {
 import * as jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { PaginationDto } from 'src/shared/pagination.dto';
+import { PaginationDto } from '../shared/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -131,5 +131,25 @@ export class UserService {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
+  }
+
+  async getStats() {
+    const now: Date = new Date();
+    const oneWeekAgo: Date = new Date(new Date().setDate(now.getDate() - 7));
+    const oneMonthAgo: Date = new Date(new Date().setMonth(now.getMonth() - 7));
+
+    const totalPromise = this.userRepository.count();
+    const weekPromise = this.userRepository.count({
+      where: { createdAt: MoreThan(oneWeekAgo) },
+    });
+    const monthPromise = this.userRepository.count({
+      where: { createdAt: MoreThan(oneMonthAgo) },
+    });
+    const [total, week, month] = await Promise.all([
+      totalPromise,
+      weekPromise,
+      monthPromise,
+    ]);
+    return { total, week, month };
   }
 }

@@ -69,4 +69,11 @@ export class UserController {
 
     return this.userService.buildAuthRO(maybeUser);
   }
+
+  @Get('stats')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  stats() {
+    return this.userService.getStats();
+  }
 }
