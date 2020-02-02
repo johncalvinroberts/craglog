@@ -11,10 +11,10 @@ import {
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
-import { LoginLayout } from '../layouts';
+import LoginLayout from '../components/LogInLayout';
 import useTitle from '../hooks/useTitle';
 import { useDispatch } from '../components/State';
-import TextField from '../fields/TextField';
+import TextField from '../components/TextField';
 import Form from '../components/Form';
 import { performRegistration, performLogin } from '../states';
 import useAuthState from '../hooks/useAuthState';

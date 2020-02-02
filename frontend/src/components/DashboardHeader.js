@@ -46,7 +46,6 @@ const DashboardHeader = (props) => {
         </Flex>
         <Flex
           flex={{ xs: '1' }}
-          ml={5}
           align="center"
           color="gray.500"
           justify="flex-end"

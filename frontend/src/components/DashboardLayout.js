@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@chakra-ui/core';
-import DashboardHeader from '../components/DashboardHeader';
-import SideNav from '../components/SideNav';
+import DashboardHeader from './DashboardHeader';
+import SideNav from './SideNav';
 
 const Main = (props) => <Box as="main" mx="auto" mb="3rem" {...props} />;
 

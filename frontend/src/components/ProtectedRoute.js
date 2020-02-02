@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useToast } from '@chakra-ui/core';
 import useAuthState from '../hooks/useAuthState';
+import NotFound from '../pages/NotFound';
 
 const ProtectedRoute = ({
   component: Component,
@@ -23,7 +24,7 @@ const ProtectedRoute = ({
   const hasRoles =
     user && rolesNeeded.every((role) => user.roles.includes(role));
   if (!hasRoles) {
-    return <Redirect to="/app" />;
+    return <NotFound />;
   }
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Icon, Heading, Box } from '@chakra-ui/core';
-import { LoginLayout } from '../layouts';
+import LoginLayout from '../components/LogInLayout';
 import useTitle from '../hooks/useTitle';
 
 const NotFound = () => {
-  useTitle('Page not found');
+  useTitle('Not found');
   return (
     <LoginLayout>
       <Box d="flex" justifyContent="center" flexWrap="wrap">

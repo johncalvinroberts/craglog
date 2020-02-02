@@ -19,6 +19,7 @@ const UtilMenu = () => {
   const history = useHistory();
   const toast = useToast();
   const { colorMode, toggleColorMode } = useColorMode();
+
   const handleLogout = () => {
     dispatch(performLogout());
     history.replace('/login');
@@ -28,6 +29,7 @@ const UtilMenu = () => {
       isClosable: true,
     });
   };
+
   return (
     <Menu>
       {({ isOpen }) => (

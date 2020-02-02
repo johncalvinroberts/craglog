@@ -3,7 +3,7 @@ import { ThemeProvider, CSSReset, ColorModeProvider } from '@chakra-ui/core';
 import { SWRConfig } from 'swr';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Loading from './Loading';
-import { DashboardLayout } from '../layouts';
+import DashboardLayout from './DashboardLayout';
 import State from './State';
 import theme from '../theme';
 import ProtectedRoute from './ProtectedRoute';
@@ -19,32 +19,49 @@ const Routes = lazy(() => import('../pages/Routes'));
 const Home = lazy(() => import('../pages/Home'));
 const Hangboard = lazy(() => import('../pages/Hangboard'));
 
+const AdminRoutes = () => {
+  return (
+    <Switch>
+      <Route path="/app" exact component={Home} />
+      <Route path="/app/hangboard" exact component={Hangboard} />
+      <Route
+        path="/app/admin/jobs"
+        exact
+        rolesNeeded={['admin']}
+        component={Jobs}
+      />
+      <Route
+        path="/app/admin/users"
+        exact
+        rolesNeeded={['admin']}
+        component={Users}
+      />
+      <ProtectedRoute
+        path="/app/admin/routes"
+        exact
+        rolesNeeded={['admin']}
+        component={Routes}
+      />
+      <Route component={NotFound} />
+    </Switch>
+  );
+};
+
 const DashboardRoutes = () => {
   return (
     <DashboardLayout>
-      <Switch>
-        <ProtectedRoute path="/app" exact component={Home} />
-        <ProtectedRoute path="/app/hangboard" exact component={Hangboard} />
-        <ProtectedRoute
-          path="/app/admin/jobs"
-          exact
-          rolesNeeded={['admin']}
-          component={Jobs}
-        />
-        <ProtectedRoute
-          path="/app/admin/users"
-          exact
-          rolesNeeded={['admin']}
-          component={Users}
-        />
-        <ProtectedRoute
-          path="/app/admin/routes"
-          exact
-          rolesNeeded={['admin']}
-          component={Routes}
-        />
-        <Route component={NotFound} />
-      </Switch>
+      <Suspense fallback={<Loading />}>
+        <Switch>
+          <Route path="/app" exact component={Home} />
+          <Route path="/app/hangboard" exact component={Hangboard} />
+          <ProtectedRoute
+            path="/app/admin"
+            rolesNeeded={['admin']}
+            component={AdminRoutes}
+          />
+          <Route component={NotFound} />
+        </Switch>
+      </Suspense>
     </DashboardLayout>
   );
 };
@@ -63,7 +80,7 @@ export default () => {
                     <Route path="/" exact component={Landing} />
                     <Route path="/login" exact component={LogIn} />
                     <Route path="/register" exact component={Register} />
-                    <DashboardRoutes path="/app" />
+                    <ProtectedRoute path="/app" component={DashboardRoutes} />
                     <Route component={NotFound} />
                   </Switch>
                 </Router>
