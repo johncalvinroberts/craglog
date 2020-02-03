@@ -150,11 +150,12 @@ async function scrapeSingleRoute(href) {
 module.exports = async function(job) {
   const { href } = job.data;
   debug('Scraper received job to scrape single route', { href, job });
+  job.log('starting scraping');
   try {
     await scrapeSingleRoute(href);
     Promise.resolve();
   } catch (error) {
     debug('FAILED ROUTE JOB', { error, job });
-    Promise.reject(error);
+    throw new Error(JSON.stringify(error));
   }
 };

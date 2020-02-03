@@ -51,7 +51,7 @@ export default function Routes() {
 
   useEffect(() => {
     if (statsError) {
-      toast({ message: statsError, status: 'error' });
+      toast({ description: statsError.message, status: 'error' });
     }
   }, [statsError, toast]);
 

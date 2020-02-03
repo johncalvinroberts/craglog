@@ -2,6 +2,7 @@ import React from 'react';
 import { Box } from '@chakra-ui/core';
 import DashboardHeader from './DashboardHeader';
 import SideNav from './SideNav';
+import MobileNav from './MobileNav';
 
 const Main = (props) => <Box as="main" mx="auto" mb="3rem" {...props} />;
 
@@ -14,6 +15,7 @@ const Dashboard = ({ children }) => {
         maxWidth="18rem"
         width="full"
       />
+      <MobileNav />
       <Box pl={[0, null, '18rem']}>
         <Main>{children}</Main>
       </Box>

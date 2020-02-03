@@ -41,11 +41,6 @@ export class UserEntity {
   @Column('varchar', { array: true })
   roles: string[] = ['user'];
 
-  @BeforeInsert()
-  setDefaults(): void {
-    this.password = crypto.createHmac('sha256', this.password).digest('hex');
-  }
-
   @OneToMany(
     type => TickEntity,
     tick => tick.user,
@@ -57,4 +52,9 @@ export class UserEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  setDefaults(): void {
+    this.password = crypto.createHmac('sha256', this.password).digest('hex');
+  }
 }

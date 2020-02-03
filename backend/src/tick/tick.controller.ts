@@ -9,7 +9,7 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { User } from '../shared/decorators';
 import { TickService } from './tick.service';
@@ -23,16 +23,24 @@ export class TickController {
   constructor(private readonly tickService: TickService) {}
 
   @Get()
+  @ApiQuery(TickQueryDto)
   findAll(@Query() query: TickQueryDto, @User() user) {
     return this.tickService.findAll(query, user);
   }
 
+  @Get(':id')
+  findById(@Param('id') id, @User() user) {
+    return this.tickService.findById(id, user);
+  }
+
   @Post()
+  @ApiBody({ type: CreateTickDto })
   create(@Body() payload: CreateTickDto, @User() user) {
     return this.tickService.create(payload, user);
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateTickDto })
   update(@Param('id') id, @Body() payload: UpdateTickDto, @User() user) {
     return this.tickService.update(id, payload, user);
   }

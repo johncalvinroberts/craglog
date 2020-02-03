@@ -6,7 +6,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { IsEnum, Max } from 'class-validator';
+import { Exclude } from 'class-transformer';
+import { IsEnum, MaxLength, Max } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
 import { RouteEntity } from '../route/route.entity';
 
@@ -54,26 +55,38 @@ export class TickEntity {
   id: number;
 
   @Column('text')
+  @MaxLength(2000)
   notes = '';
 
   @Column('varchar', { length: 500 })
-  @Max(2000)
+  @MaxLength(500)
   @IsEnum(TickTypeEnum)
   type = '';
 
   @Column('varchar', { length: 500 })
+  @MaxLength(500)
   @IsEnum(TickStyleEnum)
   style = '';
 
   @ManyToOne(
     type => UserEntity,
     user => user.ticks,
-    { nullable: false },
+    { nullable: false, eager: false },
   )
   user: UserEntity;
 
-  @ManyToOne(type => RouteEntity, { nullable: true })
+  @Column({ nullable: true })
+  userId: number;
+
+  @ManyToOne(type => RouteEntity, { nullable: true, eager: true })
   route: RouteEntity;
+
+  @Column('int', { nullable: true })
+  @Max(10)
+  physicalRating: number;
+
+  @Column('timestamp without time zone')
+  tickDate: Date;
 
   @CreateDateColumn()
   createdAt: Date;

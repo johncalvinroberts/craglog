@@ -112,7 +112,7 @@ const MobileNav = () => {
         bottom="20px"
         maxWidth="100px"
         right="20px"
-        d="flex"
+        display={['flex', 'flex', 'none']}
         flexWrap="wrap"
         justifyContent="center"
       >

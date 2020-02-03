@@ -71,7 +71,7 @@ const JobItem = ({ item, type }) => {
       });
     }
   };
-
+  const failedReason = item.failedReason && JSON.parse(item.failedReason);
   return (
     <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
       <Box d="flex" width="100%">
@@ -122,13 +122,13 @@ const JobItem = ({ item, type }) => {
               {item.attemptsMade}
             </Text>
           </Box>
-          {item.failedReason && (
+          {failedReason && (
             <Box d="flex" alignItems="flex-start" width="100%">
               <Text fontWeight="bold" fontSize="xs">
                 Failed reason:
               </Text>
               <Text mx={2} fontSize="xs">
-                {item.failedReason}
+                {failedReason.error}
               </Text>
             </Box>
           )}

@@ -4,6 +4,7 @@ const Queue = require('bull');
 const debug = require('debug')('app:service:jobs');
 
 const CURRENT_SCRAPE_PAGE_KEY = 'scrape-page';
+const INITIAL_PAGE = parseInt(process.env.INITIAL_PAGE);
 const MAX_PAGE = parseInt(process.env.MAX_PAGE);
 const LIST_SCRAPE_CONCURRENCY = parseInt(process.env.LIST_SCRAPE_CONCURRENCY);
 const ROUTE_SCRAPE_CONCURRENCY = parseInt(process.env.ROUTE_SCRAPE_CONCURRENCY);
@@ -57,7 +58,10 @@ class JobService {
     ]);
 
     if (!currentPage) {
-      await execRedis(this.redisClient, 'set', [CURRENT_SCRAPE_PAGE_KEY, 1]);
+      await execRedis(this.redisClient, 'set', [
+        CURRENT_SCRAPE_PAGE_KEY,
+        INITIAL_PAGE
+      ]);
       return this.getScraperPage();
     }
 

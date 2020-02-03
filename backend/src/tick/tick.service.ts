@@ -26,8 +26,18 @@ export class TickService {
     });
   }
 
-  findById(id): Promise<TickEntity> {
-    return this.tickRepository.findOne({ id });
+  async findById(id, user: UserEntity): Promise<TickEntity> {
+    const item: TickEntity = await this.tickRepository.findOne({ id });
+
+    if (!item) {
+      throw new NotFoundException('Tick not found');
+    }
+
+    if (item.userId !== user.id) {
+      throw new UnauthorizedException();
+    }
+
+    return item;
   }
 
   /* eslint-disable prefer-const */
@@ -38,10 +48,14 @@ export class TickService {
 
     if (routeId) {
       route = await this.routeService.findById(routeId);
-      if (!route) throw new BadRequestException();
+      if (!route) throw new BadRequestException('Route not found');
     }
 
-    return this.tickRepository.save({ ...toSave, user, route });
+    return this.tickRepository.save({
+      ...toSave,
+      user,
+      route,
+    });
   }
 
   async update(
@@ -57,7 +71,7 @@ export class TickService {
       throw new NotFoundException();
     }
 
-    if (prev.user.id !== user.id) {
+    if (prev.userId !== user.id) {
       throw new UnauthorizedException();
     }
 
