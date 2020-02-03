@@ -1,17 +1,27 @@
 import React from 'react';
-import { Box, Spinner, Icon, Heading, Button, Text } from '@chakra-ui/core';
+import {
+  Box,
+  Spinner,
+  Icon,
+  Heading,
+  Button,
+  Text,
+  useToast,
+} from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
 import JobItem from './JobItem';
 import http from '../../http';
 
 const JobsDataGrid = ({ params }) => {
+  const toast = useToast();
+
   const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
     // page key
     'admin-jobs',
     /* eslint-disable react-hooks/rules-of-hooks */
     // page component
     ({ offset, withSWR }) => {
-      const { data } = withSWR(
+      const { data, error } = withSWR(
         // use the wrapper to wrap the *pagination API SWR*
         useSWR(
           `/job?skip=${offset || 0}&limit=25&type=${params.type}&status=${
@@ -20,6 +30,7 @@ const JobsDataGrid = ({ params }) => {
           http.get,
         ),
       );
+      if (error) toast({ description: error.message, status: 'error' });
       /* eslint-enable react-hooks/rules-of-hooks */
       // you can still use other SWRs outside
       if (!data) {

@@ -2,9 +2,8 @@ import { Injectable, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { RouteEntity } from './route.entity';
-import { CreateRouteDto } from './dto/create-route.dto';
 import { AuthGuard } from '../shared/guards';
-import { RouteQueryDto } from './dto/route-query.dto';
+import { RouteQueryDto, CreateRouteDto } from './dto';
 
 @Injectable()
 @UseGuards(AuthGuard)
@@ -24,6 +23,10 @@ export class RouteService {
         .getMany();
     }
     return this.routeRepository.find(query);
+  }
+
+  findById(id): Promise<RouteEntity> {
+    return this.routeRepository.findOne({ id });
   }
 
   create(route: CreateRouteDto): Promise<RouteEntity> {

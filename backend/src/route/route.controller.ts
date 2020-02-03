@@ -10,7 +10,7 @@ import {
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { RouteService } from './route.service';
 import { RouteEntity } from './route.entity';
-import { RouteQueryDto } from './dto/route-query.dto';
+import { RouteQueryDto } from './dto';
 
 @ApiBearerAuth()
 @ApiTags('route')
@@ -21,6 +21,11 @@ export class RouteController {
   @Get()
   find(@Query() query: RouteQueryDto): Promise<RouteEntity[]> {
     return this.routeService.findAll(query);
+  }
+
+  @Get(':id')
+  findById(@Param('id') id) {
+    return this.routeService.findById(id);
   }
 
   @Post()

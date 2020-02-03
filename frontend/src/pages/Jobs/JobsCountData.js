@@ -67,7 +67,7 @@ const JobsCountData = ({ params, handleChangeParams }) => {
   const { data: countData, error } = useSWR('/job/count', http.get);
 
   useEffect(() => {
-    if (error) toast({ message: error, status: 'error' });
+    if (error) toast({ description: error.message, status: 'error' });
   }, [error, toast]);
 
   const { route = {}, list = {} } = countData || {};

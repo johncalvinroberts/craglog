@@ -6,10 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { IsEnum } from 'class-validator';
+import { IsEnum, Max } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
+import { RouteEntity } from '../route/route.entity';
 
-enum TickTypeEnum {
+export enum TickTypeEnum {
   lead,
   flash,
   onsight,
@@ -27,7 +28,7 @@ enum TickTypeEnum {
   utterFailure,
 }
 
-enum TickStyleEnum {
+export enum TickStyleEnum {
   hangboard,
   gym,
   solo,
@@ -38,6 +39,15 @@ enum TickStyleEnum {
   trad,
 }
 
+export const routeStyles: string[] = [
+  'solo',
+  'boulder',
+  'sport',
+  'trad',
+  'aid',
+  'toprope',
+];
+
 @Entity('tick')
 export class TickEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -47,6 +57,7 @@ export class TickEntity {
   notes = '';
 
   @Column('varchar', { length: 500 })
+  @Max(2000)
   @IsEnum(TickTypeEnum)
   type = '';
 
@@ -57,8 +68,12 @@ export class TickEntity {
   @ManyToOne(
     type => UserEntity,
     user => user.ticks,
+    { nullable: false },
   )
   user: UserEntity;
+
+  @ManyToOne(type => RouteEntity, { nullable: true })
+  route: RouteEntity;
 
   @CreateDateColumn()
   createdAt: Date;

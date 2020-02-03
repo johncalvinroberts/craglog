@@ -22,12 +22,12 @@ export class PaginationDto {
 
   @IsOptional()
   @Exclude()
-  orderBy: string;
+  orderBy = 'createdAt';
 
   @IsOptional()
   @IsEnum(SortEnum)
   @Exclude()
-  sort: string;
+  sort = 'DESC';
 
   @Expose()
   @IsOptional()
