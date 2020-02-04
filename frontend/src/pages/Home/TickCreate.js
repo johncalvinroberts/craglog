@@ -22,9 +22,9 @@ const defaultValues = {
 const LogCreate = () => {
   useTitle('Add Log');
   const onSubmit = async (values) => console.log('yooooyoyo', values);
-  const [position, error] = useGeoLocation();
+  const [position] = useGeoLocation();
   const center = getCoordsFromUserPosition(position);
-  console.log({ position, error });
+
   return (
     <TickForm
       onSubmit={onSubmit}

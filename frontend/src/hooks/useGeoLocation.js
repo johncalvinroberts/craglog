@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { fallbackPosition } from '../constants';
 
 const useGeoLocation = (options) => {
   const [position, setPosition] = useState();
@@ -17,7 +16,6 @@ const useGeoLocation = (options) => {
       (error) => {
         if (!canceled) {
           setError(error);
-          setPosition(fallbackPosition);
         }
       },
       options,

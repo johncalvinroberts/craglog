@@ -7,14 +7,17 @@ const TextAreaField = ({ name, required, ...rest }) => {
     formControl: {
       maxWidth: 'unset',
     },
+    helperText: {
+      maxWidth: 'unset',
+    },
   };
 
   return (
     <FormField
       name={name}
       required={required}
-      {...rest}
       styleProps={styleProps}
+      {...rest}
     >
       {({ register, helperId }) => {
         return (

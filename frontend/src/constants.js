@@ -44,9 +44,4 @@ export const outdoorStyleEnum = [
   'trad',
 ];
 
-export const fallbackPosition = {
-  coords: {
-    latitude: 37.8651,
-    longitude: 119.5383,
-  },
-};
+export const fallbackPosition = [37.8651, 119.5383];

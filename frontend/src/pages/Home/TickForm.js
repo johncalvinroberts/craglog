@@ -93,6 +93,7 @@ const TickForm = ({ defaultValues, onSubmit, mapDefaultCenter }) => {
             <SelectField
               name="type"
               label="Did you send?"
+              required
               options={tickTypeOptions}
               helperText="Select a type that describes your accomplishment or failure"
             />
