@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 import { IsEnum, MaxLength, Max } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
 import { RouteEntity } from '../route/route.entity';
@@ -84,6 +83,12 @@ export class TickEntity {
   @Column('int', { nullable: true })
   @Max(10)
   physicalRating: number;
+
+  @Column('varchar', { length: 500, nullable: true })
+  gymName = '';
+
+  @Column('point', { nullable: true })
+  location = '';
 
   @Column('timestamp without time zone')
   tickDate: Date;

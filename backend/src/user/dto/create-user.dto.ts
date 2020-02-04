@@ -1,4 +1,5 @@
 import { IsNotEmpty, MinLength, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -9,6 +10,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(6)
   @MaxLength(250)
+  @Transform(val => val.toLowerCase())
   readonly email: string;
 
   @IsNotEmpty()

@@ -8,12 +8,16 @@ import { toggleMobileNav } from '../../states';
 import { useDispatch } from '../../components/State';
 import TextAreaField from '../../components/TextAreaField';
 import SelectField from '../../components/SelectField';
+import TextField from '../../components/TextField';
 import camelCaseToTitleCase from '../../utils/camelCaseToTitleCase';
 
 const validationSchema = yup.object().shape({
   type: yup
     .string()
-    .oneOf(tickTypeEnum)
+    .oneOf(
+      tickTypeEnum,
+      'Please choose a type that describes your performance on this climb',
+    )
     .when('style', {
       is: (val) => outdoorStyleEnum.includes(val),
       then: yup.string().required(),
@@ -21,10 +25,17 @@ const validationSchema = yup.object().shape({
   style: yup
     .string()
     .required()
-    .oneOf(tickStyleEnum),
+    .oneOf(tickStyleEnum, 'Please choose a style'),
   routeId: yup.string(),
   notes: yup.string().max(2000),
-  tickDate: yup.date().required(),
+  tickDate: yup
+    .date('Please choose a date')
+    .required('Please choose a date')
+    .typeError('Please choose a date')
+    .max(
+      new Date(),
+      `You can't log a climb in the future! Gotta climb it first! This is why the purists hate on us.`,
+    ),
   physicalRating: yup.number(),
 });
 
@@ -47,6 +58,11 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   }, [dispatch]);
 
   const formMethods = useForm({ validationSchema, defaultValues });
+  const { watch } = formMethods;
+
+  const style = watch('style');
+
+  const isOutdoor = outdoorStyleEnum.includes(style);
 
   return (
     <Form
@@ -54,18 +70,30 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       methods={formMethods}
       defaultValues={defaultValues}
     >
-      <SelectField
-        name="style"
-        label="Style"
-        options={tickStyleOptions}
-        helperText="What kind of climbing or workout did you do?"
-      />
-      <SelectField
-        name="type"
-        label="Did you send?"
-        options={tickTypeOptions}
-        helperText="What kind of climbing or workout did you do?"
-      />
+      <Box d="flex" justifyContent="space-between" flexWrap="wrap">
+        <SelectField
+          name="style"
+          label="Style"
+          options={tickStyleOptions}
+          required
+          helperText="What kind of climbing or workout did you do?"
+        />
+        <TextField
+          name="tickDate"
+          type="datetime-local"
+          required
+          label="Date &amp; Time"
+          helperText="When did this happen?"
+        />
+        {isOutdoor && (
+          <SelectField
+            name="type"
+            label="Did you send?"
+            options={tickTypeOptions}
+            helperText="Select a type that describes your accomplishment or failure"
+          />
+        )}
+      </Box>
       <TextAreaField
         name="notes"
         label="Notes"

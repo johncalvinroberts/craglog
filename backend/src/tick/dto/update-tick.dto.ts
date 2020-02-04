@@ -4,42 +4,50 @@ import {
   ValidateIf,
   IsOptional,
   MaxLength,
-  IsDate,
+  IsDateString,
   Max,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { TickTypeEnum, TickStyleEnum, routeStyles } from '../tick.entity';
 
 export class UpdateTickDto {
-  @ApiProperty()
   @IsEnum(TickTypeEnum)
+  @ApiProperty()
   @IsNotEmpty()
   @MaxLength(500)
-  readonly type: string;
+  type: string;
 
-  @ApiProperty()
   @IsEnum(TickStyleEnum)
   @IsNotEmpty()
-  @MaxLength(500)
-  readonly style: string;
-
   @ApiProperty()
+  @MaxLength(500)
+  style: string;
+
   @ValidateIf(tick => routeStyles.includes(tick.style))
   @IsOptional()
+  @ApiProperty()
   routeId: string;
 
-  @ApiProperty()
   @IsOptional()
   @MaxLength(2000)
-  notes: string;
-
   @ApiProperty()
+  notes = '';
+
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
+  @ApiProperty()
   tickDate: Date;
 
-  @ApiProperty()
   @Max(10)
   @IsOptional()
+  @ApiProperty()
   physicalRating: number;
+
+  @IsOptional()
+  @MaxLength(500)
+  gymName = '';
+
+  @IsOptional()
+  @MaxLength(500)
+  location = '';
 }

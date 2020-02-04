@@ -42,20 +42,20 @@ export class UserService {
     return this.userRepository.findOne(findOneOptions);
   }
 
-  async create(dto: CreateUserDto): Promise<AuthenticateUserRo> {
-    const { username, email, password } = dto;
+  async create(body: CreateUserDto): Promise<AuthenticateUserRo> {
+    const { username, email, password } = body;
 
     // create new user
     const newUser = new UserEntity();
     newUser.username = username;
-    newUser.email = email.toLowerCase();
+    newUser.email = email;
     newUser.password = password;
 
     try {
       const savedUser = await this.userRepository.save(newUser);
       return this.buildAuthRO(savedUser);
     } catch (error) {
-      if (error.code === 11000) {
+      if (parseInt(error.code) === 23505) {
         throw new ConflictException({
           message: 'Username or email is taken',
         });

@@ -42,4 +42,12 @@ export class CreateTickDto {
   @IsOptional()
   @ApiProperty()
   physicalRating: number;
+
+  @IsOptional()
+  @MaxLength(500)
+  gymName = '';
+
+  @IsOptional()
+  @MaxLength(500)
+  location = '';
 }
