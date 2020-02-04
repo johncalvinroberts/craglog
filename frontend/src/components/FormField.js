@@ -33,12 +33,18 @@ const FormFieldInner = memo(
         <FormLabel htmlFor={name}>{label}</FormLabel>
         {children({ register, name })}
         {!isError && helperText && (
-          <FormHelperText id={helperId} maxWidth="20rem">
+          <FormHelperText
+            id={helperId}
+            maxWidth="20rem"
+            {...styleProps.helperText}
+          >
             {helperText}
           </FormHelperText>
         )}
         {isError && (
-          <FormErrorMessage maxWidth="20rem">{error.message}</FormErrorMessage>
+          <FormErrorMessage maxWidth="20rem" {...styleProps.helperText}>
+            {error.message}
+          </FormErrorMessage>
         )}
       </FormControl>
     );

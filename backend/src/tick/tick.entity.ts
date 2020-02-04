@@ -81,7 +81,7 @@ export class TickEntity {
   route: RouteEntity;
 
   @Column('int', { nullable: true })
-  @Max(10)
+  @Max(100)
   physicalRating: number;
 
   @Column('varchar', { length: 500, nullable: true })

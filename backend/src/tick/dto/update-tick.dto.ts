@@ -38,7 +38,7 @@ export class UpdateTickDto {
   @ApiProperty()
   tickDate: Date;
 
-  @Max(10)
+  @Max(100)
   @IsOptional()
   @ApiProperty()
   physicalRating: number;

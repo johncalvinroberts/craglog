@@ -3,12 +3,14 @@ import { Button, Box } from '@chakra-ui/core';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import Form from '../../components/Form';
+import Map from '../../components/Map';
 import { tickStyleEnum, tickTypeEnum, outdoorStyleEnum } from '../../constants';
 import { toggleMobileNav } from '../../states';
 import { useDispatch } from '../../components/State';
 import TextAreaField from '../../components/TextAreaField';
 import SelectField from '../../components/SelectField';
 import TextField from '../../components/TextField';
+import SliderField from '../../components/SliderField';
 import camelCaseToTitleCase from '../../utils/camelCaseToTitleCase';
 
 const validationSchema = yup.object().shape({
@@ -36,7 +38,9 @@ const validationSchema = yup.object().shape({
       new Date(),
       `You can't log a climb in the future! Gotta climb it first! This is why the purists hate on us.`,
     ),
-  physicalRating: yup.number(),
+  physicalRating: yup.number().nullable(),
+  gymName: yup.string().max(500),
+  location: yup.string(),
 });
 
 const tickStyleOptions = tickStyleEnum.map((item) => ({
@@ -49,7 +53,7 @@ const tickTypeOptions = tickTypeEnum.map((item) => ({
   label: camelCaseToTitleCase(item),
 }));
 
-const TickForm = ({ defaultValues, onSubmit }) => {
+const TickForm = ({ defaultValues, onSubmit, mapDefaultCenter }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -83,21 +87,29 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           type="datetime-local"
           required
           label="Date &amp; Time"
-          helperText="When did this happen?"
         />
         {isOutdoor && (
-          <SelectField
-            name="type"
-            label="Did you send?"
-            options={tickTypeOptions}
-            helperText="Select a type that describes your accomplishment or failure"
-          />
+          <>
+            <SelectField
+              name="type"
+              label="Did you send?"
+              options={tickTypeOptions}
+              helperText="Select a type that describes your accomplishment or failure"
+            />
+            <Map containerStyleProps={{ mb: 5 }} center={mapDefaultCenter} />
+          </>
         )}
+        {style === 'gym' && <TextField name="gymName" label="Gym Name" />}
       </Box>
+      <SliderField
+        name="physicalRating"
+        label="Physical Rating"
+        helperText="Rate how you felt on this climb. How difficult was this climb for you?"
+      />
       <TextAreaField
         name="notes"
         label="Notes"
-        helperText="Describe your climb for future reference"
+        helperText="Beta, or other noteworthy details about the climb for future reference."
       />
       <Box
         position="fixed"
