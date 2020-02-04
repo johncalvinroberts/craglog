@@ -1,5 +1,6 @@
 import { IsInt, Max, Min, IsOptional, IsEnum } from 'class-validator';
 import { Transform, Exclude, Expose } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 enum SortEnum {
   DESC = 'DESC',
@@ -7,12 +8,14 @@ enum SortEnum {
 }
 
 export class PaginationDto {
+  @ApiProperty()
   @IsInt()
   @Min(0)
   @IsOptional()
   @Transform(parseInt)
   skip = 0;
 
+  @ApiProperty()
   @IsInt()
   @Min(0)
   @IsOptional()
@@ -20,10 +23,12 @@ export class PaginationDto {
   @Transform(parseInt)
   take = 25;
 
+  @ApiProperty()
   @IsOptional()
   @Exclude()
   orderBy = 'createdAt';
 
+  @ApiProperty()
   @IsOptional()
   @IsEnum(SortEnum)
   @Exclude()

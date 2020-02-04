@@ -17,6 +17,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { SideNavContent } from './SideNav';
 import useRouteChanged from '../hooks/useRouteChanged';
 import useAuthState from '../hooks/useAuthState';
+import useUIState from '../hooks/useUIState';
 
 const MobileNavButton = forwardRef((props, ref) => (
   <Button
@@ -48,7 +49,7 @@ const MobileUtilMenu = () => {
             <MenuList>
               <MenuItem
                 as={RouterLink}
-                to="/app/log/new"
+                to="/app/tick/new"
                 aria-label="Add a log"
               >
                 Add Log
@@ -104,21 +105,24 @@ const MobileAdminMenu = () => {
 
 const MobileNav = () => {
   const { user } = useAuthState();
+  const { showMobileNav } = useUIState();
   const isAdmin = user.roles.includes('admin');
   return (
     <>
-      <Box
-        position="fixed"
-        bottom="20px"
-        maxWidth="100px"
-        right="20px"
-        display={['flex', 'flex', 'none']}
-        flexWrap="wrap"
-        justifyContent="center"
-      >
-        <MobileUtilMenu />
-        {isAdmin && <MobileAdminMenu />}
-      </Box>
+      {showMobileNav && (
+        <Box
+          position="fixed"
+          bottom="20px"
+          maxWidth="100px"
+          right="20px"
+          display={['flex', 'flex', 'none']}
+          flexWrap="wrap"
+          justifyContent="center"
+        >
+          <MobileUtilMenu />
+          {isAdmin && <MobileAdminMenu />}
+        </Box>
+      )}
     </>
   );
 };

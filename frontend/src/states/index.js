@@ -1,4 +1,4 @@
-export { getState as getUIState } from './UI';
+export { getState as getUIState, toggleMobileNav } from './UI';
 export {
   getState as getAuthState,
   performRegistration,

@@ -98,5 +98,23 @@ export class TickService {
 
     return this.tickRepository.delete(id);
   }
+  /* eslint-enable prefer-const */
+
+  async getStats(userId) {
+    const res = await this.tickRepository
+      .createQueryBuilder('tick')
+      .where('tick.userId = :userId', { userId })
+      .select('tick.style AS style')
+      .addSelect('COUNT(*) AS count')
+      .groupBy('tick.style')
+      .getRawMany();
+
+    return res.reduce(
+      (memo, current) => ({
+        ...memo,
+        [current.style]: parseInt(current.count),
+      }),
+      {},
+    );
+  }
 }
-/* eslint-enable prefer-const */

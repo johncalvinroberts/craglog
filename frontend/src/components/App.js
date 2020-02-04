@@ -17,47 +17,29 @@ const Jobs = lazy(() => import('../pages/Jobs'));
 const Users = lazy(() => import('../pages/Users'));
 const Routes = lazy(() => import('../pages/Routes'));
 const Home = lazy(() => import('../pages/Home'));
-const Hangboard = lazy(() => import('../pages/Hangboard'));
 
 const AdminRoutes = () => {
-  return (
-    <Switch>
-      <Route path="/app" exact component={Home} />
-      <Route path="/app/hangboard" exact component={Hangboard} />
-      <Route
-        path="/app/admin/jobs"
-        exact
-        rolesNeeded={['admin']}
-        component={Jobs}
-      />
-      <Route
-        path="/app/admin/users"
-        exact
-        rolesNeeded={['admin']}
-        component={Users}
-      />
-      <ProtectedRoute
-        path="/app/admin/routes"
-        exact
-        rolesNeeded={['admin']}
-        component={Routes}
-      />
-      <Route component={NotFound} />
-    </Switch>
-  );
-};
-
-const DashboardRoutes = () => {
   return (
     <DashboardLayout>
       <Suspense fallback={<Loading />}>
         <Switch>
-          <Route path="/app" exact component={Home} />
-          <Route path="/app/hangboard" exact component={Hangboard} />
-          <ProtectedRoute
-            path="/app/admin"
+          <Route
+            path="/admin/jobs"
+            exact
             rolesNeeded={['admin']}
-            component={AdminRoutes}
+            component={Jobs}
+          />
+          <Route
+            path="/admin/users"
+            exact
+            rolesNeeded={['admin']}
+            component={Users}
+          />
+          <ProtectedRoute
+            path="/admin/routes"
+            exact
+            rolesNeeded={['admin']}
+            component={Routes}
           />
           <Route component={NotFound} />
         </Switch>
@@ -80,7 +62,12 @@ export default () => {
                     <Route path="/" exact component={Landing} />
                     <Route path="/login" exact component={LogIn} />
                     <Route path="/register" exact component={Register} />
-                    <ProtectedRoute path="/app" component={DashboardRoutes} />
+                    <ProtectedRoute path="/app" component={Home} />
+                    <ProtectedRoute
+                      path="/admin"
+                      rolesNeeded={['admin']}
+                      component={AdminRoutes}
+                    />
                     <Route component={NotFound} />
                   </Switch>
                 </Router>

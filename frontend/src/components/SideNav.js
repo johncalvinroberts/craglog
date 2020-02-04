@@ -35,16 +35,16 @@ export const SideNavContent = ({
         p="6"
       >
         <Box mb="10">
-          <MenuLink to="/app/log/new">Add Log</MenuLink>
+          <MenuLink to="/app/tick/new">Add Log</MenuLink>
           <MenuLink to="/app/hangboard">Hangboard</MenuLink>
         </Box>
         {isAdmin && (
           <Box mb="10">
             <NavGroupHeading>Admin</NavGroupHeading>
             <Box mb="10">
-              <MenuLink to="/app/admin/jobs">jobs</MenuLink>
-              <MenuLink to="/app/admin/users">users</MenuLink>
-              <MenuLink to="/app/admin/routes">routes</MenuLink>
+              <MenuLink to="/admin/jobs">jobs</MenuLink>
+              <MenuLink to="/admin/users">users</MenuLink>
+              <MenuLink to="/admin/routes">routes</MenuLink>
             </Box>
           </Box>
         )}

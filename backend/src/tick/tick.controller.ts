@@ -28,6 +28,11 @@ export class TickController {
     return this.tickService.findAll(query, user);
   }
 
+  @Get('stats')
+  getStats(@User('id') userId) {
+    return this.tickService.getStats(userId);
+  }
+
   @Get(':id')
   findById(@Param('id') id, @User() user) {
     return this.tickService.findById(id, user);

@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/core';
 
 const DashboardWrapper = ({ children }) => {
   return (
-    <Box maxWidth="46rem" pt={8} px={5}>
+    <Box maxWidth="46rem" py={5} px={5}>
       {children}
     </Box>
   );

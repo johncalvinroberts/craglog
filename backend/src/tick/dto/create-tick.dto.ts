@@ -15,13 +15,13 @@ export class CreateTickDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(500)
-  readonly type: string;
+  type: string;
 
   @IsEnum(TickStyleEnum)
   @IsNotEmpty()
   @ApiProperty()
   @MaxLength(500)
-  readonly style: string;
+  style: string;
 
   @ValidateIf(tick => routeStyles.includes(tick.style))
   @IsOptional()
