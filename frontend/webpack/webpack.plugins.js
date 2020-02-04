@@ -7,6 +7,7 @@ const WebpackCopyPlugin = require('copy-webpack-plugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 
 const DonePlugin = require('./webpack.done');
 
@@ -57,6 +58,24 @@ module.exports = (env) => {
           // public/ and not a SPA route
           new RegExp('/[^/]+\\.[^/]+$'),
         ],
+      }),
+      new ManifestPlugin({
+        fileName: 'asset-manifest.json',
+        publicPath: '/',
+        generate: (seed, files, entrypoints) => {
+          const manifestFiles = files.reduce((manifest, file) => {
+            manifest[file.name] = file.path;
+            return manifest;
+          }, seed);
+          const entrypointFiles = entrypoints.main.filter(
+            (fileName) => !fileName.endsWith('.map'),
+          );
+
+          return {
+            files: manifestFiles,
+            entrypoints: entrypointFiles,
+          };
+        },
       }),
       new CaseSensitivePathsPlugin(),
       // MiniCssExtractPlugin - runs in production, extracts css into stylesheets
