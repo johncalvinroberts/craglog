@@ -6,6 +6,7 @@ import {
   Input,
   Heading,
   Spinner,
+  Text,
 } from '@chakra-ui/core';
 import * as yup from 'yup';
 import useSWR from 'swr';
@@ -34,6 +35,18 @@ const getCoordsFromUserPosition = (position) => {
 };
 
 const getRouteCoords = (route) => _get(route, 'location.coordinates');
+
+const getRouteQueryUrl = ({ center, throttledQuery }) => {
+  if (!center && !throttledQuery) {
+    return null;
+  }
+  if (center && !throttledQuery) {
+    return `/route?origin=${center.join(',')}&take=10`;
+  }
+  if (throttledQuery && center) {
+    return `/route?origin=${center.join(',')}&take=10&name=${throttledQuery}`;
+  }
+};
 
 const validationSchema = yup.object().shape({
   type: yup
@@ -101,13 +114,14 @@ const TickForm = ({ defaultValues, onSubmit }) => {
 
   // fetch routes to show on map
   const { data: routes, error } = useSWR(
-    () => center && `/route?origin=${center.join(',')}&take=10`,
+    () => getRouteQueryUrl({ center, throttledQuery }),
     http.get,
   );
 
   // show remote error in toast
   useEffect(() => {
-    if (error) toast({ description: error.message, isClosable: true });
+    if (error)
+      toast({ description: error.message, isClosable: true, status: 'error' });
   }, [error, toast]);
 
   // find center for map
@@ -193,12 +207,17 @@ const TickForm = ({ defaultValues, onSubmit }) => {
                 <Box>
                   {!routes && (
                     <Box
-                      displayu="flex"
+                      display="flex"
                       justifyContent="center"
                       alignItems="center"
                       p={4}
+                      width="100%"
+                      flexWrap="wrap"
                     >
                       <Spinner size="xl" />
+                      <Box flex="0 0 100%" mt={2} textAlign="center">
+                        {!error && <Text>Loading routes 1 sec....</Text>}
+                      </Box>
                     </Box>
                   )}
                   {routes &&

@@ -30,7 +30,12 @@ const JobsDataGrid = ({ params }) => {
           http.get,
         ),
       );
-      if (error) toast({ description: error.message, status: 'error' });
+      if (error)
+        toast({
+          description: error.message,
+          status: 'error',
+          isClosable: true,
+        });
       /* eslint-enable react-hooks/rules-of-hooks */
       // you can still use other SWRs outside
       if (!data) {

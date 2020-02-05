@@ -3,7 +3,7 @@ import { Box, Spinner, Text } from '@chakra-ui/core';
 import GoogleMap from 'google-map-react';
 import { GOOGLE_MAPS_API_KEY, fallbackPosition } from '../constants';
 
-export default ({ children, containerStyleProps, center, error }) => {
+export default ({ children, containerStyleProps, center, error, ...props }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const handleLoaded = () => {
@@ -28,8 +28,8 @@ export default ({ children, containerStyleProps, center, error }) => {
         >
           <Spinner size="xl" />
           <Box flex="0 0 100%" mt={2}>
-            {!error && <Text>Loading da map 1 sec....</Text>}
-            {error && <Text color="error">Loading da map 1 sec....</Text>}
+            {!error && <Text textAlign="center">Loading da map 1 sec....</Text>}
+            {error && <Text color="error">{error.message}</Text>}
           </Box>
         </Box>
       </Box>
@@ -47,6 +47,7 @@ export default ({ children, containerStyleProps, center, error }) => {
             center={center}
             defaultZoom={5}
             onGoogleApiLoaded={() => handleLoaded()}
+            {...props}
           >
             {children}
           </GoogleMap>
