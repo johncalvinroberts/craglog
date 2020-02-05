@@ -59,7 +59,7 @@ const LogIn = () => {
       history.replace('/app');
     } catch (error) {
       toast({
-        description: error.message,
+        description: error.message || 'You entered something wrong',
         status: 'error',
         duration: 9000,
         isClosable: true,

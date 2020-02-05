@@ -106,7 +106,7 @@ async function fetchAndFormatRoute(href) {
   const externalCragId = cragHref.substring(cragHref.lastIndexOf('/') + 1);
   const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
 
-  const location = `${latitude}, ${longitude}`;
+  const location = [latitude, longitude];
 
   return {
     externalId: id,

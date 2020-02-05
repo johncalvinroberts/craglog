@@ -17,8 +17,8 @@ export class RouteEntity {
   @Column('varchar', { nullable: true })
   bolts = 0;
 
-  @Column('point', { nullable: true })
-  location = '';
+  @Column('geography', { nullable: true })
+  location = [0, 0];
 
   @Column('varchar', { nullable: true })
   grade = '';

@@ -1,7 +1,7 @@
 version: '3'
 services:
   db:
-    image: "postgres"    
+    image: "mdillon/postgis:9.6"
     environment:
       - POSTGRES_USER=craglog_admin
       - POSTGRES_PASSWORD=craglog
