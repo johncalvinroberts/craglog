@@ -22,24 +22,23 @@ export class RouteService {
         .take(query.take)
         .getMany();
     }
-    if (query.position) {
-      const position = {
-        type: 'Point',
-        coordinates: query.position,
-      };
 
-      console.log({ position });
+    if (query.origin) {
+      const origin = {
+        type: 'Point',
+        coordinates: query.origin,
+      };
 
       return this.routeRepository
         .createQueryBuilder('route')
-        .where('ST_Distance(route.location, ST_GeomFromGeoJSON(:position)) > 0')
+        .where('ST_Distance(route.location, ST_GeomFromGeoJSON(:origin)) > 0')
         .orderBy({
-          'ST_Distance(route.location, ST_GeomFromGeoJSON(:position))': {
-            order: 'DESC',
+          'ST_Distance(route.location, ST_GeomFromGeoJSON(:origin))': {
+            order: 'ASC',
             nulls: 'NULLS FIRST',
           },
         })
-        .setParameters({ position })
+        .setParameters({ origin })
         .skip(query.skip)
         .take(query.take)
         .getMany();

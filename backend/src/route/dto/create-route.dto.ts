@@ -1,6 +1,7 @@
 import { IsOptional, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
+import { Location } from '../route.entity';
 
 export class CreateRouteDto {
   @ApiProperty()
@@ -42,7 +43,7 @@ export class CreateRouteDto {
       coordinates: [latitude || 0, longitude || 0],
     };
   })
-  location: number[];
+  location: Location;
 
   @ApiProperty()
   @IsOptional()

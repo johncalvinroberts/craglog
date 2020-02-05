@@ -6,6 +6,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+export class Location {
+  type = 'Point';
+  coordinates = [0, 0];
+}
+
 @Entity('route')
 export class RouteEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -18,7 +23,7 @@ export class RouteEntity {
   bolts = 0;
 
   @Column('geography', { nullable: true })
-  location = [0, 0];
+  location: Location;
 
   @Column('varchar', { nullable: true })
   grade = '';

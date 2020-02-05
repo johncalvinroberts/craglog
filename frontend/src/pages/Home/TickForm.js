@@ -1,7 +1,17 @@
-import React, { useEffect } from 'react';
-import { Button, Box } from '@chakra-ui/core';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  Box,
+  useToast,
+  Input,
+  Heading,
+  Spinner,
+} from '@chakra-ui/core';
 import * as yup from 'yup';
+import useSWR from 'swr';
+import useDeepEffect from 'use-deep-compare-effect';
 import { useForm } from 'react-hook-form';
+import _get from 'lodash/get';
 import Form from '../../components/Form';
 import Map from '../../components/Map';
 import { tickStyleEnum, tickTypeEnum, outdoorStyleEnum } from '../../constants';
@@ -11,7 +21,19 @@ import TextAreaField from '../../components/TextAreaField';
 import SelectField from '../../components/SelectField';
 import TextField from '../../components/TextField';
 import SliderField from '../../components/SliderField';
+import Marker from '../../components/Marker';
+import RouteCard from '../../components/RouteCard';
 import camelCaseToTitleCase from '../../utils/camelCaseToTitleCase';
+import useGeoLocation from '../../hooks/useGeoLocation';
+import useThrottle from '../../hooks/useThrottle';
+import http from '../../http';
+
+const getCoordsFromUserPosition = (position) => {
+  if (!position) return null;
+  return [position.coords.latitude, position.coords.longitude];
+};
+
+const getRouteCoords = (route) => _get(route, 'location.coordinates');
 
 const validationSchema = yup.object().shape({
   type: yup
@@ -53,20 +75,59 @@ const tickTypeOptions = tickTypeEnum.map((item) => ({
   label: camelCaseToTitleCase(item),
 }));
 
-const TickForm = ({ defaultValues, onSubmit, mapDefaultCenter }) => {
+// TickForrm -> main component entrypoint
+const TickForm = ({ defaultValues, onSubmit }) => {
   const dispatch = useDispatch();
 
+  const [center, setCenter] = useState();
+
+  const [query, setQuery] = useState('');
+
+  const throttledQuery = useThrottle(query, 800);
+
+  const formMethods = useForm({ validationSchema, defaultValues });
+
+  const { watch } = formMethods;
+
+  const { style, route } = watch(['style', 'route']);
+
+  const [position] = useGeoLocation();
+
+  const userLocation = getCoordsFromUserPosition(position);
+
+  const isOutdoor = outdoorStyleEnum.includes(style);
+
+  const toast = useToast();
+
+  // fetch routes to show on map
+  const { data: routes, error } = useSWR(
+    () => center && `/route?origin=${center.join(',')}&take=10`,
+    http.get,
+  );
+
+  // show remote error in toast
+  useEffect(() => {
+    if (error) toast({ description: error.message, isClosable: true });
+  }, [error, toast]);
+
+  // find center for map
+  useDeepEffect(() => {
+    function findCenterToSet() {
+      if (route) {
+        return getRouteCoords(route);
+      }
+
+      return userLocation;
+    }
+
+    setCenter(findCenterToSet());
+  }, [route, setCenter, userLocation]);
+
+  // toggle mobile nav on mount/unmount
   useEffect(() => {
     dispatch(toggleMobileNav(false));
     return () => dispatch(toggleMobileNav(true));
   }, [dispatch]);
-
-  const formMethods = useForm({ validationSchema, defaultValues });
-  const { watch } = formMethods;
-
-  const style = watch('style');
-
-  const isOutdoor = outdoorStyleEnum.includes(style);
 
   return (
     <Form
@@ -97,7 +158,56 @@ const TickForm = ({ defaultValues, onSubmit, mapDefaultCenter }) => {
               options={tickTypeOptions}
               helperText="Select a type that describes your accomplishment or failure"
             />
-            <Map containerStyleProps={{ mb: 5 }} center={mapDefaultCenter} />
+            <Box mt={2}>
+              <Map containerStyleProps={{ mb: 5 }} center={center}>
+                {userLocation && (
+                  <Marker
+                    lat={userLocation[0]}
+                    lng={userLocation[1]}
+                    color="teal.300"
+                    label="You are here"
+                  />
+                )}
+                {routes &&
+                  routes.map((route) => {
+                    const [lat, lng] = getRouteCoords(route);
+                    return (
+                      <Marker
+                        lat={lat}
+                        lng={lng}
+                        color="blue"
+                        label={route.name}
+                        key={route.id}
+                      />
+                    );
+                  })}
+              </Map>
+              <Box mb={4}>
+                <Heading size="md" mb={2}>
+                  Route
+                </Heading>
+                <Input
+                  placeholder="Search for routes"
+                  onChange={(e) => setQuery(e.currentTarget.value)}
+                />
+                <Box>
+                  {!routes && (
+                    <Box
+                      displayu="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      p={4}
+                    >
+                      <Spinner size="xl" />
+                    </Box>
+                  )}
+                  {routes &&
+                    routes.map((route) => {
+                      return <RouteCard route={route} key={route.id} />;
+                    })}
+                </Box>
+              </Box>
+            </Box>
           </>
         )}
         {style === 'gym' && <TextField name="gymName" label="Gym Name" />}

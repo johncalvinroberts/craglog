@@ -21,7 +21,7 @@ const JobsDataGrid = ({ params }) => {
     /* eslint-disable react-hooks/rules-of-hooks */
     // page component
     ({ offset, withSWR }) => {
-      const { data, error } = withSWR(
+      const { data, error, revalidate } = withSWR(
         // use the wrapper to wrap the *pagination API SWR*
         useSWR(
           `/job?skip=${offset || 0}&limit=25&type=${params.type}&status=${
@@ -46,7 +46,14 @@ const JobsDataGrid = ({ params }) => {
         );
       }
       return data.map((job) => {
-        return <JobItem item={job} key={job.id} type={params.type} />;
+        return (
+          <JobItem
+            item={job}
+            key={job.id}
+            type={params.type}
+            revalidate={revalidate}
+          />
+        );
       });
     },
 

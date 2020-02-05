@@ -47,7 +47,7 @@ const JobLogs = ({ item, type }) => {
   );
 };
 
-const JobItem = ({ item, type }) => {
+const JobItem = ({ item, type, revalidate }) => {
   const jobCommands = [
     'retry',
     'remove',
@@ -62,6 +62,7 @@ const JobItem = ({ item, type }) => {
   const handleCommand = async (command) => {
     try {
       await http.patch(`/job/${item.id}`, { command, id: item.id, type });
+      revalidate();
     } catch (error) {
       toast({
         description: error.message,

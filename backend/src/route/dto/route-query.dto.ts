@@ -16,5 +16,5 @@ export class RouteQueryDto extends PaginationDto {
   @IsOptional()
   @ApiProperty()
   @Transform(val => (val ? val.split(',').map(parseFloat) : undefined))
-  position = '';
+  origin = '';
 }
