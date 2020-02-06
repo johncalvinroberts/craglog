@@ -7,6 +7,7 @@ export const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 /* eslint-enable prefer-destructuring */
 
 export const tickTypeEnum = [
+  // sport and trad/solo
   'lead',
   'flash',
   'onsight',
@@ -16,6 +17,42 @@ export const tickTypeEnum = [
   'firstAscent',
   'firstFreeAscent',
   'allFreeWithRest',
+  // toprope
+  'topRopeFreeAscent',
+  'topRopeWithRest',
+  // boulder
+  'send',
+  'dab',
+  'repeatSend',
+  // failures
+  'retreat',
+  'attempt',
+  'utterFailure',
+];
+
+export const sportAndTradTickTypeEnum = [
+  'lead',
+  'flash',
+  'onsight',
+  'redpoint',
+  'pinkpoint',
+  'ropedog',
+  'firstFreeAscent',
+  'allFreeWithRest',
+  'retreat',
+  'attempt',
+  'utterFailure',
+];
+
+export const topRopeTickTypeEnum = [
+  'topRopeFreeAscent',
+  'topRopeWithRest',
+  'retreat',
+  'attempt',
+  'utterFailure',
+];
+
+export const boulderTickTypeEnum = [
   'send',
   'dab',
   'repeatSend',
@@ -29,19 +66,19 @@ export const tickStyleEnum = [
   'gym',
   'solo',
   'boulder',
-  'aid',
   'toprope',
   'sport',
   'trad',
+  'other',
 ];
 
 export const outdoorStyleEnum = [
   'solo',
   'boulder',
-  'aid',
   'toprope',
   'sport',
   'trad',
+  'other',
 ];
 
 export const fallbackPosition = [37.8651, 119.5383];

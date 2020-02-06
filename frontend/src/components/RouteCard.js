@@ -6,7 +6,9 @@ const RouteCard = ({ route }) => {
     <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
       <Box d="flex" width="100%" alignItems="center">
         <Box flex="1" d="flex" alignItems="center">
-          <Box mr={1}>{route.name}</Box>
+          <Text mr={1} fontSize={['xs', 'sm']}>
+            {route.name}
+          </Text>
           <Tooltip label="grade">
             <Text mr={1} fontSize="xs">
               <Icon name="grade" mr={1} />

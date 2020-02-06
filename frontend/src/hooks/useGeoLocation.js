@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useGeoLocation = (options) => {
+const useGeoLocation = () => {
   const [position, setPosition] = useState();
   const [error, setError] = useState();
 
@@ -18,13 +18,12 @@ const useGeoLocation = (options) => {
           setError(error);
         }
       },
-      options,
     );
 
     return () => {
       canceled = true;
     };
-  }, [options]);
+  }, []);
 
   return [position, error];
 };

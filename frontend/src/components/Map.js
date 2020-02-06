@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Spinner, Text } from '@chakra-ui/core';
 import GoogleMap from 'google-map-react';
 import { GOOGLE_MAPS_API_KEY, fallbackPosition } from '../constants';
 
+const width = ['24rem', '30rem', '30rem', '46rem'];
+const height = ['18rem', '20rem', '26rem', '32rem'];
 export default ({ children, containerStyleProps, center, error, ...props }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  const handleLoaded = () => {
-    setIsLoaded(true);
-  };
-
   return (
     <>
       <Box
-        width="46rem"
-        height={['20rem', '26rem', '32rem']}
-        display={isLoaded && center ? 'none' : 'flex'}
+        width={width}
+        height={height}
+        display={center ? 'none' : 'flex'}
         justifyContent="center"
         alignItems="center"
+        flex="0 0 100%"
         {...containerStyleProps}
       >
         <Box
@@ -35,18 +32,16 @@ export default ({ children, containerStyleProps, center, error, ...props }) => {
       </Box>
       {center && (
         <Box
-          width="46rem"
-          height={isLoaded ? ['20rem', '26rem', '32rem'] : '0'}
-          opacity={isLoaded ? 1 : 0}
+          width={width}
+          height={center ? height : '0'}
+          opacity={center ? 1 : 0}
           {...containerStyleProps}
         >
           <GoogleMap
             bootstrapURLKeys={{ key: GOOGLE_MAPS_API_KEY }}
-            yesIWantToUseGoogleMapApiInternals
             defaultCenter={fallbackPosition}
             center={center}
             defaultZoom={5}
-            onGoogleApiLoaded={() => handleLoaded()}
             {...props}
           >
             {children}

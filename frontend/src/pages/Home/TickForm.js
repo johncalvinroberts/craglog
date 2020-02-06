@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Button,
   Box,
@@ -7,6 +7,7 @@ import {
   Heading,
   Spinner,
   Text,
+  PseudoBox,
 } from '@chakra-ui/core';
 import * as yup from 'yup';
 import useSWR from 'swr';
@@ -15,7 +16,14 @@ import { useForm } from 'react-hook-form';
 import _get from 'lodash/get';
 import Form from '../../components/Form';
 import Map from '../../components/Map';
-import { tickStyleEnum, tickTypeEnum, outdoorStyleEnum } from '../../constants';
+import {
+  tickStyleEnum,
+  tickTypeEnum,
+  outdoorStyleEnum,
+  sportAndTradTickTypeEnum,
+  topRopeTickTypeEnum,
+  boulderTickTypeEnum,
+} from '../../constants';
 import { toggleMobileNav } from '../../states';
 import { useDispatch } from '../../components/State';
 import TextAreaField from '../../components/TextAreaField';
@@ -28,6 +36,7 @@ import camelCaseToTitleCase from '../../utils/camelCaseToTitleCase';
 import useGeoLocation from '../../hooks/useGeoLocation';
 import useThrottle from '../../hooks/useThrottle';
 import http from '../../http';
+import calculateGeoDistance from '../../utils/calculateGeoDistance';
 
 const getCoordsFromUserPosition = (position) => {
   if (!position) return null;
@@ -46,6 +55,19 @@ const getRouteQueryUrl = ({ center, throttledQuery }) => {
   if (throttledQuery && center) {
     return `/route?origin=${center.join(',')}&take=10&name=${throttledQuery}`;
   }
+};
+
+const concatRoutesList = ({ currentRoute, queriedRoutes }) => {
+  if (!currentRoute && !queriedRoutes) return undefined;
+  if (currentRoute && !queriedRoutes) return [currentRoute];
+  if (!currentRoute) return queriedRoutes;
+  return queriedRoutes.reduce(
+    (memo, current) => {
+      if (current.id !== currentRoute.id) memo.push(current);
+      return memo;
+    },
+    [currentRoute],
+  );
 };
 
 const validationSchema = yup.object().shape({
@@ -78,15 +100,27 @@ const validationSchema = yup.object().shape({
   location: yup.string(),
 });
 
-const tickStyleOptions = tickStyleEnum.map((item) => ({
-  value: item,
-  label: camelCaseToTitleCase(item),
-}));
+const formatOptions = (arr) =>
+  arr.map((item) => ({
+    value: item,
+    label: camelCaseToTitleCase(item),
+  }));
 
-const tickTypeOptions = tickTypeEnum.map((item) => ({
-  value: item,
-  label: camelCaseToTitleCase(item),
-}));
+const tickStyleOptions = formatOptions(tickStyleEnum);
+
+const boulderTypeOptions = formatOptions(boulderTickTypeEnum);
+const sportAndTradTypeOptions = formatOptions(sportAndTradTickTypeEnum);
+const topRopTypeOptions = formatOptions(topRopeTickTypeEnum);
+const allTickTypes = formatOptions(tickTypeEnum);
+
+const tickTypeOptions = {
+  boulder: boulderTypeOptions,
+  trad: sportAndTradTypeOptions,
+  sport: sportAndTradTypeOptions,
+  solo: sportAndTradTypeOptions,
+  toprope: topRopTypeOptions,
+  other: allTickTypes,
+};
 
 // TickForrm -> main component entrypoint
 const TickForm = ({ defaultValues, onSubmit }) => {
@@ -94,15 +128,17 @@ const TickForm = ({ defaultValues, onSubmit }) => {
 
   const [center, setCenter] = useState();
 
+  const [mapCenter, setMapCenter] = useState();
+
   const [query, setQuery] = useState('');
 
   const throttledQuery = useThrottle(query, 800);
 
   const formMethods = useForm({ validationSchema, defaultValues });
 
-  const { watch } = formMethods;
+  const { watch, register, setValue } = formMethods;
 
-  const { style, route } = watch(['style', 'route']);
+  const { style, routeId } = watch(['style', 'routeId']);
 
   const [position] = useGeoLocation();
 
@@ -113,9 +149,19 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   const toast = useToast();
 
   // fetch routes to show on map
-  const { data: routes, error } = useSWR(
+  const { data: queriedRoutes, error } = useSWR(
     () => getRouteQueryUrl({ center, throttledQuery }),
     http.get,
+  );
+
+  const { data: currentRoute } = useSWR(
+    () => routeId && `/route/${routeId}`,
+    http.get,
+  );
+
+  const routes = useMemo(
+    () => concatRoutesList({ currentRoute, queriedRoutes }),
+    [queriedRoutes, currentRoute],
   );
 
   // show remote error in toast
@@ -127,15 +173,25 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   // find center for map
   useDeepEffect(() => {
     function findCenterToSet() {
-      if (route) {
-        return getRouteCoords(route);
+      if (mapCenter) {
+        return mapCenter;
+      }
+
+      if (routeId) {
+        return (
+          routes && getRouteCoords(routes.find((route) => route.id === routeId))
+        );
       }
 
       return userLocation;
     }
 
     setCenter(findCenterToSet());
-  }, [route, setCenter, userLocation]);
+  }, [routeId, setCenter, userLocation, mapCenter, routes]);
+
+  useEffect(() => {
+    register({ name: 'routeId' });
+  }, []); //eslint-disable-line
 
   // toggle mobile nav on mount/unmount
   useEffect(() => {
@@ -143,12 +199,34 @@ const TickForm = ({ defaultValues, onSubmit }) => {
     return () => dispatch(toggleMobileNav(true));
   }, [dispatch]);
 
+  const handleMapChange = useCallback(
+    ({ center: nextMapCenter }) => {
+      const { lat, lng } = nextMapCenter;
+      const distance = calculateGeoDistance([lat, lng], center);
+      if (distance > 200) {
+        setMapCenter([lat, lng]);
+      }
+    },
+    [center],
+  );
+
+  const handleSelectRoute = (route) => {
+    setValue('routeId', route.id);
+    setCenter(getRouteCoords(route));
+  };
+
   return (
     <Form
       onSubmit={onSubmit}
       methods={formMethods}
       defaultValues={defaultValues}
     >
+      <Box>
+        <Heading size="md">Info</Heading>
+        <Text size="xs" mb={4} as="div">
+          Fill in the basics about the log you&apos;re creating.
+        </Text>
+      </Box>
       <Box d="flex" justifyContent="space-between" flexWrap="wrap">
         <SelectField
           name="style"
@@ -169,11 +247,21 @@ const TickForm = ({ defaultValues, onSubmit }) => {
               name="type"
               label="Did you send?"
               required
-              options={tickTypeOptions}
+              options={tickTypeOptions[style]}
               helperText="Select a type that describes your accomplishment or failure"
             />
             <Box mt={2}>
-              <Map containerStyleProps={{ mb: 5 }} center={center}>
+              <Box>
+                <Heading size="md">Route</Heading>
+                <Text size="xs" mb={4} as="div">
+                  Choose a route from the map, or search for a route below.
+                </Text>
+              </Box>
+              <Map
+                containerStyleProps={{ mb: 5 }}
+                center={center}
+                onChange={({ center }) => handleMapChange({ center })}
+              >
                 {userLocation && (
                   <Marker
                     lat={userLocation[0]}
@@ -189,20 +277,22 @@ const TickForm = ({ defaultValues, onSubmit }) => {
                       <Marker
                         lat={lat}
                         lng={lng}
-                        color="blue"
                         label={route.name}
                         key={route.id}
+                        color="blue"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          handleSelectRoute(route);
+                        }}
                       />
                     );
                   })}
               </Map>
               <Box mb={4}>
-                <Heading size="md" mb={2}>
-                  Route
-                </Heading>
                 <Input
                   placeholder="Search for routes"
                   onChange={(e) => setQuery(e.currentTarget.value)}
+                  mb={2}
                 />
                 <Box>
                   {!routes && (
@@ -222,7 +312,34 @@ const TickForm = ({ defaultValues, onSubmit }) => {
                   )}
                   {routes &&
                     routes.map((route) => {
-                      return <RouteCard route={route} key={route.id} />;
+                      const isSelected = route.id === routeId;
+                      return (
+                        <PseudoBox
+                          as="button"
+                          display="block"
+                          width="100%"
+                          transition="all 0.2s ease"
+                          key={route.id}
+                          outline="none"
+                          _hover={{
+                            boxShadow: '0px 01px 0px black',
+                          }}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            handleSelectRoute(route);
+                          }}
+                          {...(isSelected
+                            ? {
+                                backgroundColor: 'teal.300',
+                                _hover: {
+                                  boxShadow: 'none',
+                                },
+                              }
+                            : null)}
+                        >
+                          <RouteCard route={route} />
+                        </PseudoBox>
+                      );
                     })}
                 </Box>
               </Box>

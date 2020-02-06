@@ -17,9 +17,10 @@ export enum TickTypeEnum {
   redpoint,
   pinkpoint,
   ropedog,
-  firstAscent,
   firstFreeAscent,
   allFreeWithRest,
+  topRopeFreeAscent,
+  topRopeWithRest,
   send,
   dab,
   repeatSend,
@@ -37,6 +38,7 @@ export enum TickStyleEnum {
   toprope,
   sport,
   trad,
+  other,
 }
 
 export const routeStyles: string[] = [
