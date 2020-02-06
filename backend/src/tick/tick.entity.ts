@@ -9,6 +9,7 @@ import {
 import { IsEnum, MaxLength, Max } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
 import { RouteEntity } from '../route/route.entity';
+import { LocationDto } from '../shared/location.dto';
 
 export enum TickTypeEnum {
   lead,
@@ -59,7 +60,7 @@ export class TickEntity {
   @MaxLength(2000)
   notes = '';
 
-  @Column('varchar', { length: 500 })
+  @Column('varchar', { length: 500, nullable: true })
   @MaxLength(500)
   @IsEnum(TickTypeEnum)
   type = '';
@@ -90,7 +91,7 @@ export class TickEntity {
   gymName = '';
 
   @Column('point', { nullable: true })
-  location = '';
+  location: LocationDto;
 
   @Column('timestamp without time zone')
   tickDate: Date;

@@ -9,11 +9,12 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { TickTypeEnum, TickStyleEnum, routeStyles } from '../tick.entity';
+import { LocationDto } from '../../shared/location.dto';
 
 export class UpdateTickDto {
   @IsEnum(TickTypeEnum)
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(500)
   type: string;
 
@@ -48,6 +49,5 @@ export class UpdateTickDto {
   gymName = '';
 
   @IsOptional()
-  @MaxLength(500)
-  location = '';
+  location: LocationDto;
 }

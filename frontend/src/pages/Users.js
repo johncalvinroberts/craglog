@@ -14,6 +14,7 @@ import {
   StatHelpText,
   useToast,
 } from '@chakra-ui/core';
+import EmptyView from '../components/EmptyView';
 import DashboardWrapper from '../components/DashboardWrapper';
 import useTitle from '../hooks/useTitle';
 import http from '../http';
@@ -137,17 +138,7 @@ const Users = () => {
             <Spinner size="md" />
           </Box>
         )}
-        {isReachingEnd && (
-          <Box
-            d="flex"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="100px"
-          >
-            <Icon name="warning-2" mr={2} />
-            <Heading size="s">Nothing.</Heading>
-          </Box>
-        )}
+        {isReachingEnd && <EmptyView />}
         {!isLoadingMore && (
           <Box
             d="flex"

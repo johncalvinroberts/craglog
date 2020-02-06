@@ -24,6 +24,6 @@ const useMounted = (initialIsMounted = true) => {
   );
 
   // Return the container, when we use it we check its current
-  return isMountedRef.current;
+  return isMountedRef;
 };
 export default useMounted;

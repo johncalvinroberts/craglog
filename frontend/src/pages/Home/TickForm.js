@@ -22,6 +22,7 @@ import { useForm } from 'react-hook-form';
 import _get from 'lodash/get';
 import Form from '../../components/Form';
 import Map from '../../components/Map';
+import EmptyView from '../../components/EmptyView';
 import {
   tickStyleEnum,
   tickTypeEnum,
@@ -91,16 +92,19 @@ const validationSchema = yup.object().shape({
     .string()
     .required()
     .oneOf(tickStyleEnum, 'Please choose a style'),
-  routeId: yup.string(),
+  routeId: yup.string().when('style', {
+    is: (val) => outdoorStyleEnum.includes(val),
+    then: yup
+      .string()
+      .required('Please choose a route')
+      .typeError('Please choose a route'),
+    otherwise: yup.string().nullable(),
+  }),
   notes: yup.string().max(2000),
   tickDate: yup
     .date('Please choose a date')
     .required('Please choose a date')
-    .typeError('Please choose a date')
-    .max(
-      new Date(),
-      `You can't log a climb in the future! Gotta climb it first! This is why the purists hate on us.`,
-    ),
+    .typeError('Please choose a date'),
   physicalRating: yup.number().nullable(),
   gymName: yup.string().max(500),
   location: yup.string(),
@@ -142,7 +146,9 @@ const TickForm = ({ defaultValues, onSubmit }) => {
 
   const formMethods = useForm({ validationSchema, defaultValues });
 
-  const { watch, register, setValue } = formMethods;
+  const { watch, register, setValue, errors } = formMethods;
+
+  const routeError = errors.routeId;
 
   const { style, routeId } = watch(['style', 'routeId']);
 
@@ -153,6 +159,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   const isOutdoor = outdoorStyleEnum.includes(style);
 
   const toast = useToast();
+
   const formRef = useRef();
 
   // fetch routes to show on map
@@ -236,7 +243,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       <Box>
         <Heading size="md">Info</Heading>
         <Text size="xs" mb={4} as="div" width="auto" height="auto">
-          Fill in the basics about the log you&apos;re creating.
+          Fill in the basics about the climb you&apos;re loggin.
         </Text>
       </Box>
       <Box d="flex" justifyContent="space-between" flexWrap="wrap">
@@ -270,12 +277,15 @@ const TickForm = ({ defaultValues, onSubmit }) => {
         />
         {isOutdoor && (
           <>
-            <Box mt={2}>
+            <Box mt={2} mb={4}>
               <Box>
                 <Heading size="md">Route</Heading>
-                <Text size="xs" mb={4} as="div" width="auto" height="auto">
+                <Text size="xs" mb={1} as="div" width="auto" height="auto">
                   Choose a route from the map, or search for a route by name
                   below.
+                </Text>
+                <Text width="100%" as="div" color="red.500" mb={2}>
+                  {routeError && routeError.message}
                 </Text>
               </Box>
               <Map
@@ -364,6 +374,9 @@ const TickForm = ({ defaultValues, onSubmit }) => {
                         </PseudoBox>
                       );
                     })}
+                  {routes && routes.length < 1 && (
+                    <EmptyView message="No routes found." />
+                  )}
                 </Box>
               </Box>
             </Box>

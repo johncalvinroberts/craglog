@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-  Box,
-  Spinner,
-  Icon,
-  Heading,
-  Button,
-  Text,
-  useToast,
-} from '@chakra-ui/core';
+import { Box, Spinner, Heading, Button, Text, useToast } from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
+import EmptyView from '../../components/EmptyView';
 import JobItem from './JobItem';
 import http from '../../http';
 
@@ -93,17 +86,7 @@ const JobsDataGrid = ({ params }) => {
           <Spinner size="md" />
         </Box>
       )}
-      {isReachingEnd && (
-        <Box
-          d="flex"
-          alignItems="center"
-          justifyContent="center"
-          minHeight="100px"
-        >
-          <Icon name="warning-2" mr={2} />
-          <Heading size="s">Nothing.</Heading>
-        </Box>
-      )}
+      {isReachingEnd && <EmptyView />}
       {!isLoadingMore && (
         <Box
           d="flex"

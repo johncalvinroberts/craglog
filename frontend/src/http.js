@@ -30,7 +30,7 @@ class Http {
     const res = await fetch(API_BASE_PATH + url, options);
     const value = await res.json();
     if (!res.ok) {
-      throw new Error(value.message);
+      throw value;
     } else {
       return value;
     }

@@ -14,6 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/core';
 import useThrottle from '../hooks/useThrottle';
+import EmptyView from '../components/EmptyView';
 import DashboardWrapper from '../components/DashboardWrapper';
 import RouteCard from '../components/RouteCard';
 import useTitle from '../hooks/useTitle';
@@ -137,17 +138,7 @@ export default function Routes() {
             <Spinner size="md" />
           </Box>
         )}
-        {isReachingEnd && (
-          <Box
-            d="flex"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="100px"
-          >
-            <Icon name="warning-2" mr={2} />
-            <Heading size="s">Nothing.</Heading>
-          </Box>
-        )}
+        {isReachingEnd && <EmptyView />}
         {!isLoadingMore && (
           <Box
             d="flex"

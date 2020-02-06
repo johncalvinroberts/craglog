@@ -12,8 +12,11 @@ const Form = forwardRef((props, ref) => {
     defaultValues,
     ...rest
   } = props;
+
   const [isLoading, setIsLoading] = useState(false);
-  const isMounted = useMounted();
+
+  const isMountedRef = useMounted();
+
   const { handleSubmit } = methods;
 
   const runSubmit = useCallback(
@@ -21,12 +24,12 @@ const Form = forwardRef((props, ref) => {
       try {
         setIsLoading(true);
         await onSubmit(event);
-        if (isMounted) setIsLoading(false);
+        if (isMountedRef.current) setIsLoading(false);
       } catch (error) {
-        if (isMounted) setIsLoading(false);
+        if (isMountedRef.current) setIsLoading(false);
       }
     },
-    [onSubmit, isMounted],
+    [isMountedRef, onSubmit],
   );
 
   return (

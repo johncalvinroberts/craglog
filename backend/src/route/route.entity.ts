@@ -5,11 +5,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-export class Location {
-  type = 'Point';
-  coordinates = [0, 0];
-}
+import { LocationDto } from '../shared/location.dto';
 
 @Entity('route')
 export class RouteEntity {
@@ -23,7 +19,7 @@ export class RouteEntity {
   bolts = 0;
 
   @Column('geography', { nullable: true })
-  location: Location;
+  location: LocationDto;
 
   @Column('varchar', { nullable: true })
   grade = '';
