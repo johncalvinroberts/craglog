@@ -53,6 +53,7 @@ export const topRopeTickTypeEnum = [
 ];
 
 export const boulderTickTypeEnum = [
+  'flash',
   'send',
   'dab',
   'repeatSend',

@@ -1,25 +1,20 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, forwardRef } from 'react';
 import { Box } from '@chakra-ui/core';
 import { FormContext } from 'react-hook-form';
+import useMounted from '../hooks/useMounted';
 
-const Form = ({
-  onSubmit,
-  children,
-  className,
-  methods,
-  defaultValues,
-  ...rest
-}) => {
+const Form = forwardRef((props, ref) => {
+  const {
+    onSubmit,
+    children,
+    className,
+    methods,
+    defaultValues,
+    ...rest
+  } = props;
   const [isLoading, setIsLoading] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useMounted();
   const { handleSubmit } = methods;
-
-  useEffect(() => {
-    setIsMounted(true);
-    return () => {
-      setIsMounted(false);
-    };
-  }, []);
 
   const runSubmit = useCallback(
     async (event) => {
@@ -50,12 +45,13 @@ const Form = ({
         }}
         noValidate
         onSubmit={handleSubmit(runSubmit)}
+        ref={ref}
         {...rest}
       >
         {children}
       </Box>
     </FormContext>
   );
-};
+});
 
 export default Form;

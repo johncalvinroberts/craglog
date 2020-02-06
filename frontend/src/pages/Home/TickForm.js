@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import {
   Button,
   Box,
@@ -147,6 +153,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   const isOutdoor = outdoorStyleEnum.includes(style);
 
   const toast = useToast();
+  const formRef = useRef();
 
   // fetch routes to show on map
   const { data: queriedRoutes, error } = useSWR(
@@ -224,6 +231,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       onSubmit={onSubmit}
       methods={formMethods}
       defaultValues={defaultValues}
+      ref={formRef}
     >
       <Box>
         <Heading size="md">Info</Heading>
@@ -266,13 +274,15 @@ const TickForm = ({ defaultValues, onSubmit }) => {
               <Box>
                 <Heading size="md">Route</Heading>
                 <Text size="xs" mb={4} as="div" width="auto" height="auto">
-                  Choose a route from the map, or search for a route below.
+                  Choose a route from the map, or search for a route by name
+                  below.
                 </Text>
               </Box>
               <Map
                 containerStyleProps={{ mb: 5 }}
                 center={center}
                 onChange={({ center }) => handleMapChange({ center })}
+                containerRef={formRef}
               >
                 {userLocation && (
                   <Marker
