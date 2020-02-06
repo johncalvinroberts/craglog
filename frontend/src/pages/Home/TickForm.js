@@ -211,8 +211,12 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   );
 
   const handleSelectRoute = (route) => {
-    setValue('routeId', route.id);
-    setCenter(getRouteCoords(route));
+    if (route.id === routeId) {
+      setValue('routeId', null);
+    } else {
+      setValue('routeId', route.id);
+      setCenter(getRouteCoords(route));
+    }
   };
 
   return (
@@ -223,7 +227,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
     >
       <Box>
         <Heading size="md">Info</Heading>
-        <Text size="xs" mb={4} as="div">
+        <Text size="xs" mb={4} as="div" width="auto" height="auto">
           Fill in the basics about the log you&apos;re creating.
         </Text>
       </Box>
@@ -242,18 +246,26 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           label="Date &amp; Time"
         />
         {isOutdoor && (
+          <SelectField
+            name="type"
+            label="Did you send?"
+            required
+            options={tickTypeOptions[style]}
+            helperText="Select a type that describes your accomplishment or failure"
+          />
+        )}
+        {style === 'gym' && <TextField name="gymName" label="Gym Name" />}
+        <SliderField
+          name="physicalRating"
+          label="Physical Rating"
+          helperText="Rate how you felt on this climb. How difficult was this climb for you?"
+        />
+        {isOutdoor && (
           <>
-            <SelectField
-              name="type"
-              label="Did you send?"
-              required
-              options={tickTypeOptions[style]}
-              helperText="Select a type that describes your accomplishment or failure"
-            />
             <Box mt={2}>
               <Box>
                 <Heading size="md">Route</Heading>
-                <Text size="xs" mb={4} as="div">
+                <Text size="xs" mb={4} as="div" width="auto" height="auto">
                   Choose a route from the map, or search for a route below.
                 </Text>
               </Box>
@@ -333,6 +345,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
                                 backgroundColor: 'teal.300',
                                 _hover: {
                                   boxShadow: 'none',
+                                  opacity: '0.8',
                                 },
                               }
                             : null)}
@@ -346,13 +359,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
             </Box>
           </>
         )}
-        {style === 'gym' && <TextField name="gymName" label="Gym Name" />}
       </Box>
-      <SliderField
-        name="physicalRating"
-        label="Physical Rating"
-        helperText="Rate how you felt on this climb. How difficult was this climb for you?"
-      />
       <TextAreaField
         name="notes"
         label="Notes"
