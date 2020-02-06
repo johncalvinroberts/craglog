@@ -5,9 +5,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult, DeleteResult } from 'typeorm';
+import {
+  Repository,
+  UpdateResult,
+  DeleteResult,
+  MoreThan,
+  LessThan,
+} from 'typeorm';
 import { TickEntity } from './tick.entity';
-import { CreateTickDto, UpdateTickDto } from './dto';
+import { CreateTickDto, UpdateTickDto, TickStatsDto } from './dto';
 import { UserEntity } from '../user/user.entity';
 import { RouteService } from '../route/route.service';
 
@@ -84,6 +90,7 @@ export class TickService {
 
     return this.tickRepository.update(id, { ...toUpdate, route });
   }
+  /* eslint-enable prefer-const */
 
   async delete(id, user: UserEntity): Promise<DeleteResult> {
     const prev: TickEntity = await this.tickRepository.findOne({ id });
@@ -98,23 +105,40 @@ export class TickService {
 
     return this.tickRepository.delete(id);
   }
-  /* eslint-enable prefer-const */
 
-  async getStats(userId) {
+  async getStats(userId, query: TickStatsDto) {
+    const { startDate, endDate } = query;
+    const where = {
+      userId,
+      ...(startDate ? { tickDate: MoreThan(startDate) } : null),
+      ...(endDate ? { tickDate: LessThan(startDate) } : null),
+    };
     const res = await this.tickRepository
       .createQueryBuilder('tick')
-      .where('tick.userId = :userId', { userId })
+      .where(where)
       .select('tick.style AS style')
       .addSelect('COUNT(*) AS count')
       .groupBy('tick.style')
       .getRawMany();
 
     return res.reduce(
-      (memo, current) => ({
-        ...memo,
-        [current.style]: parseInt(current.count),
-      }),
-      {},
+      (memo, current) => {
+        const count = parseInt(current.count);
+        return {
+          ...memo,
+          [current.style]: parseInt(current.count),
+          total: memo.total + count,
+        };
+      },
+      {
+        boulder: 0,
+        sport: 0,
+        trad: 0,
+        gym: 0,
+        hangboard: 0,
+        toprope: 0,
+        total: 0,
+      },
     );
   }
 }

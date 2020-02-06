@@ -13,7 +13,12 @@ import { ApiTags, ApiBearerAuth, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { User } from '../shared/decorators';
 import { TickService } from './tick.service';
-import { CreateTickDto, UpdateTickDto, TickQueryDto } from './dto';
+import {
+  CreateTickDto,
+  UpdateTickDto,
+  TickQueryDto,
+  TickStatsDto,
+} from './dto';
 
 @ApiBearerAuth()
 @ApiTags('tick')
@@ -29,8 +34,8 @@ export class TickController {
   }
 
   @Get('stats')
-  getStats(@User('id') userId) {
-    return this.tickService.getStats(userId);
+  getStats(@User('id') userId, @Query() query: TickStatsDto) {
+    return this.tickService.getStats(userId, query);
   }
 
   @Get(':id')

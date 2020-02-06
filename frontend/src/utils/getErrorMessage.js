@@ -8,6 +8,7 @@ export default (error) => {
     message = _get(error, 'message[0].constraints.isNotEmpty');
     if (!message) {
       const keys = Object.keys(_get(error, 'message[0].constraints'));
+
       message = _get(error, `message[0].constraints.${keys[0]}`);
     }
   }
