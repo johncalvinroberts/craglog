@@ -35,6 +35,7 @@ export const SideNavContent = ({
         p="6"
       >
         <Box mb="10">
+          <MenuLink to="/app">Home</MenuLink>
           <MenuLink to="/app/tick/new">Add Log</MenuLink>
           <MenuLink to="/app/hangboard">Hangboard</MenuLink>
         </Box>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   StatGroup,
@@ -13,12 +13,8 @@ import {
   Input,
 } from '@chakra-ui/core';
 import useSWR from 'swr';
-import isValid from 'date-fns/isValid';
-import format from 'date-fns/format';
-import useTitle from '../../hooks/useTitle';
-import http from '../../http';
 import getErrorMessage from '../../utils/getErrorMessage';
-import { DATE_INPUT_FORMAT } from '../../constants';
+import http from '../../http';
 
 const timeParameterOptions = [
   { label: 'All time', value: 'all' },
@@ -27,59 +23,14 @@ const timeParameterOptions = [
   { label: 'Choose custom time frame', value: 'custom' },
 ];
 
-const now = new Date();
-
-const defaultEndDate = format(now, DATE_INPUT_FORMAT);
-const defaultStartDate = format(
-  new Date(now.setMonth(now.getMonth() - 3)),
-  DATE_INPUT_FORMAT,
-);
-
-const getUrlParams = ({ timeParameters, timeParameterType }) => {
-  const now = new Date();
-  let startDate;
-  let endDate;
-  if (timeParameterType === 'month') {
-    startDate = new Date(now.setMonth(now.getMonth() - 1));
-  }
-
-  if (timeParameterType === 'year') {
-    startDate = new Date(now.setFullYear(now.getFullYear() - 1));
-  }
-
-  if (timeParameterType === 'custom') {
-    startDate = isValid(new Date(timeParameters.startDate))
-      ? new Date(timeParameters.startDate)
-      : null;
-    endDate = isValid(new Date(timeParameters.endDate))
-      ? new Date(timeParameters.endDate)
-      : null;
-  }
-
-  if (!startDate && !endDate) return '';
-
-  const query = new URLSearchParams({
-    ...(startDate ? { startDate: startDate.toISOString() } : null),
-    ...(endDate ? { endDate: endDate.toISOString() } : null),
-  });
-
-  return query.toString();
-};
-
-const TickList = () => {
-  useTitle('Craglog');
+const TickStats = ({
+  handleChangeTimeParameterType,
+  handleChangeTimeParameter,
+  timeParameterType,
+  timeParameters,
+  query,
+}) => {
   const toast = useToast();
-
-  const [timeParameterType, setTimeParameterType] = useState('all');
-  const [timeParameters, setTimeParameters] = useState({
-    startDate: defaultStartDate,
-    endDate: defaultEndDate,
-  });
-
-  const query = useMemo(
-    () => getUrlParams({ timeParameters, timeParameterType }),
-    [timeParameters, timeParameterType],
-  );
 
   const { data: stats, error: statsError } = useSWR(
     `/tick/stats?${query}`,
@@ -91,14 +42,6 @@ const TickList = () => {
       toast({ description: getErrorMessage(statsError), status: 'error' });
     }
   }, [statsError, toast]);
-
-  const handleChangeTimeParameterType = (event) => {
-    setTimeParameterType(event.target.value);
-  };
-
-  const handleChangeTimeParameter = (event, key) => {
-    setTimeParameters({ ...timeParameters, [key]: event.target.value });
-  };
 
   return (
     <>
@@ -167,4 +110,4 @@ const TickList = () => {
   );
 };
 
-export default TickList;
+export default TickStats;
