@@ -25,10 +25,21 @@ export class TickService {
     private readonly routeService: RouteService,
   ) {}
 
-  findAll(query, user) {
+  findAll(query, userId) {
+    const { startDate, endDate, orderBy, sort } = query;
+
+    const order = { [orderBy]: sort };
+
+    const where = {
+      userId,
+      ...(startDate ? { tickDate: MoreThan(startDate) } : null),
+      ...(endDate ? { tickDate: LessThan(endDate) } : null),
+    };
+
     return this.tickRepository.find({
       ...query,
-      where: { ...query.where, user },
+      order,
+      where,
     });
   }
 
@@ -108,11 +119,13 @@ export class TickService {
 
   async getStats(userId, query: TickStatsDto) {
     const { startDate, endDate } = query;
+
     const where = {
       userId,
       ...(startDate ? { tickDate: MoreThan(startDate) } : null),
       ...(endDate ? { tickDate: LessThan(endDate) } : null),
     };
+
     const res = await this.tickRepository
       .createQueryBuilder('tick')
       .where(where)

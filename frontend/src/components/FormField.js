@@ -30,7 +30,7 @@ const FormFieldInner = memo(
         maxWidth="310px"
         {...styleProps.formControl}
       >
-        <FormLabel htmlFor={name}>{label}</FormLabel>
+        {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
         {children({ register, name })}
         {!isError && helperText && (
           <FormHelperText

@@ -84,3 +84,32 @@ export const outdoorStyleEnum = [
 ];
 
 export const fallbackPosition = [37.8651, 119.5383];
+
+export const notesPlaceHolders = [
+  'Today I nearly died, but did not, all thanks to aggressively downturned climbing shoes...',
+  'Confirmed: aggressively downturned climbing shoes ARE aid, because...',
+  'My tendinitis....is acting up again...',
+  'SANDBAGGED. HARD.',
+  'Lorem Whipsum.....',
+  'I met a bat halfway up this route...',
+  'I met a wolfbear halfway up this route...',
+  'Candy at the top.',
+  'View from the top is amazing....',
+  'RUN. F*CKING. OUT.',
+  'I pulled on this many quickdraws: ',
+  'Suns out, guns out, RUN. OUT.',
+  'Faced certain death on third bolt. Was rescued by a timely left jug',
+  'Fell on first bolt, in hospital right now as I type this',
+  'Took big whipper nearly died, have gray hair now. 10/10 would whip again.',
+  "Gumbie's paradise",
+  'FDA: First Drunk Ascent',
+  'Guidebook: sport. Reality: trad unless you are suicidal.',
+  "There's a hidden treasure at the top.",
+  "Joey used a bowline which untied at fourth bolt. I'm sorry he died, but it's still a good route.",
+  'Note to self: invest in clipstick',
+  'Need to see the doctor now to see if I can still have children',
+  'This climb was so potent I had to wear protection',
+  'Treacherous.',
+  'Easy, but fun...',
+  'Sharp rock.',
+];

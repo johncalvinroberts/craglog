@@ -20,7 +20,7 @@ function useInterval(callback, delay) {
   }, [delay]);
   useEffect(() => {
     callback();
-  }, []);
+  }, [callback]);
 }
 
 export default useInterval;

@@ -12,7 +12,7 @@ const useTitle = (Title) => {
     const titleText = getInnerText(Title);
     document.title = `craglog | ${titleText}`;
     dispatch({ UI: { Title } });
-  }, [dispatch]);
+  }, [Title, dispatch]);
 };
 
 export default useTitle;

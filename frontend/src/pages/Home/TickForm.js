@@ -30,6 +30,7 @@ import {
   sportAndTradTickTypeEnum,
   topRopeTickTypeEnum,
   boulderTickTypeEnum,
+  notesPlaceHolders,
 } from '../../constants';
 import { toggleMobileNav } from '../../states';
 import { useDispatch } from '../../components/State';
@@ -62,6 +63,12 @@ const getRouteQueryUrl = ({ center, throttledQuery }) => {
   if (throttledQuery && center) {
     return `/route?origin=${center.join(',')}&take=10&name=${throttledQuery}`;
   }
+};
+
+const getRandomNotePlaceholder = () => {
+  return notesPlaceHolders[
+    Math.random() * Math.ceil(notesPlaceHolders.length - 1)
+  ];
 };
 
 const concatRoutesList = ({ currentRoute, queriedRoutes }) => {
@@ -141,6 +148,8 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   const [mapCenter, setMapCenter] = useState();
 
   const [query, setQuery] = useState('');
+
+  const [notePlaceHolder] = useState(getRandomNotePlaceholder);
 
   const throttledQuery = useThrottle(query, 800);
 
@@ -383,11 +392,14 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           </>
         )}
       </Box>
-      <TextAreaField
-        name="notes"
-        label="Notes"
-        helperText="Beta, or other noteworthy details about the climb for future reference."
-      />
+      <Box>
+        <Heading size="md">Notes</Heading>
+        <Text size="xs" mb={4} as="div" width="auto" height="auto">
+          Beta, or other noteworthy details about the climb for future
+          reference.
+        </Text>
+      </Box>
+      <TextAreaField name="notes" placeholder={notePlaceHolder} />
       <Box
         position="fixed"
         bottom="20px"

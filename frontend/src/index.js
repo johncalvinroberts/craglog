@@ -12,10 +12,10 @@ if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
     navigator.serviceWorker
       .register('/service-worker.js')
       .then((registration) => {
-        console.log('SW registered: ', registration);
+        console.log('SW registered: ', registration); //eslint-disable-line
       })
       .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
+        console.log('SW registration failed: ', registrationError); //eslint-disable-line
       });
   });
 }

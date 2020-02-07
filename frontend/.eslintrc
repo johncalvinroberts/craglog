@@ -9,6 +9,7 @@
     "react/jsx-props-no-spreading": "off",
     "no-case-declarations": "off",
     "import/no-unresolved": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "no-alert": "error"
   }
 }

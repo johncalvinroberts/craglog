@@ -29,8 +29,8 @@ export class TickController {
 
   @Get()
   @ApiQuery(TickQueryDto)
-  findAll(@Query() query: TickQueryDto, @User() user) {
-    return this.tickService.findAll(query, user);
+  findAll(@Query() query: TickQueryDto, @User('id') userId) {
+    return this.tickService.findAll(query, userId);
   }
 
   @Get('stats')
