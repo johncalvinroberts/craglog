@@ -1,4 +1,4 @@
-import { IsOptional, IsEnum } from 'class-validator';
+import { IsOptional, IsEnum, IsDateString } from 'class-validator';
 import { Transform, Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationDto } from '../../shared/pagination.dto';
@@ -36,4 +36,16 @@ export class TickQueryDto extends PaginationDto {
     };
   })
   where: object;
+
+  @IsOptional()
+  @Transform(decodeURIComponent)
+  @IsDateString()
+  @ApiProperty()
+  startDate: Date;
+
+  @IsOptional()
+  @Transform(decodeURIComponent)
+  @IsDateString()
+  @ApiProperty()
+  endDate: Date;
 }

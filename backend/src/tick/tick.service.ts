@@ -111,7 +111,7 @@ export class TickService {
     const where = {
       userId,
       ...(startDate ? { tickDate: MoreThan(startDate) } : null),
-      ...(endDate ? { tickDate: LessThan(startDate) } : null),
+      ...(endDate ? { tickDate: LessThan(endDate) } : null),
     };
     const res = await this.tickRepository
       .createQueryBuilder('tick')

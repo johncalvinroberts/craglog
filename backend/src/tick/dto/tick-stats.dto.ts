@@ -4,14 +4,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TickStatsDto {
   @IsOptional()
+  @Transform(decodeURIComponent)
   @IsDateString()
   @ApiProperty()
-  @Transform(val => (val ? new Date(val) : undefined))
   startDate: Date;
 
   @IsOptional()
+  @Transform(decodeURIComponent)
   @IsDateString()
   @ApiProperty()
-  @Transform(val => (val ? new Date(val) : undefined))
   endDate: Date;
 }
