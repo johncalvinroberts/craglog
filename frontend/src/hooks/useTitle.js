@@ -12,7 +12,7 @@ const useTitle = (Title) => {
     const titleText = getInnerText(Title);
     document.title = `craglog | ${titleText}`;
     dispatch({ UI: { Title } });
-  }, [Title, dispatch]);
+  }, [dispatch]); //eslint-disable-line
 };
 
 export default useTitle;
