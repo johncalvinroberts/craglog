@@ -29,6 +29,7 @@ const MobileNavButton = forwardRef((props, ref) => (
     width="48px"
     height="48px"
     mb={2}
+    zIndex="999"
     {...props}
   >
     <Icon name="add" />
@@ -118,6 +119,7 @@ const MobileNav = () => {
           display={['flex', 'flex', 'none']}
           flexWrap="wrap"
           justifyContent="center"
+          zIndex="9999"
         >
           <MobileUtilMenu />
           {isAdmin && <MobileAdminMenu />}

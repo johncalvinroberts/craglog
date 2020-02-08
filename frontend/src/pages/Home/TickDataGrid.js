@@ -1,21 +1,34 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { Link } from 'react-router-dom';
-import { useToast, Box, Spinner, Button, Text } from '@chakra-ui/core';
+import {
+  useToast,
+  Box,
+  Spinner,
+  Button,
+  Text,
+  useColorMode,
+} from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
 import format from 'date-fns/format';
 import differenceInDays from 'date-fns/differenceInDays';
 import isSameDay from 'date-fns/isSameDay';
+import isSameYear from 'date-fns/isSameYear';
 import http from '../../http';
 import getErrorMessage from '../../utils/getErrorMessage';
 import camelCaseToTitleCase from '../../utils/camelCaseToTitleCase';
 import EmptyView from '../../components/EmptyView';
 import RouteCard from '../../components/RouteCard';
+import TickStyleChip from '../../components/TickStyleChip';
+import TickTypeChip from '../../components/TickTypeChip';
 
 const DatesContext = createContext();
 
 const reducer = (state, action) => ({ ...state, ...action });
 
 const TickCard = ({ item, dictKey }) => {
+  const { colorMode } = useColorMode();
+  const bg = { light: 'white', dark: 'gray.800' };
+
   const datesDict = useContext(DatesContext);
   const allKeys = Object.keys(datesDict);
   const currentIndex = allKeys.indexOf(dictKey);
@@ -23,52 +36,116 @@ const TickCard = ({ item, dictKey }) => {
     return <></>;
   }
 
-  const prevDate = datesDict[allKeys[currentIndex - 1]];
-  const currentDate = item.tickDate;
-  const daysFromPrevDate =
-    prevDate && differenceInDays(new Date(prevDate), new Date(currentDate));
-  const isSameDayAsPrevDate =
-    prevDate && isSameDay(new Date(prevDate), new Date(currentDate));
-
+  const prevDateString = datesDict[allKeys[currentIndex - 1]];
+  const prevDate = prevDateString && new Date(prevDateString);
+  const currentDate = new Date(item.tickDate);
+  const daysFromPrevDate = prevDate && differenceInDays(prevDate, currentDate);
+  const isSameDayAsPrevDate = prevDate && isSameDay(prevDate, currentDate);
   const isBigTimeGap = daysFromPrevDate > 100;
-  const mt = isBigTimeGap ? `400px` : `${daysFromPrevDate * 4}px`;
+
+  let mt = `${daysFromPrevDate + 4}px`;
+  if (isBigTimeGap) mt = `200px`;
+  if (isSameDayAsPrevDate) mt = 0;
+
+  const isFirstOfYear = !prevDate ? true : !isSameYear(prevDate, currentDate);
 
   return (
-    <Box d="flex" justifyContent="space-between" mt={mt}>
-      <Box
-        borderWidth="1px"
-        borderRightWidth="0"
-        borderRadius="0 0 4px 4px"
-        flex="0 0 6rem"
-        height="6rem"
-        d="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexWrap="wrap"
-        opacity={isSameDayAsPrevDate ? 0 : 1}
-      >
-        <Text fontSize="2xl" verticalAlign="baseline" fontWeight="semibold">
-          {format(new Date(item.tickDate), 'MM/dd')}
-        </Text>
-        <Text
-          fontSize="sm"
-          opacity="0.8"
-          mb={2}
-          flex="0 0 100%"
-          textAlign="center"
+    <>
+      {isFirstOfYear && (
+        <>
+          <Box
+            width="1px"
+            borderRightWidth="1px"
+            height={mt}
+            mb={`-${mt}`}
+            ml="3rem"
+          />
+          <Box flex="0 0 100%" position="sticky" top="4rem">
+            <Text
+              fontSize="2xl"
+              verticalAlign="baseline"
+              fontWeight="semibold"
+              width="6rem"
+              bg={bg[colorMode]}
+              textAlign="center"
+              borderWidth="1px"
+              pb={1}
+              mt={mt}
+            >
+              {format(currentDate, 'yyyy')}
+            </Text>
+          </Box>
+          <Box
+            width="1px"
+            borderRightWidth="1px"
+            height={2}
+            mt={-1}
+            ml="3rem"
+          />
+        </>
+      )}
+      <Box>
+        {!isFirstOfYear && !isSameDayAsPrevDate && (
+          <Box
+            width="1px"
+            borderRightWidth="1px"
+            height={mt}
+            mb={`-${mt}`}
+            ml="3rem"
+          />
+        )}
+        <Box
+          d="flex"
+          justifyContent="space-between"
+          mt={isFirstOfYear ? 0 : mt}
+          flexWrap="wrap"
         >
-          {format(new Date(item.tickDate), 'yyyy')}
-        </Text>
+          <Box
+            flex="0 0 6rem"
+            height="6rem"
+            d="flex"
+            justifyContent="center"
+            alignItems="center"
+            flexWrap="wrap"
+            {...(!isSameDayAsPrevDate
+              ? { borderWidth: '1px', borderRightWidth: '0' }
+              : null)}
+          >
+            {!isSameDayAsPrevDate && (
+              <Text
+                fontSize="2xl"
+                verticalAlign="baseline"
+                fontWeight="semibold"
+              >
+                {format(currentDate, 'MM/dd')}
+              </Text>
+            )}
+            {isSameDayAsPrevDate && (
+              <Box width="1px" borderRightWidth="1px" height="100%" />
+            )}
+          </Box>
+          <Box
+            flex="1"
+            p={2}
+            borderWidth="1px"
+            borderTopWidth={isSameDayAsPrevDate ? 0 : '1px'}
+          >
+            <Box display="flex" justifyContent="flex-start">
+              <TickStyleChip style={item.style} />
+              <TickTypeChip type={item.type} />
+            </Box>
+            {item.route && (
+              <RouteCard
+                route={item.route}
+                showLink={false}
+                showStyle={false}
+                borderBottom="none"
+              />
+            )}
+          </Box>
+        </Box>
       </Box>
-      <Box
-        flex="1"
-        pl={2}
-        borderWidth="1px"
-        borderTopWidth={isSameDayAsPrevDate ? 0 : '1px'}
-      >
-        {camelCaseToTitleCase(item.style)}
-      </Box>
-    </Box>
+    </>
   );
 };
 
@@ -110,7 +187,6 @@ const TickDataGrid = ({ query }) => {
           <TickCard
             item={item}
             key={item.id}
-            datesDict={datesDict}
             dictKey={`${offset || 0}_${index}`}
           />
         );
@@ -132,7 +208,7 @@ const TickDataGrid = ({ query }) => {
 
   return (
     <DatesContext.Provider value={datesDict}>
-      <Box>{pages}</Box>
+      <Box position="relative">{pages}</Box>
       {isLoadingMore && (
         <Box
           d="flex"
@@ -147,7 +223,7 @@ const TickDataGrid = ({ query }) => {
         <EmptyView message="No more logs to show">
           <Button
             as={Link}
-            to="/app/ticks/new"
+            to="/app/tick/new"
             backgroundColor="teal.300"
             variant="solid"
             color="white"

@@ -48,7 +48,7 @@ const AdminRoutes = () => {
   );
 };
 
-export default () => {
+const App = () => {
   return (
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
@@ -79,3 +79,5 @@ export default () => {
     </ErrorBoundary>
   );
 };
+
+export default App;

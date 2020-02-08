@@ -45,7 +45,7 @@ const TickStats = ({
 
   return (
     <>
-      <Box d="block" mb={8} borderWidth="1px" p={2} position="sticky">
+      <Box d="block" mb={[4, 8]} borderWidth="1px" p={2}>
         {!stats && (
           <Box
             d="flex"

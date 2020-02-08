@@ -1,8 +1,9 @@
 import React, { Suspense, lazy } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import DashboardLayout from '../../components/DashboardLayout';
 import DashboardWrapper from '../../components/DashboardWrapper';
+import NotFound from '../NotFound';
 import TickCreate from './TickCreate';
 import TicksList from './TicksList';
 
@@ -13,9 +14,20 @@ const Home = ({ match }) => {
     <DashboardLayout>
       <Suspense fallback={<Loading />}>
         <DashboardWrapper>
-          <Route path={match.path} exact component={TicksList} />
-          <Route path={`${match.path}/tick/new`} exact component={TickCreate} />
-          <Route path={`${match.path}/hangboard`} exact component={Hangboard} />
+          <Switch>
+            <Route path={match.path} exact component={TicksList} />
+            <Route
+              path={`${match.path}/tick/new`}
+              exact
+              component={TickCreate}
+            />
+            <Route
+              path={`${match.path}/hangboard`}
+              exact
+              component={Hangboard}
+            />
+            <Route component={NotFound} />
+          </Switch>
         </DashboardWrapper>
       </Suspense>
     </DashboardLayout>

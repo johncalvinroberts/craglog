@@ -1,17 +1,22 @@
 import React from 'react';
 import { Box, PseudoBox, Text, Icon, Tooltip } from '@chakra-ui/core';
 
-const RouteCard = ({ route, showLink = true, showStyle = true }) => {
+const RouteCard = ({ route, showLink = true, showStyle = true, ...props }) => {
   return (
-    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
+    <Box
+      borderBottom="1px"
+      as={PseudoBox}
+      borderColor="gray.200"
+      py={2}
+      {...props}
+    >
       <Box d="flex" width="100%" alignItems="center">
         <Box flex="1" d="flex" alignItems="center">
-          <Text mr={1} fontSize={['xs', 'sm']}>
+          <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium">
             {route.name}
           </Text>
           <Tooltip label="grade">
             <Text mr={1} fontSize="xs">
-              <Icon name="grade" mr={1} />
               {route.grade}
             </Text>
           </Tooltip>
