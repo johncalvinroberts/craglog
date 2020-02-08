@@ -1,31 +1,33 @@
 import React from 'react';
 import { Box, PseudoBox, Text, Icon, Tooltip } from '@chakra-ui/core';
 
-const RouteCard = ({ route, showLink = true, showStyle = true, ...props }) => {
+const RouteCard = ({
+  route,
+  showLink = true,
+  showStyle = true,
+  wrapperStyleProps = {},
+  innerStyleProps = {},
+}) => {
   return (
     <Box
       borderBottom="1px"
       as={PseudoBox}
       borderColor="gray.200"
       py={2}
-      {...props}
+      {...wrapperStyleProps}
     >
-      <Box d="flex" width="100%" alignItems="center">
-        <Box flex="1" d="flex" alignItems="center">
+      <Box d="flex" width="100%" alignItems="center" {...innerStyleProps}>
+        <Box d="flex" alignItems="center">
           <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium">
             {route.name}
           </Text>
-          <Tooltip label="grade">
-            <Text mr={1} fontSize="xs">
-              {route.grade}
-            </Text>
-          </Tooltip>
+          <Text mr={1} fontSize="xs">
+            {route.grade}
+          </Text>
           {showStyle && (
-            <Tooltip label="style">
-              <Text mr={1} fontSize="xs">
-                {route.style && route.style.toUpperCase()}
-              </Text>
-            </Tooltip>
+            <Text mr={1} fontSize="xs">
+              {route.style && route.style.toUpperCase()}
+            </Text>
           )}
         </Box>
         <Text mx={2} fontSize="xs" flex="1">

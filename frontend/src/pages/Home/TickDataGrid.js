@@ -7,6 +7,7 @@ import {
   Button,
   Text,
   useColorMode,
+  Icon,
 } from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
 import format from 'date-fns/format';
@@ -15,7 +16,6 @@ import isSameDay from 'date-fns/isSameDay';
 import isSameYear from 'date-fns/isSameYear';
 import http from '../../http';
 import getErrorMessage from '../../utils/getErrorMessage';
-import camelCaseToTitleCase from '../../utils/camelCaseToTitleCase';
 import EmptyView from '../../components/EmptyView';
 import RouteCard from '../../components/RouteCard';
 import TickStyleChip from '../../components/TickStyleChip';
@@ -126,11 +126,14 @@ const TickCard = ({ item, dictKey }) => {
           </Box>
           <Box
             flex="1"
-            p={2}
+            d="flex"
+            justifyContent="space-between"
+            flexDirection="column"
+            flexWrap="wrap"
             borderWidth="1px"
             borderTopWidth={isSameDayAsPrevDate ? 0 : '1px'}
           >
-            <Box display="flex" justifyContent="flex-start">
+            <Box display="flex" justifyContent="flex-start" p={2}>
               <TickStyleChip style={item.style} />
               <TickTypeChip type={item.type} />
             </Box>
@@ -139,9 +142,35 @@ const TickCard = ({ item, dictKey }) => {
                 route={item.route}
                 showLink={false}
                 showStyle={false}
-                borderBottom="none"
+                wrapperStyleProps={{
+                  py: 0,
+                  pl: 2,
+                  borderBottom: 'none',
+                }}
+                innerStyleProps={{
+                  justifyContent: 'flex-start',
+                }}
               />
             )}
+            {item.gymName && (
+              <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium" pl={2}>
+                @{item.gymName}
+              </Text>
+            )}
+            <Button
+              flex="1"
+              d="flex"
+              justifyContent="center"
+              outline="none"
+              aria-label="Show more"
+              borderRadius="0"
+              maxWidth="unset"
+              width="100%"
+              variant="ghost"
+              maxHeight="18px"
+            >
+              <Icon name="chevron-down" />
+            </Button>
           </Box>
         </Box>
       </Box>
