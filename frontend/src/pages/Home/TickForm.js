@@ -31,6 +31,7 @@ import {
   topRopeTickTypeEnum,
   boulderTickTypeEnum,
   notesPlaceHolders,
+  DATE_INPUT_FORMAT,
 } from '../../constants';
 import { toggleMobileNav } from '../../states';
 import { useDispatch } from '../../components/State';
@@ -111,7 +112,8 @@ const validationSchema = yup.object().shape({
   tickDate: yup
     .date('Please choose a date')
     .required('Please choose a date')
-    .typeError('Please choose a date'),
+    .typeError('Please choose a date')
+    .max(new Date(), 'You cannot log a climb in the future'),
   physicalRating: yup.number().nullable(),
   gymName: yup.string().max(500),
   location: yup.string(),

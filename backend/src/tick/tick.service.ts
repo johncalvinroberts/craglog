@@ -103,14 +103,14 @@ export class TickService {
   }
   /* eslint-enable prefer-const */
 
-  async delete(id, user: UserEntity): Promise<DeleteResult> {
+  async delete(id, userId): Promise<DeleteResult> {
     const prev: TickEntity = await this.tickRepository.findOne({ id });
 
     if (!TickEntity) {
       throw new NotFoundException();
     }
 
-    if (prev.user.id !== user.id) {
+    if (prev.userId !== userId) {
       throw new UnauthorizedException();
     }
 

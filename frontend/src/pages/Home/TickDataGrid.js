@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 import {
   useToast,
@@ -9,6 +15,15 @@ import {
   useColorMode,
   Icon,
   useDisclosure,
+  Collapse,
+  IconButton,
+  SlideIn,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
 } from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
 import format from 'date-fns/format';
@@ -21,6 +36,7 @@ import EmptyView from '../../components/EmptyView';
 import RouteCard from '../../components/RouteCard';
 import TickStyleChip from '../../components/TickStyleChip';
 import TickTypeChip from '../../components/TickTypeChip';
+import { DATE_FORMAT } from '../../constants';
 
 const DatesContext = createContext();
 
@@ -34,11 +50,23 @@ const detailBg = {
 
 const TickCard = ({ item, dictKey }) => {
   const { colorMode } = useColorMode();
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onToggle } = useDisclosure();
+  const {
+    isOpen: isDeleteModalOpen,
+    onToggle: onToggleDeleteModal,
+    onClose: onCloseDeleteModal,
+  } = useDisclosure();
+
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const toast = useToast();
 
   const datesDict = useContext(DatesContext);
   const allKeys = Object.keys(datesDict);
   const currentIndex = allKeys.indexOf(dictKey);
+
+  const deleteBtnRef = useRef();
+
   if (currentIndex === -1) {
     return <></>;
   }
@@ -55,6 +83,23 @@ const TickCard = ({ item, dictKey }) => {
   if (isSameDayAsPrevDate) mt = 0;
 
   const isFirstOfYear = !prevDate ? true : !isSameYear(prevDate, currentDate);
+
+  const handleDelete = async () => {
+    onCloseDeleteModal();
+    try {
+      setIsDeleting(true);
+      await http.delete(`/tick/${item.id}`);
+      setIsDeleting(false);
+      setIsDeleted(true);
+    } catch (error) {
+      setIsDeleting(false);
+      toast({
+        description: getErrorMessage(error),
+        status: 'error',
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -139,6 +184,16 @@ const TickCard = ({ item, dictKey }) => {
             flexWrap="wrap"
             borderWidth="1px"
             borderTopWidth={isSameDayAsPrevDate ? 0 : '1px'}
+            css={{
+              opacity: 1,
+              transition: `opacity 0.2s ease-in-out`,
+              ...(isDeleted || isDeleting
+                ? {
+                    opacity: 0.6,
+                    pointerEvents: 'none',
+                  }
+                : null),
+            }}
           >
             <Box display="flex" justifyContent="flex-start" p={2}>
               <TickStyleChip style={item.style} />
@@ -153,6 +208,7 @@ const TickCard = ({ item, dictKey }) => {
                   py: 0,
                   pl: 2,
                   borderBottom: 'none',
+                  flex: 1,
                 }}
                 innerStyleProps={{
                   justifyContent: 'flex-start',
@@ -160,15 +216,116 @@ const TickCard = ({ item, dictKey }) => {
               />
             )}
             {item.gymName && (
-              <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium" pl={2}>
+              <Text
+                mr={1}
+                fontSize={['xs', 'sm']}
+                fontWeight="medium"
+                pl={2}
+                flex={1}
+              >
                 @{item.gymName}
               </Text>
             )}
-            {isOpen && (
+            <Collapse isOpen={isOpen} animateOpacity>
               <Box p={2} minHeight="8rem" backgroundColor={detailBg[colorMode]}>
-                {item.notes || <EmptyView message="No notes were written :\" />}
+                <Box>
+                  <Box d="flex" justifyContent="flex-start">
+                    <Text
+                      fontSize="xs"
+                      width="unset"
+                      height="unset"
+                      fontWeight="medium"
+                    >
+                      Timestamp:
+                    </Text>
+                    <Text fontSize="xs" width="unset" height="unset" ml={1}>
+                      {format(currentDate, DATE_FORMAT)}
+                    </Text>
+                  </Box>
+                  <Box d="flex" justifyContent="flex-start">
+                    <Text
+                      fontSize="xs"
+                      width="unset"
+                      height="unset"
+                      fontWeight="medium"
+                    >
+                      Physical Rating:
+                    </Text>
+                    <Text fontSize="xs" width="unset" height="unset" ml={1}>
+                      {item.physicalRating || <em>None set</em>}
+                    </Text>
+                  </Box>
+                  <Text
+                    fontSize="xs"
+                    width="unset"
+                    height="unset"
+                    fontWeight="medium"
+                  >
+                    Notes:
+                  </Text>
+                </Box>
+                <Box>
+                  {item.notes || (
+                    <EmptyView message="No notes were written :\" />
+                  )}
+                </Box>
+                <Box d="flex" justifyContent="flex-start" py={2}>
+                  <IconButton
+                    aria-label="Delete log"
+                    icon="delete"
+                    backgroundColor="none"
+                    ref={deleteBtnRef}
+                    onClick={onToggleDeleteModal}
+                    mr={2}
+                  />
+                  <IconButton
+                    aria-label="Edit log"
+                    icon="edit"
+                    backgroundColor="none"
+                  />
+                </Box>
               </Box>
-            )}
+            </Collapse>
+            <SlideIn in={isDeleteModalOpen}>
+              {(styles) => (
+                <Modal
+                  finalFocusRef={deleteBtnRef}
+                  onClose={onCloseDeleteModal}
+                  isOpen
+                  isCentered
+                >
+                  <ModalOverlay opacity={styles.opacity} />
+                  <ModalContent pb={5} {...styles}>
+                    <ModalHeader>Delete this log?</ModalHeader>
+                    <ModalCloseButton onClick={onCloseDeleteModal} />
+                    <ModalBody>
+                      <Icon name="warning-2" mr={2} />
+                      This action is permanent
+                      <Box pt={2} d="flex">
+                        <Button
+                          aria-label="confirm delete"
+                          variant="solid"
+                          variantColor="red"
+                          size="sm"
+                          onClick={handleDelete}
+                          mr={2}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          aria-label="confirm delete"
+                          variant="solid"
+                          size="sm"
+                          onClick={onCloseDeleteModal}
+                        >
+                          Cancel
+                        </Button>
+                      </Box>
+                    </ModalBody>
+                  </ModalContent>
+                </Modal>
+              )}
+            </SlideIn>
             <Button
               flex="1"
               d="flex"

@@ -56,7 +56,7 @@ export class TickController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id, @User() user) {
-    return this.tickService.delete(id, user);
+  delete(@Param('id') id, @User('id') userId) {
+    return this.tickService.delete(id, userId);
   }
 }
