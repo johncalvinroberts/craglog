@@ -238,7 +238,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       setCenter(getRouteCoords(route));
     }
   };
-  console.log({ notePlaceHolder });
+
   return (
     <Form
       onSubmit={onSubmit}
