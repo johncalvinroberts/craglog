@@ -7,6 +7,8 @@ import { RouteModule } from './route/route.module';
 import { UserModule } from './user/user.module';
 import { JobModule } from './job/job.module';
 import { TickModule } from './tick/tick.module';
+import { HangboardModule } from './hangboard/hangboard.module';
+import { HangboardSequenceModule } from './hangboard-sequence/hangboard-sequence.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { TickModule } from './tick/tick.module';
     UserModule,
     JobModule,
     TickModule,
+    HangboardModule,
+    HangboardSequenceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
