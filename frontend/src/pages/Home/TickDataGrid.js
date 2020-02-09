@@ -197,7 +197,11 @@ const TickDataGrid = ({ query }) => {
       /* eslint-enable react-hooks/rules-of-hooks */
       // you can still use other SWRs outside
       if (error) {
-        toast({ status: 'error', description: getErrorMessage(error) });
+        toast({
+          status: 'error',
+          description: getErrorMessage(error),
+          isClosable: true,
+        });
       }
 
       if (!data) {

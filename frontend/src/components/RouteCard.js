@@ -16,8 +16,8 @@ const RouteCard = ({
       py={2}
       {...wrapperStyleProps}
     >
-      <Box d="flex" width="100%" alignItems="center" {...innerStyleProps}>
-        <Box d="flex" alignItems="center">
+      <Box d="flex" width="100%" alignItems="baseline" {...innerStyleProps}>
+        <Box d="flex" alignItems="baseline">
           <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium">
             {route.name}
           </Text>

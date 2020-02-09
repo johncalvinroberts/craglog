@@ -39,7 +39,11 @@ const TickStats = ({
 
   useEffect(() => {
     if (statsError) {
-      toast({ description: getErrorMessage(statsError), status: 'error' });
+      toast({
+        description: getErrorMessage(statsError),
+        status: 'error',
+        isClosable: true,
+      });
     }
   }, [statsError, toast]);
 
