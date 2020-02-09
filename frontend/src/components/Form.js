@@ -38,7 +38,7 @@ const Form = forwardRef((props, ref) => {
         as="form"
         css={{
           opacity: 1,
-          transition: `transform 0.2s ease-in-out`,
+          transition: `opacity 0.2s ease-in-out`,
           ...(isLoading
             ? {
                 opacity: 0.6,

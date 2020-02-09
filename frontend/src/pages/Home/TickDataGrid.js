@@ -8,6 +8,7 @@ import {
   Text,
   useColorMode,
   Icon,
+  useDisclosure,
 } from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
 import format from 'date-fns/format';
@@ -25,9 +26,15 @@ const DatesContext = createContext();
 
 const reducer = (state, action) => ({ ...state, ...action });
 
+const yearCardBg = { light: 'white', dark: 'gray.800' };
+const detailBg = {
+  light: 'gray.50',
+  dark: 'gray.600',
+};
+
 const TickCard = ({ item, dictKey }) => {
   const { colorMode } = useColorMode();
-  const bg = { light: 'white', dark: 'gray.800' };
+  const { isOpen, onToggle, onClose } = useDisclosure();
 
   const datesDict = useContext(DatesContext);
   const allKeys = Object.keys(datesDict);
@@ -66,7 +73,7 @@ const TickCard = ({ item, dictKey }) => {
               verticalAlign="baseline"
               fontWeight="semibold"
               width="6rem"
-              bg={bg[colorMode]}
+              bg={yearCardBg[colorMode]}
               textAlign="center"
               borderWidth="1px"
               pb={1}
@@ -157,6 +164,11 @@ const TickCard = ({ item, dictKey }) => {
                 @{item.gymName}
               </Text>
             )}
+            {isOpen && (
+              <Box p={2} minHeight="8rem" backgroundColor={detailBg[colorMode]}>
+                {item.notes || <EmptyView message="No notes were written :\" />}
+              </Box>
+            )}
             <Button
               flex="1"
               d="flex"
@@ -168,8 +180,16 @@ const TickCard = ({ item, dictKey }) => {
               width="100%"
               variant="ghost"
               maxHeight="18px"
+              onClick={onToggle}
             >
-              <Icon name="chevron-down" />
+              <Icon
+                name="chevron-down"
+                transition="transform 0.2s ease-in-out"
+                css={{
+                  transform: isOpen ? 'rotate(180deg)' : 'rotate(0)',
+                  transition: `transform 0.2s ease-in-out`,
+                }}
+              />
             </Button>
           </Box>
         </Box>
