@@ -36,19 +36,17 @@ const Form = forwardRef((props, ref) => {
     <FormContext {...methods} defaultValues={defaultValues}>
       <Box
         as="form"
-        css={{
-          opacity: 1,
-          transition: `opacity 0.2s ease-in-out`,
-          ...(isLoading
-            ? {
-                opacity: 0.6,
-                pointerEvents: 'none',
-              }
-            : null),
-        }}
+        opacity="1"
+        transition="opacity 0.2s ease-in-out"
         noValidate
         onSubmit={handleSubmit(runSubmit)}
         ref={ref}
+        {...(isLoading
+          ? {
+              opacity: 0.6,
+              pointerEvents: 'none',
+            }
+          : null)}
         {...rest}
       >
         {children}

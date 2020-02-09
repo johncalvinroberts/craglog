@@ -31,7 +31,6 @@ import {
   topRopeTickTypeEnum,
   boulderTickTypeEnum,
   notesPlaceHolders,
-  DATE_INPUT_FORMAT,
 } from '../../constants';
 import { toggleMobileNav } from '../../states';
 import { useDispatch } from '../../components/State';
@@ -66,12 +65,10 @@ const getRouteQueryUrl = ({ center, throttledQuery }) => {
   }
 };
 
-const getRandomNotePlaceholder = () => {
-  return notesPlaceHolders[
-    Math.random() * Math.ceil(notesPlaceHolders.length - 1)
+const notePlaceHolder =
+  notesPlaceHolders[
+    Math.floor(Math.random() * Math.ceil(notesPlaceHolders.length - 1))
   ];
-};
-
 const concatRoutesList = ({ currentRoute, queriedRoutes }) => {
   if (!currentRoute && !queriedRoutes) return undefined;
   if (currentRoute && !queriedRoutes) return [currentRoute];
@@ -150,8 +147,6 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   const [mapCenter, setMapCenter] = useState();
 
   const [query, setQuery] = useState('');
-
-  const [notePlaceHolder] = useState(getRandomNotePlaceholder);
 
   const throttledQuery = useThrottle(query, 800);
 
@@ -243,7 +238,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       setCenter(getRouteCoords(route));
     }
   };
-
+  console.log({ notePlaceHolder });
   return (
     <Form
       onSubmit={onSubmit}

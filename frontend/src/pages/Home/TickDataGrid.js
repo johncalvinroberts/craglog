@@ -100,6 +100,7 @@ const TickCard = ({ item, dictKey }) => {
       });
     }
   };
+  const disabled = isDeleted || isDeleting;
 
   return (
     <>
@@ -184,20 +185,34 @@ const TickCard = ({ item, dictKey }) => {
             flexWrap="wrap"
             borderWidth="1px"
             borderTopWidth={isSameDayAsPrevDate ? 0 : '1px'}
-            css={{
-              opacity: 1,
-              transition: `opacity 0.2s ease-in-out`,
-              ...(isDeleted || isDeleting
-                ? {
-                    opacity: 0.6,
-                    pointerEvents: 'none',
-                  }
-                : null),
-            }}
+            position="relative"
+            {...(disabled
+              ? {
+                  opacity: 0.6,
+                  pointerEvents: 'none',
+                }
+              : null)}
           >
+            {disabled && (
+              <Box
+                zIndex="99"
+                d="flex"
+                justifyContent="center"
+                alignItems="center"
+                position="absolute"
+                left="0"
+                top="0"
+                right="0"
+                bottom="0"
+                width="100%"
+              >
+                <Spinner size="sm" />
+              </Box>
+            )}
             <Box display="flex" justifyContent="flex-start" p={2}>
               <TickStyleChip style={item.style} />
               <TickTypeChip type={item.type} />
+              {disabled && 'i should be disabled'}
             </Box>
             {item.route && (
               <RouteCard
@@ -281,6 +296,8 @@ const TickCard = ({ item, dictKey }) => {
                   <IconButton
                     aria-label="Edit log"
                     icon="edit"
+                    as={Link}
+                    to={{ pathname: `/app/tick/${item.id}/edit`, item }}
                     backgroundColor="none"
                   />
                 </Box>
@@ -368,7 +385,7 @@ const TickDataGrid = ({ query }) => {
       const { data, error } = withSWR(
         // use the wrapper to wrap the *pagination API SWR*
         useSWR(`/tick?take=10&skip=${offset || 0}&${query}`, http.get, {
-          refreshInterval: 100000,
+          refreshInterval: 10000,
         }),
       );
       /* eslint-enable react-hooks/rules-of-hooks */
@@ -382,7 +399,17 @@ const TickDataGrid = ({ query }) => {
       }
 
       if (!data) {
-        return <></>;
+        return (
+          <Box
+            d="flex"
+            alignItems="center"
+            p={4}
+            justifyContent="center"
+            width="100%"
+          >
+            <Spinner />
+          </Box>
+        );
       }
 
       const nextDatesDict = data.reduce((memo, current, index) => {
@@ -426,7 +453,7 @@ const TickDataGrid = ({ query }) => {
           justifyContent="center"
           minHeight="50px"
         >
-          <Spinner size="md" />
+          loading....
         </Box>
       )}
       {isReachingEnd && (
