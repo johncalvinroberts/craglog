@@ -75,11 +75,7 @@ export class TickService {
     });
   }
 
-  async update(
-    id,
-    payload: UpdateTickDto,
-    user: UserEntity,
-  ): Promise<UpdateResult> {
+  async update(id, payload: UpdateTickDto, user: UserEntity): Promise<any> {
     let { routeId, ...toUpdate } = payload;
 
     const prev: TickEntity = await this.tickRepository.findOne({ id });
@@ -92,14 +88,17 @@ export class TickService {
       throw new UnauthorizedException();
     }
 
-    let route;
+    // const next = Object.assign(toUpdate, prev);
+    const next = { ...prev, ...toUpdate };
 
-    if (routeId) {
+    if (routeId && routeId !== prev.routeId) {
       const route = await this.routeService.findById(routeId);
+      next.route = route;
       if (!route) throw new BadRequestException();
     }
 
-    return this.tickRepository.update(id, { ...toUpdate, route });
+    // return this.tickRepository.update(id, { ...toUpdate, route });
+    return this.tickRepository.save(next);
   }
   /* eslint-enable prefer-const */
 
@@ -126,7 +125,7 @@ export class TickService {
       ...(endDate ? { tickDate: LessThan(endDate) } : null),
     };
 
-    const res = await this.tickRepository
+    const counts = await this.tickRepository
       .createQueryBuilder('tick')
       .where(where)
       .select('tick.style AS style')
@@ -134,7 +133,7 @@ export class TickService {
       .groupBy('tick.style')
       .getRawMany();
 
-    return res.reduce(
+    return counts.reduce(
       (memo, current) => {
         const count = parseInt(current.count);
         return {

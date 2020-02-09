@@ -80,6 +80,9 @@ export class TickEntity {
   @Column({ nullable: true })
   userId: number;
 
+  @Column({ nullable: true })
+  routeId: number;
+
   @ManyToOne(type => RouteEntity, { nullable: true, eager: true })
   route: RouteEntity;
 

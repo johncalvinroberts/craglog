@@ -212,7 +212,6 @@ const TickCard = ({ item, dictKey }) => {
             <Box display="flex" justifyContent="flex-start" p={2}>
               <TickStyleChip style={item.style} />
               <TickTypeChip type={item.type} />
-              {disabled && 'i should be disabled'}
             </Box>
             {item.route && (
               <RouteCard
