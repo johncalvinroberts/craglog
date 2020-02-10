@@ -11,6 +11,7 @@ import {
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import * as crypto from 'crypto';
 import { TickEntity } from '../tick/tick.entity';
+import { HangboardSequenceEntity } from 'src/hangboard-sequence/hangboard-sequence.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -42,10 +43,16 @@ export class UserEntity {
   roles: string[] = ['user'];
 
   @OneToMany(
-    type => TickEntity,
+    () => TickEntity,
     tick => tick.user,
   )
   ticks: TickEntity[];
+
+  @OneToMany(
+    () => TickEntity,
+    tick => tick.user,
+  )
+  hangboardSequences: HangboardSequenceEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

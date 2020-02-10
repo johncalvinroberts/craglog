@@ -71,7 +71,7 @@ export class TickEntity {
   style = '';
 
   @ManyToOne(
-    type => UserEntity,
+    () => UserEntity,
     user => user.ticks,
     { nullable: false, eager: false },
   )
@@ -83,7 +83,7 @@ export class TickEntity {
   @Column({ nullable: true })
   routeId: number;
 
-  @ManyToOne(type => RouteEntity, { nullable: true, eager: true })
+  @ManyToOne(() => RouteEntity, { nullable: true, eager: true })
   route: RouteEntity;
 
   @Column('int', { nullable: true })

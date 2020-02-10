@@ -4,6 +4,6 @@ import { HangboardSequenceService } from './hangboard-sequence.service';
 
 @Module({
   controllers: [HangboardSequenceController],
-  providers: [HangboardSequenceService]
+  providers: [HangboardSequenceService],
 })
 export class HangboardSequenceModule {}
