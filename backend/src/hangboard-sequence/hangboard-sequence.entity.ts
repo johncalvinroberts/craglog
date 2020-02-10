@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
+import { MaxLength } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
 import { HangboardSequenceItemDto } from './dto';
 
@@ -23,6 +24,13 @@ export class HangboardSequenceEntity {
 
   @Column('varchar', { length: 500 })
   boardName = '';
+
+  @Column('varchar', { length: 500 })
+  name = '';
+
+  @Column('text')
+  @MaxLength(2000)
+  description = '';
 
   @ManyToOne(
     () => UserEntity,

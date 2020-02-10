@@ -4,6 +4,8 @@ import {
   MaxLength,
   IsArray,
   IsBoolean,
+  IsString,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { HangboardSequenceItemDto } from './hangboard-sequence-item.dto';
@@ -12,13 +14,22 @@ export class CreateHangboardSequenceDto {
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()
-  @MaxLength(100)
+  @ValidateNested()
   sequence: HangboardSequenceItemDto[];
 
   @IsOptional()
   @IsBoolean()
-  public: false;
+  isPublic: false;
+
+  @IsOptional()
+  @IsString()
+  name = '';
+
+  @IsOptional()
+  @IsString()
+  description = '';
 
   @MaxLength(500)
+  @IsNotEmpty()
   boardName = '';
 }

@@ -93,9 +93,6 @@ export class TickEntity {
   @Column('varchar', { length: 500, nullable: true })
   gymName = '';
 
-  @Column('point', { nullable: true })
-  location: LocationDto;
-
   @Column('timestamp without time zone')
   tickDate: Date;
 
