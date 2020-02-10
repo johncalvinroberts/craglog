@@ -7,7 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
-import { HangboardSequenceItemDto } from '../shared/hangboard-sequence-item.dto';
+import { HangboardSequenceItemDto } from './dto';
 
 @Entity('hangboardSequence')
 export class HangboardSequenceEntity {
@@ -26,13 +26,16 @@ export class HangboardSequenceEntity {
 
   @ManyToOne(
     () => UserEntity,
-    user => user.ticks,
+    user => user.hangboardSequences,
     { nullable: false, eager: false },
   )
   user: UserEntity;
 
   @Column({ nullable: true })
   userId: number;
+
+  @Column('boolean')
+  isPublic: false;
 
   @CreateDateColumn()
   createdAt: Date;

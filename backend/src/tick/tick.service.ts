@@ -5,13 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Repository,
-  UpdateResult,
-  DeleteResult,
-  MoreThan,
-  LessThan,
-} from 'typeorm';
+import { Repository, DeleteResult, MoreThan, LessThan } from 'typeorm';
 import { TickEntity } from './tick.entity';
 import { CreateTickDto, UpdateTickDto, TickStatsDto } from './dto';
 import { UserEntity } from '../user/user.entity';
@@ -75,12 +69,16 @@ export class TickService {
     });
   }
 
-  async update(id, payload: UpdateTickDto, user: UserEntity): Promise<any> {
+  async update(
+    id,
+    payload: UpdateTickDto,
+    user: UserEntity,
+  ): Promise<TickEntity> {
     let { routeId, ...toUpdate } = payload;
 
     const prev: TickEntity = await this.tickRepository.findOne({ id });
 
-    if (!TickEntity) {
+    if (!prev) {
       throw new NotFoundException();
     }
 
@@ -97,7 +95,6 @@ export class TickService {
       if (!route) throw new BadRequestException();
     }
 
-    // return this.tickRepository.update(id, { ...toUpdate, route });
     return this.tickRepository.save(next);
   }
   /* eslint-enable prefer-const */
@@ -105,7 +102,7 @@ export class TickService {
   async delete(id, userId): Promise<DeleteResult> {
     const prev: TickEntity = await this.tickRepository.findOne({ id });
 
-    if (!TickEntity) {
+    if (!prev) {
       throw new NotFoundException();
     }
 
