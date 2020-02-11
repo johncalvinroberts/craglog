@@ -16,7 +16,7 @@ const Register = lazy(() => import('../pages/Register'));
 const Jobs = lazy(() => import('../pages/Jobs'));
 const Users = lazy(() => import('../pages/Users'));
 const Routes = lazy(() => import('../pages/Routes'));
-const Home = lazy(() => import('../pages/Home'));
+const Ticks = lazy(() => import('../pages/Ticks'));
 
 const AdminRoutes = () => {
   return (
@@ -62,7 +62,7 @@ const App = () => {
                     <Route path="/" exact component={Landing} />
                     <Route path="/login" exact component={LogIn} />
                     <Route path="/register" exact component={Register} />
-                    <ProtectedRoute path="/app" component={Home} />
+                    <ProtectedRoute path="/app" component={Ticks} />
                     <ProtectedRoute
                       path="/admin"
                       rolesNeeded={['admin']}
