@@ -55,9 +55,10 @@ export class UserController {
     return this.userService.update(user, payload);
   }
 
-  @Delete(':slug')
-  delete(@Param() params) {
-    return this.userService.delete(params.slug);
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  delete(@Param('id') targetUserId, @User('id') userId) {
+    return this.userService.delete(targetUserId, userId);
   }
 
   @Post('login')

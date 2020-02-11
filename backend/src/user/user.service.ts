@@ -71,8 +71,11 @@ export class UserService {
     return this.buildUserRO(updated);
   }
 
-  delete(email: string): Promise<DeleteResult> {
-    return this.userRepository.delete({ email: email });
+  delete(targetUserId: number, userId: number): Promise<DeleteResult> {
+    if (targetUserId !== userId) {
+      throw new UnauthorizedException();
+    }
+    return this.userRepository.delete({ id: targetUserId });
   }
 
   async findById(id: number): Promise<FindUserDto> {

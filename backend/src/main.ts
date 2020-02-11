@@ -16,8 +16,8 @@ async function bootstrap(): Promise<void> {
     }),
   );
   const options = new DocumentBuilder()
-    .setTitle('NestJS Realworld Example App')
-    .setDescription('The Realworld API description')
+    .setTitle('Craglog API')
+    .setDescription('Craglog REST API specifications')
     .setVersion('1.0')
     .setBasePath('api')
     .addBearerAuth()
