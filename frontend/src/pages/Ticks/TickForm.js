@@ -20,9 +20,6 @@ import useSWR from 'swr';
 import useDeepEffect from 'use-deep-compare-effect';
 import { useForm } from 'react-hook-form';
 import _get from 'lodash/get';
-import Form from '../../components/Form';
-import Map from '../../components/Map';
-import EmptyView from '../../components/EmptyView';
 import {
   tickStyleEnum,
   tickTypeEnum,
@@ -31,20 +28,21 @@ import {
   topRopeTickTypeEnum,
   boulderTickTypeEnum,
   notesPlaceHolders,
-} from '../../constants';
-import { toggleMobileNav } from '../../states';
-import { useDispatch } from '../../components/State';
-import TextAreaField from '../../components/TextAreaField';
-import SelectField from '../../components/SelectField';
-import TextField from '../../components/TextField';
-import SliderField from '../../components/SliderField';
-import Marker from '../../components/Marker';
-import RouteCard from '../../components/RouteCard';
-import camelCaseToTitleCase from '../../utils/camelCaseToTitleCase';
-import useGeoLocation from '../../hooks/useGeoLocation';
-import useThrottle from '../../hooks/useThrottle';
-import http from '../../http';
-import calculateGeoDistance from '../../utils/calculateGeoDistance';
+} from '@/constants';
+import Form from '@/components/Form';
+import Map from '@/components/Map';
+import EmptyView from '@/components/EmptyView';
+import { toggleMobileNav } from '@/states';
+import { useDispatch } from '@/components/State';
+import TextAreaField from '@/components/TextAreaField';
+import SelectField from '@/components/SelectField';
+import TextField from '@/components/TextField';
+import SliderField from '@/components/SliderField';
+import Marker from '@/components/Marker';
+import RouteCard from '@/components/RouteCard';
+import { calculateGeoDistance, camelCaseToTitleCase } from '@/utils';
+import { useGeoLocation, useThrottle } from '@/hooks';
+import http from '@/http';
 
 const getCoordsFromUserPosition = (position) => {
   if (!position) return null;

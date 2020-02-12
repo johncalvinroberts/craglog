@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fallbackPosition } from '../constants';
+import { fallbackPosition } from '@/constants';
 
 const fallBackLocation = {
   coords: {

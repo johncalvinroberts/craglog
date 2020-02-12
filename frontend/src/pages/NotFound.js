@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon, Heading, Box } from '@chakra-ui/core';
-import LoginLayout from '../components/LogInLayout';
-import useTitle from '../hooks/useTitle';
+import LoginLayout from '@/components/LogInLayout';
+import { useTitle } from '@/hooks';
 
 const NotFound = () => {
   useTitle('Not found');

@@ -2,11 +2,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
 import format from 'date-fns/format';
-import useTitle from '../../hooks/useTitle';
-import http from '../../http';
-import Loading from '../../components/Loading';
-import getErrorMessage from '../../utils/getErrorMessage';
-import { DATE_INPUT_FORMAT } from '../../constants';
+import useTitle from '@/hooks/useTitle';
+import http from '@/http';
+import Loading from '@/components/Loading';
+import getErrorMessage from '@/utils/getErrorMessage';
+import { DATE_INPUT_FORMAT } from '@/constants';
 import TickForm from './TickForm';
 
 const normalize = (tick) => {

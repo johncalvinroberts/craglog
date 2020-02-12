@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@chakra-ui/core';
-import camelCaseToTitleCase from '../utils/camelCaseToTitleCase';
+import { camelCaseToTitleCase } from '@/utils';
 import Emoji from './Emoji';
 
 const tickTypeEmojis = {

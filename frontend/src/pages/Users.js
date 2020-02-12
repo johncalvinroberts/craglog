@@ -14,10 +14,10 @@ import {
   StatHelpText,
   useToast,
 } from '@chakra-ui/core';
-import EmptyView from '../components/EmptyView';
-import DashboardWrapper from '../components/DashboardWrapper';
-import useTitle from '../hooks/useTitle';
-import http from '../http';
+import EmptyView from '@/components/EmptyView';
+import DashboardWrapper from '@/components/DashboardWrapper';
+import { useTitle } from '@/hooks';
+import http from '@/http';
 
 const UserItem = ({ user }) => {
   const { id, ...rest } = user;

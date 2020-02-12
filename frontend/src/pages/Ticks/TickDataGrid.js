@@ -30,13 +30,13 @@ import format from 'date-fns/format';
 import differenceInDays from 'date-fns/differenceInDays';
 import isSameDay from 'date-fns/isSameDay';
 import isSameYear from 'date-fns/isSameYear';
-import http from '../../http';
-import getErrorMessage from '../../utils/getErrorMessage';
-import EmptyView from '../../components/EmptyView';
-import RouteCard from '../../components/RouteCard';
-import TickStyleChip from '../../components/TickStyleChip';
-import TickTypeChip from '../../components/TickTypeChip';
-import { DATE_FORMAT } from '../../constants';
+import http from '@/http';
+import getErrorMessage from '@/utils/getErrorMessage';
+import EmptyView from '@/components/EmptyView';
+import RouteCard from '@/components/RouteCard';
+import TickStyleChip from '@/components/TickStyleChip';
+import TickTypeChip from '@/components/TickTypeChip';
+import { DATE_FORMAT } from '@/constants';
 
 const DatesContext = createContext();
 

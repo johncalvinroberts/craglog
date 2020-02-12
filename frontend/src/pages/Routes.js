@@ -13,12 +13,11 @@ import {
   StatHelpText,
   useToast,
 } from '@chakra-ui/core';
-import useThrottle from '../hooks/useThrottle';
-import EmptyView from '../components/EmptyView';
-import DashboardWrapper from '../components/DashboardWrapper';
-import RouteCard from '../components/RouteCard';
-import useTitle from '../hooks/useTitle';
-import http from '../http';
+import EmptyView from '@/components/EmptyView';
+import DashboardWrapper from '@/components/DashboardWrapper';
+import RouteCard from '@/components/RouteCard';
+import { useTitle, useThrottle } from '@/hooks';
+import http from '@/http';
 
 const PAGE_KEY = 'admin-routes';
 

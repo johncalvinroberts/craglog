@@ -1,7 +1,7 @@
 import React, { useCallback, useState, forwardRef } from 'react';
 import { Box } from '@chakra-ui/core';
 import { FormContext } from 'react-hook-form';
-import useMounted from '../hooks/useMounted';
+import { useMounted } from '@/hooks';
 
 const Form = forwardRef((props, ref) => {
   const {

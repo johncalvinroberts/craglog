@@ -12,7 +12,7 @@ import {
   Box,
 } from '@chakra-ui/core';
 import { useDispatch } from './State';
-import { performLogout } from '../states';
+import { performLogout } from '@/states';
 
 const UtilMenu = () => {
   const dispatch = useDispatch();

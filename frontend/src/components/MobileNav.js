@@ -15,9 +15,7 @@ import {
 } from '@chakra-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import { SideNavContent } from './SideNav';
-import useRouteChanged from '../hooks/useRouteChanged';
-import useAuthState from '../hooks/useAuthState';
-import useUIState from '../hooks/useUIState';
+import { useRouteChanged, useAuthState, useUIState } from '@/hooks';
 
 const MobileNavButton = forwardRef((props, ref) => (
   <Button

@@ -18,8 +18,8 @@ import {
 } from '@chakra-ui/core';
 import format from 'date-fns/format';
 import useSWR from 'swr';
-import http from '../../http';
-import { DATE_FORMAT } from '../../constants';
+import http from '@/http';
+import { DATE_FORMAT } from '@/constants';
 
 const JobLogs = ({ item, type }) => {
   const { colorMode } = useColorMode();

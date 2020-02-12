@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Heading } from '@chakra-ui/core';
-import useAuthState from '../hooks/useAuthState';
+import { useAuthState } from '@/hooks';
 import { MenuLink } from './Link';
 
 const NavGroupHeading = (props) => (

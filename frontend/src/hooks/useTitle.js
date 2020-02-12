@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import getInnerText from '../utils/getInnerText';
-import { useDispatch } from '../components/State';
+import { getInnerText } from '@/utils';
+import { useDispatch } from '@/components/State';
 
 // write the title to the document
 // and to the global 'Interface' store

@@ -13,7 +13,7 @@ import {
   PseudoBox,
 } from '@chakra-ui/core';
 import useSWR from 'swr';
-import http from '../../http';
+import http from '@/http';
 
 const PseudoButton = ({ children, ...props }) => {
   return (

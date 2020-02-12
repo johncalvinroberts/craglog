@@ -13,8 +13,8 @@ import {
   Input,
 } from '@chakra-ui/core';
 import useSWR from 'swr';
-import getErrorMessage from '../../utils/getErrorMessage';
-import http from '../../http';
+import { getErrorMessage } from '@/utils';
+import http from '@/http';
 
 const timeParameterOptions = [
   { label: 'All time', value: 'all' },

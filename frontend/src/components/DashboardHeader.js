@@ -3,7 +3,7 @@ import { Box, Flex, IconButton, useColorMode, Heading } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
 import UtilMenu from './UtilMenu';
 import { useGlobalState } from './State';
-import { getUIState } from '../states';
+import { getUIState } from '@/states';
 
 const DashboardHeader = (props) => {
   const { colorMode } = useColorMode();

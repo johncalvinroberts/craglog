@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Spinner, Heading, Button, Text, useToast } from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
-import EmptyView from '../../components/EmptyView';
+import http from '@/http';
+import EmptyView from '@/components/EmptyView';
 import JobItem from './JobItem';
-import http from '../../http';
 
 const JobsDataGrid = ({ params }) => {
   const toast = useToast();

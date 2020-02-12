@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/core';
 import DashboardHeader from './DashboardHeader';
 import SideNav from './SideNav';
 import MobileNav from './MobileNav';
-import useRouteChanged from '../hooks/useRouteChanged';
+import { useRouteChanged } from '@/hooks';
 
 const Main = (props) => <Box as="main" mx="auto" mb="3rem" {...props} />;
 
