@@ -5,7 +5,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 const NavLink = ({ children, to, ...props }) => {
   const { pathname } = useLocation();
-  const isActive = pathname === to;
+  const isActive = to === '/app' ? pathname === to : pathname.startsWith(to);
 
   return (
     <RouterLink {...props} to={to}>

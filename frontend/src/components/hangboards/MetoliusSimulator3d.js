@@ -3,8 +3,8 @@ import React from 'react';
 const MetoliusSimulator3d = () => {
   return (
     <svg
-      width="769"
-      height="270"
+      width="100%"
+      height="200"
       viewBox="0 0 769 270"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -27,11 +27,7 @@ const Home = ({ match }) => {
               exact
               component={TickEdit}
             />
-            <Route
-              path={`${match.path}/hangboard`}
-              exact
-              component={Hangboard}
-            />
+            <Route path={`${match.path}/hangboard`} component={Hangboard} />
             <Route component={NotFound} />
           </Switch>
         </DashboardWrapper>

@@ -11,8 +11,10 @@ const EmptyView = ({ message = 'Nothing.', children, ...props }) => {
       flexWrap="wrap"
       {...props}
     >
-      <Icon name="warning-2" mr={2} />
-      <Heading size="s">{message}</Heading>
+      <Box d="flex" alignItems="center" justifyContent="center">
+        <Icon name="warning-2" mr={2} />
+        <Heading size="s">{message}</Heading>
+      </Box>
       {children && (
         <Box width="100%" d="flex" justifyContent="center">
           {children}
