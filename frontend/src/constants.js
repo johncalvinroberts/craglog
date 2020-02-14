@@ -113,3 +113,7 @@ export const notesPlaceHolders = [
   'Easy, but fun...',
   'Sharp rock.',
 ];
+
+export const boards = [
+  { value: 'metolius-simulator-3d', label: 'Metolius Simulator 3D' },
+];
