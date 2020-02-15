@@ -8,6 +8,7 @@ import TextField from '@/components/TextField';
 import { useDispatch } from '@/components/State';
 import { toggleMobileNav } from '@/states';
 import { boards } from '@/constants';
+import SequenceBuilder from './SequenceBuilder';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
@@ -47,6 +48,7 @@ const SequenceForm = ({ defaultValues, onSubmit }) => {
           required
         />
       </Box>
+      <SequenceBuilder />
       <Box
         position="fixed"
         bottom="20px"

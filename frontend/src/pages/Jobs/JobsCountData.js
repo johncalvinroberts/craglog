@@ -10,28 +10,10 @@ import {
   Heading,
   ButtonGroup,
   Button,
-  PseudoBox,
 } from '@chakra-ui/core';
 import useSWR from 'swr';
+import PseudoButton from '@/components/PseudoButton';
 import http from '@/http';
-
-const PseudoButton = ({ children, ...props }) => {
-  return (
-    <PseudoBox
-      as="button"
-      _focus={{ outline: 'none' }}
-      _hover={{
-        borderColor: 'teal.300',
-      }}
-      borderWidth="1px"
-      p={2}
-      transition="all 0.3s"
-      {...props}
-    >
-      {children}
-    </PseudoBox>
-  );
-};
 
 const JobsCountData = ({ params, handleChangeParams }) => {
   const toast = useToast();
@@ -115,6 +97,9 @@ const JobsCountData = ({ params, handleChangeParams }) => {
                   key={key}
                   as={PseudoButton}
                   backgroundColor={isActive ? 'gray.500' : null}
+                  _hover={{
+                    borderColor: 'teal.300',
+                  }}
                   onClick={() =>
                     handleChangeParams({ type: 'route', status: key })
                   }
