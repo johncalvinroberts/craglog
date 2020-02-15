@@ -1,4 +1,10 @@
-import { IsNumber, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsNumber,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsArray,
+} from 'class-validator';
 
 export class HangboardSequenceItemDto {
   @IsNumber()
@@ -13,13 +19,9 @@ export class HangboardSequenceItemDto {
   @IsOptional()
   repetitions = 0;
 
-  @IsNumber()
+  @IsArray()
   @IsOptional()
-  left = 0;
-
-  @IsNumber()
-  @IsOptional()
-  right = 0;
+  activeHolds: string[];
 
   @IsNotEmpty()
   @IsString()

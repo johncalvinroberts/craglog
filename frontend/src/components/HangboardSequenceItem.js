@@ -4,6 +4,12 @@ import { Box, Text, useColorMode } from '@chakra-ui/core';
 const bg = { light: 'white', dark: 'gray.800' };
 const HangboardSequenceItem = ({ isActive, item }) => {
   const { colorMode } = useColorMode();
+  const showRest = !!(
+    item.rest &&
+    typeof item.rest === 'number' &&
+    item.rest > 0
+  );
+
   return (
     <Box>
       <Box d="flex" p={2} bg={bg[colorMode]} alignItems="center">
@@ -27,7 +33,7 @@ const HangboardSequenceItem = ({ isActive, item }) => {
             : `${item.duration || '0'}s`}
         </Text>
       </Box>
-      {item.rest && (
+      {showRest && (
         <Box
           bg="red.200"
           {...(colorMode === 'dark' ? { color: 'white' } : null)}

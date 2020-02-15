@@ -2,8 +2,15 @@ import React from 'react';
 import SequenceForm from './SequenceForm';
 import { boards } from '@/constants';
 
+export const sequenceItemDefaultValue = {
+  rest: 0,
+  duration: 0,
+  repetitions: 0,
+  activeHolds: [],
+  exercise: '',
+};
 const defaultValues = {
-  sequence: [],
+  sequence: [sequenceItemDefaultValue],
   boardName: boards[0].value,
   name: '',
   description: '',
