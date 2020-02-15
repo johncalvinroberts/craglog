@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
-import { Box, Icon, useColorMode } from '@chakra-ui/core';
+import React, { useState, useMemo } from 'react';
+import { Box, Icon, Text } from '@chakra-ui/core';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PseudoButton from '@/components/PseudoButton';
+import HangboardSequenceItem from '@/components/HangboardSequenceItem';
+import { hangBoardMap } from '@/components/hangboards';
 
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';
 
-const ItemDraggable = ({ item, index, isActive, ...props }) => {
-  const { colorMode } = useColorMode();
-  const bg = { light: 'white', dark: 'gray.800' };
+const HangboardPlaceholder = () => (
+  <Box d="flex" justifyContent="center" alignItems="center" height="10rem">
+    <Text size="md">No hangboard chosen</Text>
+    <Text size="sm">Choose one from dropdown above</Text>
+  </Box>
+);
 
+const ItemDraggable = ({ item, index, isActive, ...props }) => {
   return (
     <Draggable key={item.id} draggableId={item.id} index={index}>
       {(provided, snapshot) => (
@@ -19,11 +25,10 @@ const ItemDraggable = ({ item, index, isActive, ...props }) => {
           {...provided.dragHandleProps}
           boxShadow={snapshot.isDragging ? draggingBoxShadow : ''}
           borderBottomWidth="1px"
-          bg={bg[colorMode]}
           style={provided.draggableProps.style}
           {...props}
         >
-          <Box>{item.id}</Box>
+          <HangboardSequenceItem item={item} isActive={isActive} />
         </Box>
       )}
     </Draggable>
@@ -33,7 +38,13 @@ const ItemDraggable = ({ item, index, isActive, ...props }) => {
 const SequenceBuilder = () => {
   const [activeIndex, setActiveIndex] = useState();
 
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
+
+  const boardName = watch('boardName');
+  const Hangboard = useMemo(
+    () => hangBoardMap[boardName] || HangboardPlaceholder,
+    [boardName],
+  );
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: 'sequence',
@@ -108,7 +119,12 @@ const SequenceBuilder = () => {
         </PseudoButton>
       </Box>
       <Box flexGrow="1" height="600px">
-        render item form items here
+        <Box p={2}>
+          <Hangboard />
+        </Box>
+        {fields.map((item, index) => (
+          <Box d={index === activeIndex ? 'block' : 'none'}>{index}</Box>
+        ))}
       </Box>
     </Box>
   );

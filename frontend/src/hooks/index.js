@@ -8,3 +8,4 @@ export { default as useRouteChanged } from './useRouteChanged';
 export { default as useThrottle } from './useThrottle';
 export { default as useUIState } from './useUIState';
 export { default as useWindowSize } from './useWindowSize';
+export { default as useHangboardColors } from './useHangboardColors';
