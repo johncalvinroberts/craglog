@@ -26,4 +26,8 @@ export class HangboardSequenceItemDto {
   @IsNotEmpty()
   @IsString()
   exercise = '';
+
+  @IsString()
+  @IsOptional()
+  customExerciseName = '';
 }

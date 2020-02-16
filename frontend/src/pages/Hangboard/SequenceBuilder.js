@@ -1,11 +1,20 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { Box, Icon, Text } from '@chakra-ui/core';
+import { Box, Icon, Text, InputRightAddon } from '@chakra-ui/core';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PseudoButton from '@/components/PseudoButton';
 import HangboardSequenceItem from '@/components/HangboardSequenceItem';
 import { hangBoardMap } from '@/components/hangboards';
+import SelectField from '@/components/SelectField';
+import TextField from '@/components/TextField';
 import { sequenceItemDefaultValue } from './SequenceCreate';
+import { exercises, repetitionExercises } from '@/constants';
+import { camelCaseToTitleCase } from '@/utils';
+
+const exerciseOptions = exercises.map((item) => ({
+  value: item,
+  label: camelCaseToTitleCase(item),
+}));
 
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';
 
@@ -16,9 +25,25 @@ const HangboardPlaceholder = () => (
   </Box>
 );
 
-const ItemDraggable = ({ item, index, isActive, ...props }) => {
+const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
+  const { watch } = useFormContext();
+
+  const nameBase = `sequence[${index}]`;
+  const exercise = watch(`${nameBase}.exercise`);
+  const repetitions = watch(`${nameBase}.repetitions`);
+  const duration = watch(`${nameBase}.duration`);
+  const customExerciseName = watch(`${nameBase}.customExerciseName`);
+  const rest = watch(`${nameBase}.rest`);
+  const itemToPass = {
+    exercise,
+    repetitions,
+    duration,
+    customExerciseName,
+    rest,
+  };
+
   return (
-    <Draggable key={item.id} draggableId={item.id} index={index}>
+    <Draggable draggableId={draggableId} index={index}>
       {(provided, snapshot) => (
         <Box
           ref={provided.innerRef}
@@ -29,7 +54,7 @@ const ItemDraggable = ({ item, index, isActive, ...props }) => {
           style={provided.draggableProps.style}
           {...props}
         >
-          <HangboardSequenceItem item={item} isActive={isActive} />
+          <HangboardSequenceItem item={itemToPass} isActive={isActive} />
         </Box>
       )}
     </Draggable>
@@ -48,8 +73,13 @@ const SequenceBuilder = () => {
   } = useFormContext();
 
   const boardName = watch('boardName');
-  const activeSequenceActiveHolds =
+  const currentSequenceActiveHolds =
     watch(`sequence[${activeIndex}].activeHolds`) || [];
+
+  const currentExercise = watch(`sequence[${activeIndex}].exercise`);
+  console.log({ currentExercise, currentSequenceActiveHolds });
+  const isCurrentExerciseReps = repetitionExercises.includes(currentExercise);
+  const isCurrentExerciseCustom = currentExercise === 'custom';
   const Hangboard = useMemo(
     () => hangBoardMap[boardName] || HangboardPlaceholder,
     [boardName],
@@ -101,22 +131,21 @@ const SequenceBuilder = () => {
       if (typeof activeIndex === 'number') {
         const name = `sequence[${activeIndex}].activeHolds`;
         let nextValue;
-        const isAlreadyChosen = activeSequenceActiveHolds.includes(id);
-        const isLimitReached = activeSequenceActiveHolds.length > 1;
+        const isAlreadyChosen = currentSequenceActiveHolds.includes(id);
 
         if (isAlreadyChosen) {
-          nextValue = activeSequenceActiveHolds.filter((item) => item !== id);
+          nextValue = currentSequenceActiveHolds.filter((item) => item !== id);
           setValue(name, nextValue);
           return;
         }
 
-        if (!isAlreadyChosen && !isLimitReached) {
-          nextValue = [...activeSequenceActiveHolds, id];
+        if (!isAlreadyChosen) {
+          nextValue = [...currentSequenceActiveHolds, id];
           setValue(name, nextValue);
         }
       }
     },
-    [activeIndex, activeSequenceActiveHolds, setValue],
+    [activeIndex, currentSequenceActiveHolds, setValue],
   );
 
   useEffect(() => {
@@ -141,8 +170,8 @@ const SequenceBuilder = () => {
                 {fields.map((item, index) => (
                   <ItemDraggable
                     key={item.id}
-                    item={item}
                     index={index}
+                    draggableId={item.id}
                     onClick={() => handleSelectItem(index)}
                     isActive={activeIndex === index}
                     handleRemove={() => handleRemove(index)}
@@ -176,14 +205,72 @@ const SequenceBuilder = () => {
         <Box p={2}>
           <Hangboard
             handleClickHold={handleClickHold}
-            activeHolds={activeSequenceActiveHolds}
+            activeHolds={currentSequenceActiveHolds}
           />
         </Box>
-        {fields.map((item, index) => (
-          <Box d={index === activeIndex ? 'block' : 'none'} key={item.id}>
-            {index}
-          </Box>
-        ))}
+        {fields.map((item, index) => {
+          const nameBase = `sequence[${index}]`;
+          return (
+            <Box
+              d={index === activeIndex ? 'flex' : 'none'}
+              key={item.id}
+              p={2}
+              flexWrap="wrap"
+              justifyContent="center"
+            >
+              <SelectField
+                name={`${nameBase}.exercise`}
+                label="Exercise"
+                options={exerciseOptions}
+                required
+              />
+              {isCurrentExerciseCustom && (
+                <TextField
+                  name={`${nameBase}.customExerciseName`}
+                  label="Custom Exercise Name"
+                  required
+                />
+              )}
+
+              {!isCurrentExerciseReps && (
+                <TextField
+                  type="number"
+                  name={`${nameBase}.duration`}
+                  label="Duration"
+                  min={0}
+                  required
+                  adornmentRight={
+                    <InputRightAddon fontSize="xs">seconds</InputRightAddon>
+                  }
+                  rounded="0.25rem 0 0 0.25rem"
+                />
+              )}
+              {isCurrentExerciseReps && (
+                <TextField
+                  type="number"
+                  name={`${nameBase}.repetitions`}
+                  label="Repetitions"
+                  min={0}
+                  required
+                  adornmentRight={
+                    <InputRightAddon fontSize="xs">reps</InputRightAddon>
+                  }
+                  rounded="0.25rem 0 0 0.25rem"
+                />
+              )}
+              <TextField
+                type="number"
+                name={`${nameBase}.rest`}
+                label="Rest"
+                min={0}
+                adornmentRight={
+                  <InputRightAddon fontSize="xs">seconds</InputRightAddon>
+                }
+                rounded="0.25rem 0 0 0.25rem"
+              />
+            </Box>
+          );
+        })}
       </Box>
     </Box>
   );

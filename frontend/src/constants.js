@@ -117,3 +117,30 @@ export const notesPlaceHolders = [
 export const boards = [
   { value: 'metolius-simulator-3d', label: 'Metolius Simulator 3D' },
 ];
+
+export const exercises = [
+  'deadhang',
+  'offsetHang',
+  'bentArmHang',
+  'lHang',
+  'miniFrontLever',
+  'frontLever',
+  'pullUp',
+  'offsetPullUp',
+  'oneArmPullUp',
+  'kneeRaises',
+  'legRaises',
+  'pushUps',
+  'sitUps',
+  'custom',
+];
+
+export const repetitionExercises = [
+  'pullUp',
+  'offsetPullUp',
+  'oneArmPullUp',
+  'kneeRaises',
+  'legRaises',
+  'pushUps',
+  'sitUps',
+];

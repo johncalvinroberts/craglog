@@ -6,8 +6,9 @@ export const sequenceItemDefaultValue = {
   rest: 0,
   duration: 0,
   repetitions: 0,
-  activeHolds: [],
   exercise: '',
+  activeHolds: [],
+  customExerciseName: '',
 };
 const defaultValues = {
   sequence: [sequenceItemDefaultValue],

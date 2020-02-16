@@ -1,18 +1,26 @@
 import React from 'react';
 import { Box, Text, useColorMode } from '@chakra-ui/core';
+import { camelCaseToTitleCase } from '@/utils';
 
 const bg = { light: 'white', dark: 'gray.800' };
 const HangboardSequenceItem = ({ isActive, item }) => {
   const { colorMode } = useColorMode();
-  const showRest = !!(
-    item.rest &&
-    typeof item.rest === 'number' &&
-    item.rest > 0
-  );
+  const showRest = !!(item.rest && parseInt(item.rest, 10) > 0);
 
+  const exerciseName = item.exercise ? (
+    camelCaseToTitleCase(item.exercise)
+  ) : (
+    <em>Empty</em>
+  );
   return (
     <Box>
-      <Box d="flex" p={2} bg={bg[colorMode]} alignItems="center">
+      <Box
+        d="flex"
+        p={2}
+        bg={bg[colorMode]}
+        alignItems="center"
+        {...(showRest ? { borderBottomWidth: '1px' } : null)}
+      >
         <Text
           fontSize="md"
           fontWeight={isActive ? 'bold' : ''}
@@ -20,7 +28,7 @@ const HangboardSequenceItem = ({ isActive, item }) => {
           height="auto"
           mr={2}
         >
-          {item.exercise || <em>Empty</em>}
+          {exerciseName}
         </Text>
         <Text
           fontSize="xs"
@@ -35,8 +43,9 @@ const HangboardSequenceItem = ({ isActive, item }) => {
       </Box>
       {showRest && (
         <Box
-          bg="red.200"
+          bg="red.100"
           {...(colorMode === 'dark' ? { color: 'white' } : null)}
+          px={2}
         >
           <Text fontSize="xs" width="auto" height="auto">
             Rest {item.rest}s
