@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Box, Icon, Text, InputRightAddon } from '@chakra-ui/core';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -25,23 +25,7 @@ const HangboardPlaceholder = () => (
   </Box>
 );
 
-const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
-  const { watch } = useFormContext();
-
-  const nameBase = `sequence[${index}]`;
-  const exercise = watch(`${nameBase}.exercise`);
-  const repetitions = watch(`${nameBase}.repetitions`);
-  const duration = watch(`${nameBase}.duration`);
-  const customExerciseName = watch(`${nameBase}.customExerciseName`);
-  const rest = watch(`${nameBase}.rest`);
-  const itemToPass = {
-    exercise,
-    repetitions,
-    duration,
-    customExerciseName,
-    rest,
-  };
-
+const ItemDraggable = ({ draggableId, index, isActive, item, ...props }) => {
   return (
     <Draggable draggableId={draggableId} index={index}>
       {(provided, snapshot) => (
@@ -54,7 +38,7 @@ const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
           style={provided.draggableProps.style}
           {...props}
         >
-          <HangboardSequenceItem item={itemToPass} isActive={isActive} />
+          <HangboardSequenceItem item={item} isActive={isActive} />
         </Box>
       )}
     </Draggable>
@@ -64,26 +48,22 @@ const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
 const SequenceBuilder = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const {
-    control,
-    watch,
-    setValue,
-    register,
-    defaultValues,
-  } = useFormContext();
+  const { control, watch } = useFormContext();
 
   const boardName = watch('boardName');
-  const currentSequenceActiveHolds =
-    watch(`sequence[${activeIndex}].activeHolds`) || [];
 
-  const currentExercise = watch(`sequence[${activeIndex}].exercise`);
-  console.log({ currentExercise, currentSequenceActiveHolds });
+  const allSequenceItems = watch('sequence');
+  const currentSequenceItem = allSequenceItems[activeIndex] || {};
+  const currentSequenceActiveHolds = currentSequenceItem.activeHolds || [];
+  const currentExercise = currentSequenceItem.exercise;
   const isCurrentExerciseReps = repetitionExercises.includes(currentExercise);
   const isCurrentExerciseCustom = currentExercise === 'custom';
+
   const Hangboard = useMemo(
     () => hangBoardMap[boardName] || HangboardPlaceholder,
     [boardName],
   );
+
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: 'sequence',
@@ -93,11 +73,8 @@ const SequenceBuilder = () => {
     (e) => {
       e.preventDefault();
       append(sequenceItemDefaultValue);
-      const name = `sequence[${fields.length}].activeHolds`;
-      register({ name });
-      setValue(name, []);
     },
-    [append, fields.length, register, setValue],
+    [append],
   );
 
   const handleSelectItem = useCallback(
@@ -129,31 +106,22 @@ const SequenceBuilder = () => {
   const handleClickHold = useCallback(
     (id) => {
       if (typeof activeIndex === 'number') {
-        const name = `sequence[${activeIndex}].activeHolds`;
+        const name = `active_holds[${activeIndex}].activeHolds`;
         let nextValue;
         const isAlreadyChosen = currentSequenceActiveHolds.includes(id);
 
         if (isAlreadyChosen) {
           nextValue = currentSequenceActiveHolds.filter((item) => item !== id);
-          setValue(name, nextValue);
-          return;
         }
 
         if (!isAlreadyChosen) {
           nextValue = [...currentSequenceActiveHolds, id];
-          setValue(name, nextValue);
         }
+        console.log({ name, nextValue });
       }
     },
-    [activeIndex, currentSequenceActiveHolds, setValue],
+    [activeIndex, currentSequenceActiveHolds],
   );
-
-  useEffect(() => {
-    defaultValues.sequence.forEach((_, index) => {
-      const name = `sequence[${index}].activeHolds`;
-      register({ name });
-    });
-  }, [register, defaultValues]);
 
   return (
     <Box borderWidth="1px" d="flex">
@@ -171,6 +139,7 @@ const SequenceBuilder = () => {
                   <ItemDraggable
                     key={item.id}
                     index={index}
+                    item={allSequenceItems[index]}
                     draggableId={item.id}
                     onClick={() => handleSelectItem(index)}
                     isActive={activeIndex === index}

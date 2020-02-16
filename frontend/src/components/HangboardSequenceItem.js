@@ -47,7 +47,7 @@ const HangboardSequenceItem = ({ isActive, item }) => {
           {...(colorMode === 'dark' ? { color: 'white' } : null)}
           px={2}
         >
-          <Text fontSize="xs" width="auto" height="auto">
+          <Text fontSize="xs" width="auto" height="auto" color="black">
             Rest {item.rest}s
           </Text>
         </Box>
