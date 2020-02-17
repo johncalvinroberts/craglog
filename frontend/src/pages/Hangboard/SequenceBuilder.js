@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Box, Icon, Text, InputRightAddon } from '@chakra-ui/core';
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PseudoButton from '@/components/PseudoButton';
 import HangboardSequenceItem from '@/components/HangboardSequenceItem';
@@ -9,7 +9,8 @@ import SelectField from '@/components/SelectField';
 import TextField from '@/components/TextField';
 import { sequenceItemDefaultValue } from './SequenceCreate';
 import { exercises, repetitionExercises } from '@/constants';
-import { camelCaseToTitleCase } from '@/utils';
+import { camelCaseToTitleCase, getUuidV4 } from '@/utils';
+import { useArrayFieldUtils } from '@/hooks';
 
 const exerciseOptions = exercises.map((item) => ({
   value: item,
@@ -25,7 +26,22 @@ const HangboardPlaceholder = () => (
   </Box>
 );
 
-const ItemDraggable = ({ draggableId, index, isActive, item, ...props }) => {
+const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
+  const { watch } = useFormContext();
+  const nameBase = `sequence[${index}]`;
+  const exercise = watch(`${nameBase}.exercise`);
+  const repetitions = watch(`${nameBase}.repetitions`);
+  const duration = watch(`${nameBase}.duration`);
+  const customExerciseName = watch(`${nameBase}.customExerciseName`);
+  const rest = watch(`${nameBase}.rest`);
+  const itemToPass = {
+    exercise,
+    repetitions,
+    duration,
+    customExerciseName,
+    rest,
+  };
+
   return (
     <Draggable draggableId={draggableId} index={index}>
       {(provided, snapshot) => (
@@ -38,7 +54,7 @@ const ItemDraggable = ({ draggableId, index, isActive, item, ...props }) => {
           style={provided.draggableProps.style}
           {...props}
         >
-          <HangboardSequenceItem item={item} isActive={isActive} />
+          <HangboardSequenceItem item={itemToPass} isActive={isActive} />
         </Box>
       )}
     </Draggable>
@@ -46,9 +62,11 @@ const ItemDraggable = ({ draggableId, index, isActive, item, ...props }) => {
 };
 
 const SequenceBuilder = () => {
+  const [indexes, setIndexes] = useState([]);
+  const [count, setCount] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const { control, watch } = useFormContext();
+  const { watch, setValue } = useFormContext();
 
   const boardName = watch('boardName');
 
@@ -64,18 +82,14 @@ const SequenceBuilder = () => {
     [boardName],
   );
 
-  const { fields, append, remove, move } = useFieldArray({
-    control,
-    name: 'sequence',
-  });
+  const { move } = useArrayFieldUtils('sequence');
+  const remove = () => {};
 
-  const handleAdd = useCallback(
-    (e) => {
-      e.preventDefault();
-      append(sequenceItemDefaultValue);
-    },
-    [append],
-  );
+  const handleAdd = useCallback((e) => {
+    e.preventDefault();
+    setIndexes((prevIndexes) => [...prevIndexes, getUuidV4()]);
+    setCount((prevCount) => prevCount + 1);
+  }, []);
 
   const handleSelectItem = useCallback(
     (index) => {
@@ -84,12 +98,9 @@ const SequenceBuilder = () => {
     [setActiveIndex],
   );
 
-  const handleRemove = useCallback(
-    (index) => {
-      remove(index);
-    },
-    [remove],
-  );
+  const handleRemove = useCallback((index) => {
+    remove(index);
+  }, []);
 
   const handleDragEnd = useCallback(
     (result) => {
@@ -122,7 +133,7 @@ const SequenceBuilder = () => {
     },
     [activeIndex, currentSequenceActiveHolds],
   );
-
+  console.log({ indexes });
   return (
     <Box borderWidth="1px" d="flex">
       <Box borderRightWidth="1px" position="relative" flex="0 0 13rem">
@@ -135,12 +146,11 @@ const SequenceBuilder = () => {
                 overflowY="scroll"
                 maxHeight="600px"
               >
-                {fields.map((item, index) => (
+                {indexes.map((id, index) => (
                   <ItemDraggable
-                    key={item.id}
+                    key={id}
                     index={index}
-                    item={allSequenceItems[index]}
-                    draggableId={item.id}
+                    draggableId={id}
                     onClick={() => handleSelectItem(index)}
                     isActive={activeIndex === index}
                     handleRemove={() => handleRemove(index)}
@@ -177,12 +187,12 @@ const SequenceBuilder = () => {
             activeHolds={currentSequenceActiveHolds}
           />
         </Box>
-        {fields.map((item, index) => {
+        {indexes.map((item, index) => {
           const nameBase = `sequence[${index}]`;
           return (
             <Box
               d={index === activeIndex ? 'flex' : 'none'}
-              key={item.id}
+              key={item}
               p={2}
               flexWrap="wrap"
               justifyContent="center"
@@ -191,6 +201,7 @@ const SequenceBuilder = () => {
                 name={`${nameBase}.exercise`}
                 label="Exercise"
                 options={exerciseOptions}
+                defaultValue={sequenceItemDefaultValue.exercise}
                 required
               />
               {isCurrentExerciseCustom && (
@@ -208,6 +219,7 @@ const SequenceBuilder = () => {
                   label="Duration"
                   min={0}
                   required
+                  defaultValue={sequenceItemDefaultValue.duration}
                   adornmentRight={
                     <InputRightAddon fontSize="xs">seconds</InputRightAddon>
                   }
@@ -220,6 +232,7 @@ const SequenceBuilder = () => {
                   name={`${nameBase}.repetitions`}
                   label="Repetitions"
                   min={0}
+                  defaultValue={sequenceItemDefaultValue.repetitions}
                   required
                   adornmentRight={
                     <InputRightAddon fontSize="xs">reps</InputRightAddon>
@@ -232,6 +245,7 @@ const SequenceBuilder = () => {
                 name={`${nameBase}.rest`}
                 label="Rest"
                 min={0}
+                defaultValue={sequenceItemDefaultValue.rest}
                 adornmentRight={
                   <InputRightAddon fontSize="xs">seconds</InputRightAddon>
                 }
