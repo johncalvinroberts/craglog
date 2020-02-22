@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import useSWR, { useSWRPages } from 'swr';
 import http from '@/http';
 import EmptyView from '@/components/EmptyView';
+import { QuietLink } from '@/components/Link';
 
 const SequenceList = () => {
   const toast = useToast();
@@ -62,13 +63,18 @@ const SequenceList = () => {
         d="flex"
         alignItems="center"
         justifyContent="space-between"
-        mb={[4, 8]}
+        mb={[2, 4]}
       >
         <Box>
           <Heading size="md">Sequences</Heading>
-          <Text size="xs" mb={4} as="div" width="auto" height="auto">
+          <Text size="xs" as="div" width="auto" height="auto">
             Your hangboard sequences. Choose a sequence to start the workout.
           </Text>
+          <QuietLink to="/app/hangboard/sequence/new">
+            <Text size="xs" as="div" width="auto" height="auto">
+              Add a new hangboard sequence
+            </Text>
+          </QuietLink>
         </Box>
       </Box>
       <Box>{pages}</Box>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Box, Icon, Text, InputRightAddon } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -27,8 +27,13 @@ const HangboardPlaceholder = () => (
 );
 
 const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
-  const { watch } = useFormContext();
   const nameBase = `sequence[${index}]`;
+  const { watch, register } = useFormContext();
+
+  useEffect(() => {
+    register({ name: `${nameBase}.activeHolds` });
+  }, [nameBase, register]);
+
   const exercise = watch(`${nameBase}.exercise`);
   const repetitions = watch(`${nameBase}.repetitions`);
   const duration = watch(`${nameBase}.duration`);
@@ -70,9 +75,8 @@ const SequenceBuilder = () => {
 
   const boardName = watch('boardName');
 
-  const currentSequenceActiveHolds = watch(
-    `sequence[${activeIndex}].activeHolds`,
-  );
+  const currentSequenceActiveHolds =
+    watch(`sequence[${activeIndex}].activeHolds`) || [];
   const currentExercise = watch(`sequence[${activeIndex}].exercise`);
   const isCurrentExerciseReps = repetitionExercises.includes(currentExercise);
   const isCurrentExerciseCustom = currentExercise === 'custom';
@@ -133,8 +137,6 @@ const SequenceBuilder = () => {
     },
     [activeIndex, currentSequenceActiveHolds, setValue],
   );
-
-  console.log({ indexes });
 
   return (
     <Box borderWidth="1px" d="flex">

@@ -68,3 +68,28 @@ export const MenuLink = forwardRef(({ to, ...props }, ref) => {
     </NavLink>
   );
 });
+
+const QuietText = ({ children, ...rest }) => {
+  const { colorMode } = useColorMode();
+  const hoverColor = { light: 'teal.400', dark: 'teal.200' };
+  return (
+    <PseudoBox
+      display="block"
+      maxHeight="20px"
+      _hover={{ color: hoverColor[colorMode], transform: 'translateX(2px)' }}
+      size="xs"
+      transition="all 0.2s"
+      {...rest}
+    >
+      {children}
+    </PseudoBox>
+  );
+};
+
+export const QuietLink = ({ to, children, ...rest }) => {
+  return (
+    <QuietText as={RouterLink} to={to} {...rest}>
+      {children}
+    </QuietText>
+  );
+};
