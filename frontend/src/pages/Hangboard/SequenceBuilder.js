@@ -70,10 +70,10 @@ const SequenceBuilder = () => {
 
   const boardName = watch('boardName');
 
-  const allSequenceItems = watch('sequence');
-  const currentSequenceItem = allSequenceItems[activeIndex] || {};
-  const currentSequenceActiveHolds = currentSequenceItem.activeHolds || [];
-  const currentExercise = currentSequenceItem.exercise;
+  const currentSequenceActiveHolds = watch(
+    `sequence[${activeIndex}].activeHolds`,
+  );
+  const currentExercise = watch(`sequence[${activeIndex}].exercise`);
   const isCurrentExerciseReps = repetitionExercises.includes(currentExercise);
   const isCurrentExerciseCustom = currentExercise === 'custom';
 
@@ -117,7 +117,7 @@ const SequenceBuilder = () => {
   const handleClickHold = useCallback(
     (id) => {
       if (typeof activeIndex === 'number') {
-        const name = `active_holds[${activeIndex}].activeHolds`;
+        const name = `sequence[${activeIndex}].activeHolds`;
         let nextValue;
         const isAlreadyChosen = currentSequenceActiveHolds.includes(id);
 
@@ -128,12 +128,14 @@ const SequenceBuilder = () => {
         if (!isAlreadyChosen) {
           nextValue = [...currentSequenceActiveHolds, id];
         }
-        console.log({ name, nextValue });
+        setValue(name, nextValue);
       }
     },
-    [activeIndex, currentSequenceActiveHolds],
+    [activeIndex, currentSequenceActiveHolds, setValue],
   );
+
   console.log({ indexes });
+
   return (
     <Box borderWidth="1px" d="flex">
       <Box borderRightWidth="1px" position="relative" flex="0 0 13rem">
