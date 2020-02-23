@@ -5,8 +5,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PseudoButton from '@/components/PseudoButton';
 import HangboardSequenceItem from '@/components/HangboardSequenceItem';
 import { hangBoardMap } from '@/components/hangboards';
-import { getUuidV4 } from '@/utils';
-import { useArrayFieldUtils } from '@/hooks';
+import { useArrayFieldUtils, useHover } from '@/hooks';
 import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';
@@ -23,6 +22,7 @@ const ItemDraggable = ({
   index,
   isActive,
   handleDelete,
+  realIndex,
   ...props
 }) => {
   const nameBase = `sequence[${index}]`;
@@ -41,12 +41,14 @@ const ItemDraggable = ({
     rest,
   };
 
+  const [hovered, bindHover] = useHover();
+
   const handleDuplicate = () => {};
 
   const handleMouseOver = () => {};
 
   return (
-    <Draggable draggableId={draggableId} index={index}>
+    <Draggable draggableId={draggableId} index={realIndex}>
       {(provided, snapshot) => (
         <Box
           ref={provided.innerRef}
@@ -56,6 +58,7 @@ const ItemDraggable = ({
           borderBottomWidth="1px"
           style={provided.draggableProps.style}
           {...props}
+          {...bindHover}
         >
           <HangboardSequenceItem
             item={itemToPass}
@@ -63,7 +66,13 @@ const ItemDraggable = ({
             onMouseOver={handleMouseOver}
             onFocus={() => {}}
           >
-            <Box flex="1" d="flex" justifyContent="flex-end">
+            <Box
+              flex="1"
+              d="flex"
+              justifyContent="flex-end"
+              opacity={['1', '1', hovered ? '1' : '0']}
+              transition="opacity 0.2s ease"
+            >
               <IconButton
                 icon="delete"
                 variant="ghost"
@@ -88,14 +97,10 @@ const ItemDraggable = ({
 };
 
 const SequenceBuilder = () => {
-  const [indexes, setIndexes] = useState([]);
-  const [count, setCount] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
-
-  const { watch, setValue, getValues } = useFormContext();
+  const { watch, setValue } = useFormContext();
 
   const boardName = watch('boardName');
-  console.table(getValues());
 
   const currentSequenceActiveHolds =
     watch(`sequence[${activeIndex}].activeHolds`) || [];
@@ -105,18 +110,14 @@ const SequenceBuilder = () => {
     [boardName],
   );
 
-  const { move, remove } = useArrayFieldUtils('sequence');
+  const { move, remove, add, indexes } = useArrayFieldUtils('sequence');
 
   const handleAdd = useCallback(
     (e) => {
       e.preventDefault();
-      setIndexes((prevIndexes) => [
-        ...prevIndexes,
-        { index: count, id: getUuidV4() },
-      ]);
-      setCount((prevCount) => prevCount + 1);
+      add();
     },
-    [count],
+    [add],
   );
 
   const handleSelectItem = useCallback(
@@ -159,8 +160,7 @@ const SequenceBuilder = () => {
   );
 
   const handleDelete = useCallback(
-    (index, id) => {
-      setIndexes((indexes) => indexes.filter((current) => current.id !== id));
+    (index) => {
       remove(index);
     },
     [remove],
@@ -178,11 +178,12 @@ const SequenceBuilder = () => {
                 overflowY="scroll"
                 maxHeight="600px"
               >
-                {indexes.map(({ index, id }) => (
+                {indexes.map(({ index, id }, realIndex) => (
                   <ItemDraggable
                     key={id}
                     index={index}
                     draggableId={id}
+                    realIndex={realIndex}
                     onClick={() => handleSelectItem(index)}
                     isActive={activeIndex === index}
                     handleDelete={() => handleDelete(index, id)}

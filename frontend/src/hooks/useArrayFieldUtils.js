@@ -1,63 +1,43 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { flatten, inflate } from 'flattenjs';
-import { move as moveUtil, remove as removeUtil } from '@/utils';
+import { getUuidV4, move as moveUtil } from '@/utils';
 
+/* eslint-disable no-restricted-syntax */
 export default (arrName) => {
-  const { setValue, getValues, unregister, register } = useFormContext();
+  const [indexes, setIndexes] = useState([]);
+  const [count, setCount] = useState(0);
+  const { getValues, unregister } = useFormContext();
   const allValues = getValues();
 
-  const setNextArray = useCallback(
-    (nextArray) => {
-      const flattened = flatten({ [arrName]: nextArray });
-      /* eslint-disable no-restricted-syntax */
-      for (const [key, value] of Object.entries(flattened)) {
-        console.log({ [key]: value });
-        setValue(key, value);
-      }
-      /* eslint-enable no-restricted-syntax */
-    },
-    [arrName, setValue],
-  );
-
-  const getPrevArray = useCallback(() => {
-    const prevObj = Object.keys(allValues).reduce((memo, currentKey) => {
-      return {
-        ...memo,
-        ...(currentKey.startsWith(arrName)
-          ? { [currentKey]: allValues[currentKey] }
-          : null),
-      };
-    }, {});
-
-    const prevArray = [...inflate(prevObj)[arrName]];
-    return prevArray;
-  }, [allValues, arrName]);
+  const add = useCallback(() => {
+    setIndexes((prevIndexes) => [
+      ...prevIndexes,
+      { index: count, id: getUuidV4() },
+    ]);
+    setCount((prevCount) => prevCount + 1);
+  }, [count]);
 
   const move = useCallback(
     (from, to) => {
-      const prevArray = getPrevArray();
-      const nextArray = moveUtil(prevArray, to, from);
-      setNextArray(nextArray);
+      const nextArray = moveUtil(indexes, to, from);
+      setIndexes(nextArray);
     },
-    [getPrevArray, setNextArray],
+    [indexes],
   );
 
   const remove = useCallback(
     (index) => {
-      const prevArray = getPrevArray();
-      const nextArray = removeUtil(prevArray, index);
-      // setNextArray(nextArray);
-      const keyStart = `${arrName}[${index}]`;
-      /* eslint-disable no-restricted-syntax */
-      for (const name of Object.keys(allValues)) {
-        // if (name.startsWith(keyStart)) unregister(name);
-        // else register({ name });
+      setIndexes((indexes) =>
+        indexes.filter((current) => current.index !== index),
+      );
+      const nameBase = `${arrName}[${index}]`;
+      for (const [key] of Object.entries(allValues)) {
+        if (key.startsWith(nameBase)) unregister(key);
       }
-      /* eslint-enable no-restricted-syntax */
-      console.log({ nextArray });
     },
-    [allValues, arrName, getPrevArray],
+    [allValues, arrName, unregister],
   );
-  return { move, remove };
+  return { move, remove, add, indexes };
 };
+
+/* eslint-enable no-restricted-syntax */

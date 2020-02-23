@@ -10,3 +10,4 @@ export { default as useUIState } from './useUIState';
 export { default as useWindowSize } from './useWindowSize';
 export { default as useHangboardColors } from './useHangboardColors';
 export { default as useArrayFieldUtils } from './useArrayFieldUtils';
+export { default as useHover } from './useHover';
