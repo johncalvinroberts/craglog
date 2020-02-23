@@ -1,21 +1,13 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { Box, Icon, Text, InputRightAddon, IconButton } from '@chakra-ui/core';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Box, Icon, Text, IconButton } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PseudoButton from '@/components/PseudoButton';
 import HangboardSequenceItem from '@/components/HangboardSequenceItem';
 import { hangBoardMap } from '@/components/hangboards';
-import SelectField from '@/components/SelectField';
-import TextField from '@/components/TextField';
-import { sequenceItemDefaultValue } from './SequenceCreate';
-import { exercises, repetitionExercises } from '@/constants';
-import { camelCaseToTitleCase, getUuidV4 } from '@/utils';
+import { getUuidV4 } from '@/utils';
 import { useArrayFieldUtils } from '@/hooks';
-
-const exerciseOptions = exercises.map((item) => ({
-  value: item,
-  label: camelCaseToTitleCase(item),
-}));
+import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';
 
@@ -25,79 +17,6 @@ const HangboardPlaceholder = () => (
     <Text size="sm">Choose one from dropdown above</Text>
   </Box>
 );
-
-const ItemFormFields = ({ index, ...rest }) => {
-  const { watch, register, unregister } = useFormContext();
-  const nameBase = `sequence[${index}]`;
-  const exercise = watch(`${nameBase}.exercise`);
-  const isReps = repetitionExercises.includes(exercise);
-  const isCustom = exercise === 'custom';
-
-  useEffect(() => {
-    // console.log('I AM RUNNING....STOP ME', `${nameBase}.activeHolds`);
-    register({ name: `${nameBase}.activeHolds` });
-    return () => {
-      unregister(`${nameBase}.activeHolds`);
-    };
-  }, [nameBase, register, unregister]);
-
-  return (
-    <Box {...rest} p={2} flexWrap="wrap" justifyContent="center">
-      <SelectField
-        name={`${nameBase}.exercise`}
-        label="Exercise"
-        options={exerciseOptions}
-        defaultValue={sequenceItemDefaultValue.exercise}
-        required
-      />
-      {isCustom && (
-        <TextField
-          name={`${nameBase}.customExerciseName`}
-          label="Custom Exercise Name"
-          required
-        />
-      )}
-
-      {!isReps && (
-        <TextField
-          type="number"
-          name={`${nameBase}.duration`}
-          label="Duration"
-          min={0}
-          required
-          defaultValue={sequenceItemDefaultValue.duration}
-          adornmentRight={
-            <InputRightAddon fontSize="xs">seconds</InputRightAddon>
-          }
-          rounded="0.25rem 0 0 0.25rem"
-        />
-      )}
-      {isReps && (
-        <TextField
-          type="number"
-          name={`${nameBase}.repetitions`}
-          label="Repetitions"
-          min={0}
-          defaultValue={sequenceItemDefaultValue.repetitions}
-          required
-          adornmentRight={<InputRightAddon fontSize="xs">reps</InputRightAddon>}
-          rounded="0.25rem 0 0 0.25rem"
-        />
-      )}
-      <TextField
-        type="number"
-        name={`${nameBase}.rest`}
-        label="Rest"
-        min={0}
-        defaultValue={sequenceItemDefaultValue.rest}
-        adornmentRight={
-          <InputRightAddon fontSize="xs">seconds</InputRightAddon>
-        }
-        rounded="0.25rem 0 0 0.25rem"
-      />
-    </Box>
-  );
-};
 
 const ItemDraggable = ({
   draggableId,
@@ -170,12 +89,13 @@ const ItemDraggable = ({
 
 const SequenceBuilder = () => {
   const [indexes, setIndexes] = useState([]);
-  const [, setCount] = useState(0);
+  const [count, setCount] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const { watch, setValue } = useFormContext();
+  const { watch, setValue, getValues } = useFormContext();
 
   const boardName = watch('boardName');
+  console.table(getValues());
 
   const currentSequenceActiveHolds =
     watch(`sequence[${activeIndex}].activeHolds`) || [];
@@ -187,11 +107,17 @@ const SequenceBuilder = () => {
 
   const { move, remove } = useArrayFieldUtils('sequence');
 
-  const handleAdd = useCallback((e) => {
-    e.preventDefault();
-    setIndexes((prevIndexes) => [...prevIndexes, getUuidV4()]);
-    setCount((prevCount) => prevCount + 1);
-  }, []);
+  const handleAdd = useCallback(
+    (e) => {
+      e.preventDefault();
+      setIndexes((prevIndexes) => [
+        ...prevIndexes,
+        { index: count, id: getUuidV4() },
+      ]);
+      setCount((prevCount) => prevCount + 1);
+    },
+    [count],
+  );
 
   const handleSelectItem = useCallback(
     (index) => {
@@ -234,7 +160,7 @@ const SequenceBuilder = () => {
 
   const handleDelete = useCallback(
     (index, id) => {
-      setIndexes((indexes) => indexes.filter((current) => current !== id));
+      setIndexes((indexes) => indexes.filter((current) => current.id !== id));
       remove(index);
     },
     [remove],
@@ -252,7 +178,7 @@ const SequenceBuilder = () => {
                 overflowY="scroll"
                 maxHeight="600px"
               >
-                {indexes.map((id, index) => (
+                {indexes.map(({ index, id }) => (
                   <ItemDraggable
                     key={id}
                     index={index}
@@ -293,11 +219,11 @@ const SequenceBuilder = () => {
             activeHolds={currentSequenceActiveHolds}
           />
         </Box>
-        {indexes.map((item, index) => (
-          <ItemFormFields
+        {indexes.map(({ id, index }) => (
+          <SequenceBuilderItemFields
             index={index}
             d={index === activeIndex ? 'flex' : 'none'}
-            key={item}
+            key={id}
           />
         ))}
       </Box>

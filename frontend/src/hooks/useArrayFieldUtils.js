@@ -47,17 +47,17 @@ export default (arrName) => {
     (index) => {
       const prevArray = getPrevArray();
       const nextArray = removeUtil(prevArray, index);
-      setNextArray(nextArray);
+      // setNextArray(nextArray);
       const keyStart = `${arrName}[${index}]`;
       /* eslint-disable no-restricted-syntax */
       for (const name of Object.keys(allValues)) {
-        if (name.startsWith(keyStart)) unregister(name);
-        else register({ name });
+        // if (name.startsWith(keyStart)) unregister(name);
+        // else register({ name });
       }
       /* eslint-enable no-restricted-syntax */
       console.log({ nextArray });
     },
-    [allValues, arrName, getPrevArray, register, setNextArray, unregister],
+    [allValues, arrName, getPrevArray],
   );
   return { move, remove };
 };
