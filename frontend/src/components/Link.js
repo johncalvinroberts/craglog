@@ -74,11 +74,16 @@ const QuietText = ({ children, ...rest }) => {
   const hoverColor = { light: 'teal.400', dark: 'teal.200' };
   return (
     <PseudoBox
-      display="block"
-      maxHeight="20px"
+      display="inline-block"
+      as={Text}
       _hover={{ color: hoverColor[colorMode], transform: 'translateX(2px)' }}
       size="xs"
       transition="all 0.2s"
+      _after={{
+        content: '"→"',
+        marginLeft: '3px',
+        verticalAlign: 'middle',
+      }}
       {...rest}
     >
       {children}

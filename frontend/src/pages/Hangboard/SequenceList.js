@@ -66,15 +66,25 @@ const SequenceList = () => {
         mb={[2, 4]}
       >
         <Box>
-          <Heading size="md">Sequences</Heading>
+          <Box
+            d="flex"
+            justifyContent="space-between"
+            mb={1}
+            alignItems="center"
+            width="100%"
+          >
+            <Heading size="md">Sequences</Heading>
+            <QuietLink
+              to="/app/hangboard/sequence/new"
+              width="auto"
+              height="auto"
+            >
+              New
+            </QuietLink>
+          </Box>
           <Text size="xs" as="div" width="auto" height="auto">
             Your hangboard sequences. Choose a sequence to start the workout.
           </Text>
-          <QuietLink to="/app/hangboard/sequence/new">
-            <Text size="xs" as="div" width="auto" height="auto">
-              Add a new hangboard sequence
-            </Text>
-          </QuietLink>
         </Box>
       </Box>
       <Box>{pages}</Box>
