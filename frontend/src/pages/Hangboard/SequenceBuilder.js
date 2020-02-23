@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { Box, Icon, Text, InputRightAddon } from '@chakra-ui/core';
+import { Box, Icon, Text, InputRightAddon, IconButton } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PseudoButton from '@/components/PseudoButton';
@@ -26,13 +26,88 @@ const HangboardPlaceholder = () => (
   </Box>
 );
 
-const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
+const ItemFormFields = ({ index, ...rest }) => {
+  const { watch, register, unregister } = useFormContext();
   const nameBase = `sequence[${index}]`;
-  const { watch, register } = useFormContext();
+  const exercise = watch(`${nameBase}.exercise`);
+  const isReps = repetitionExercises.includes(exercise);
+  const isCustom = exercise === 'custom';
 
   useEffect(() => {
+    // console.log('I AM RUNNING....STOP ME', `${nameBase}.activeHolds`);
     register({ name: `${nameBase}.activeHolds` });
-  }, [nameBase, register]);
+    return () => {
+      unregister(`${nameBase}.activeHolds`);
+    };
+  }, [nameBase, register, unregister]);
+
+  return (
+    <Box {...rest} p={2} flexWrap="wrap" justifyContent="center">
+      <SelectField
+        name={`${nameBase}.exercise`}
+        label="Exercise"
+        options={exerciseOptions}
+        defaultValue={sequenceItemDefaultValue.exercise}
+        required
+      />
+      {isCustom && (
+        <TextField
+          name={`${nameBase}.customExerciseName`}
+          label="Custom Exercise Name"
+          required
+        />
+      )}
+
+      {!isReps && (
+        <TextField
+          type="number"
+          name={`${nameBase}.duration`}
+          label="Duration"
+          min={0}
+          required
+          defaultValue={sequenceItemDefaultValue.duration}
+          adornmentRight={
+            <InputRightAddon fontSize="xs">seconds</InputRightAddon>
+          }
+          rounded="0.25rem 0 0 0.25rem"
+        />
+      )}
+      {isReps && (
+        <TextField
+          type="number"
+          name={`${nameBase}.repetitions`}
+          label="Repetitions"
+          min={0}
+          defaultValue={sequenceItemDefaultValue.repetitions}
+          required
+          adornmentRight={<InputRightAddon fontSize="xs">reps</InputRightAddon>}
+          rounded="0.25rem 0 0 0.25rem"
+        />
+      )}
+      <TextField
+        type="number"
+        name={`${nameBase}.rest`}
+        label="Rest"
+        min={0}
+        defaultValue={sequenceItemDefaultValue.rest}
+        adornmentRight={
+          <InputRightAddon fontSize="xs">seconds</InputRightAddon>
+        }
+        rounded="0.25rem 0 0 0.25rem"
+      />
+    </Box>
+  );
+};
+
+const ItemDraggable = ({
+  draggableId,
+  index,
+  isActive,
+  handleDelete,
+  ...props
+}) => {
+  const nameBase = `sequence[${index}]`;
+  const { watch } = useFormContext();
 
   const exercise = watch(`${nameBase}.exercise`);
   const repetitions = watch(`${nameBase}.repetitions`);
@@ -47,6 +122,10 @@ const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
     rest,
   };
 
+  const handleDuplicate = () => {};
+
+  const handleMouseOver = () => {};
+
   return (
     <Draggable draggableId={draggableId} index={index}>
       {(provided, snapshot) => (
@@ -59,7 +138,30 @@ const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
           style={provided.draggableProps.style}
           {...props}
         >
-          <HangboardSequenceItem item={itemToPass} isActive={isActive} />
+          <HangboardSequenceItem
+            item={itemToPass}
+            isActive={isActive}
+            onMouseOver={handleMouseOver}
+            onFocus={() => {}}
+          >
+            <Box flex="1" d="flex" justifyContent="flex-end">
+              <IconButton
+                icon="delete"
+                variant="ghost"
+                color="gray.500"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete();
+                }}
+              />
+              <IconButton
+                icon="copy"
+                variant="ghost"
+                color="gray.500"
+                onClick={handleDuplicate}
+              />
+            </Box>
+          </HangboardSequenceItem>
         </Box>
       )}
     </Draggable>
@@ -68,7 +170,7 @@ const ItemDraggable = ({ draggableId, index, isActive, ...props }) => {
 
 const SequenceBuilder = () => {
   const [indexes, setIndexes] = useState([]);
-  const [count, setCount] = useState(0);
+  const [, setCount] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { watch, setValue } = useFormContext();
@@ -77,17 +179,13 @@ const SequenceBuilder = () => {
 
   const currentSequenceActiveHolds =
     watch(`sequence[${activeIndex}].activeHolds`) || [];
-  const currentExercise = watch(`sequence[${activeIndex}].exercise`);
-  const isCurrentExerciseReps = repetitionExercises.includes(currentExercise);
-  const isCurrentExerciseCustom = currentExercise === 'custom';
 
   const Hangboard = useMemo(
     () => hangBoardMap[boardName] || HangboardPlaceholder,
     [boardName],
   );
 
-  const { move } = useArrayFieldUtils('sequence');
-  const remove = () => {};
+  const { move, remove } = useArrayFieldUtils('sequence');
 
   const handleAdd = useCallback((e) => {
     e.preventDefault();
@@ -101,10 +199,6 @@ const SequenceBuilder = () => {
     },
     [setActiveIndex],
   );
-
-  const handleRemove = useCallback((index) => {
-    remove(index);
-  }, []);
 
   const handleDragEnd = useCallback(
     (result) => {
@@ -138,9 +232,17 @@ const SequenceBuilder = () => {
     [activeIndex, currentSequenceActiveHolds, setValue],
   );
 
+  const handleDelete = useCallback(
+    (index, id) => {
+      setIndexes((indexes) => indexes.filter((current) => current !== id));
+      remove(index);
+    },
+    [remove],
+  );
+
   return (
     <Box borderWidth="1px" d="flex">
-      <Box borderRightWidth="1px" position="relative" flex="0 0 13rem">
+      <Box borderRightWidth="1px" position="relative" flex="0 0 17rem">
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (
@@ -157,7 +259,7 @@ const SequenceBuilder = () => {
                     draggableId={id}
                     onClick={() => handleSelectItem(index)}
                     isActive={activeIndex === index}
-                    handleRemove={() => handleRemove(index)}
+                    handleDelete={() => handleDelete(index, id)}
                   />
                 ))}
                 {provided.placeholder}
@@ -174,7 +276,7 @@ const SequenceBuilder = () => {
           justifyContent="center"
           alignItems="center"
           height="3rem"
-          width="13rem"
+          width="17rem"
           _hover={{
             backgroundColor: 'teal.400',
           }}
@@ -191,73 +293,13 @@ const SequenceBuilder = () => {
             activeHolds={currentSequenceActiveHolds}
           />
         </Box>
-        {indexes.map((item, index) => {
-          const nameBase = `sequence[${index}]`;
-          return (
-            <Box
-              d={index === activeIndex ? 'flex' : 'none'}
-              key={item}
-              p={2}
-              flexWrap="wrap"
-              justifyContent="center"
-            >
-              <SelectField
-                name={`${nameBase}.exercise`}
-                label="Exercise"
-                options={exerciseOptions}
-                defaultValue={sequenceItemDefaultValue.exercise}
-                required
-              />
-              {isCurrentExerciseCustom && (
-                <TextField
-                  name={`${nameBase}.customExerciseName`}
-                  label="Custom Exercise Name"
-                  required
-                />
-              )}
-
-              {!isCurrentExerciseReps && (
-                <TextField
-                  type="number"
-                  name={`${nameBase}.duration`}
-                  label="Duration"
-                  min={0}
-                  required
-                  defaultValue={sequenceItemDefaultValue.duration}
-                  adornmentRight={
-                    <InputRightAddon fontSize="xs">seconds</InputRightAddon>
-                  }
-                  rounded="0.25rem 0 0 0.25rem"
-                />
-              )}
-              {isCurrentExerciseReps && (
-                <TextField
-                  type="number"
-                  name={`${nameBase}.repetitions`}
-                  label="Repetitions"
-                  min={0}
-                  defaultValue={sequenceItemDefaultValue.repetitions}
-                  required
-                  adornmentRight={
-                    <InputRightAddon fontSize="xs">reps</InputRightAddon>
-                  }
-                  rounded="0.25rem 0 0 0.25rem"
-                />
-              )}
-              <TextField
-                type="number"
-                name={`${nameBase}.rest`}
-                label="Rest"
-                min={0}
-                defaultValue={sequenceItemDefaultValue.rest}
-                adornmentRight={
-                  <InputRightAddon fontSize="xs">seconds</InputRightAddon>
-                }
-                rounded="0.25rem 0 0 0.25rem"
-              />
-            </Box>
-          );
-        })}
+        {indexes.map((item, index) => (
+          <ItemFormFields
+            index={index}
+            d={index === activeIndex ? 'flex' : 'none'}
+            key={item}
+          />
+        ))}
       </Box>
     </Box>
   );

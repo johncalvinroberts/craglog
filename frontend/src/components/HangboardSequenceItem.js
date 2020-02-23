@@ -3,7 +3,7 @@ import { Box, Text, useColorMode } from '@chakra-ui/core';
 import { camelCaseToTitleCase } from '@/utils';
 
 const bg = { light: 'white', dark: 'gray.800' };
-const HangboardSequenceItem = ({ isActive, item }) => {
+const HangboardSequenceItem = ({ isActive, item, children, ...rest }) => {
   const { colorMode } = useColorMode();
   const showRest = !!(item.rest && parseInt(item.rest, 10) > 0);
 
@@ -20,6 +20,7 @@ const HangboardSequenceItem = ({ isActive, item }) => {
         bg={bg[colorMode]}
         alignItems="center"
         {...(showRest ? { borderBottomWidth: '1px' } : null)}
+        {...rest}
       >
         <Text
           fontSize="md"
@@ -40,6 +41,8 @@ const HangboardSequenceItem = ({ isActive, item }) => {
             ? `${item.repetitions} reps`
             : `${item.duration || '0'}s`}
         </Text>
+        {/* children appear at end of the row */}
+        {children}
       </Box>
       {showRest && (
         <Box
