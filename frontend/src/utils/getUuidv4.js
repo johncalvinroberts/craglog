@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-const getUuidv4 = () => {
+export default () => {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
     (
       c ^
@@ -8,5 +8,4 @@ const getUuidv4 = () => {
   );
 };
 
-export default getUuidv4;
 /* eslint-enable no-bitwise */

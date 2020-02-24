@@ -10,7 +10,7 @@ import { useEffect, useRef } from 'react';
  * if (isMountedRef.current) setXxx(false);
  * ```
  */
-const useMounted = (initialIsMounted = true) => {
+export default (initialIsMounted = true) => {
   // The ref object is a generic container whose current property is mutable ...
   // ... and can hold any value, similar to an instance property on a class
   const isMountedRef = useRef(initialIsMounted);
@@ -26,4 +26,3 @@ const useMounted = (initialIsMounted = true) => {
   // Return the container, when we use it we check its current
   return isMountedRef;
 };
-export default useMounted;

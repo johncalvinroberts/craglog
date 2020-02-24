@@ -1,6 +1,6 @@
 import { useTheme, useColorMode } from '@chakra-ui/core';
 
-const useHangboardColors = () => {
+export default () => {
   const { colorMode } = useColorMode();
   const theme = useTheme();
   const colors = {
@@ -17,5 +17,3 @@ const useHangboardColors = () => {
   };
   return colors[colorMode];
 };
-
-export default useHangboardColors;

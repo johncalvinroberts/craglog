@@ -1,4 +1,4 @@
-function calculateGeoDistance([lat, lng], [lat2, lng2]) {
+export default ([lat, lng], [lat2, lng2]) => {
   const earthRadius = 6371; // Radius of the earth in km
   const dLat = degreeToRadius(lat2 - lat); // deg2rad below
   const dLng = degreeToRadius(lng2 - lng);
@@ -11,9 +11,8 @@ function calculateGeoDistance([lat, lng], [lat2, lng2]) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = earthRadius * c; // Distance in km
   return distance;
-}
+};
 
 function degreeToRadius(deg) {
   return deg * (Math.PI / 180);
 }
-export default calculateGeoDistance;

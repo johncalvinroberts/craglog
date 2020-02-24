@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
 
-const useRouteChanged = (callback) => {
+export default (callback) => {
   const location = useLocation();
   useEffect(() => {
     const handleRouteChange = ({ pathname }) => {
@@ -11,5 +11,3 @@ const useRouteChanged = (callback) => {
     handleRouteChange(location);
   }, [callback, location]);
 };
-
-export default useRouteChanged;

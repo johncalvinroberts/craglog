@@ -1,6 +1,7 @@
 import _get from 'lodash/get';
 
-const fallbackMessage = 'Something went wrong...';
+const fallbackMessage = 'Something Broke.';
+
 export default (error) => {
   let message;
   if (typeof error.message === 'string') message = error.message;

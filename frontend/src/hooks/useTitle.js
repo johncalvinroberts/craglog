@@ -5,7 +5,7 @@ import { useDispatch } from '@/components/State';
 // write the title to the document
 // and to the global 'Interface' store
 // title could be a component or a string
-const useTitle = (Title) => {
+export default (Title) => {
   const dispatch = useDispatch('UI');
 
   useEffect(() => {
@@ -14,5 +14,3 @@ const useTitle = (Title) => {
     dispatch({ UI: { Title } });
   }, [dispatch]); //eslint-disable-line
 };
-
-export default useTitle;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-function useWindowSize() {
+export default () => {
   const isClient = typeof window === 'object';
 
   const getSize = useCallback(() => {
@@ -26,6 +26,4 @@ function useWindowSize() {
   }, [getSize, isClient]); // Empty array ensures that effect is only run on mount and unmount
 
   return windowSize;
-}
-
-export default useWindowSize;
+};

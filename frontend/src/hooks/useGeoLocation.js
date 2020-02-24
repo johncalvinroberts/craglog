@@ -8,7 +8,7 @@ const fallBackLocation = {
   },
 };
 
-const useGeoLocation = () => {
+export default () => {
   const [position, setPosition] = useState(fallBackLocation);
   const [error, setError] = useState();
 
@@ -35,5 +35,3 @@ const useGeoLocation = () => {
 
   return [position, error];
 };
-
-export default useGeoLocation;
