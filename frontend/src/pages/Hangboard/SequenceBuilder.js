@@ -137,7 +137,7 @@ const SequenceBuilder = () => {
 
   const handleClickHold = useCallback(
     (id) => {
-      if (typeof activeIndex === 'number') {
+      if (activeId) {
         const name = `sequence[${activeId}].activeHolds`;
         let nextValue;
         const isAlreadyChosen = currentSequenceActiveHolds.includes(id);
