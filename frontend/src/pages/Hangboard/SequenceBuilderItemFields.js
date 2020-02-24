@@ -12,15 +12,14 @@ const exerciseOptions = exercises.map((item) => ({
   label: camelCaseToTitleCase(item),
 }));
 
-const SequenceBuilderItemFields = ({ index, ...rest }) => {
+const SequenceBuilderItemFields = ({ id, ...rest }) => {
   const { watch, register, unregister } = useFormContext();
-  const nameBase = `sequence[${index}]`;
+  const nameBase = `sequence[${id}]`;
   const exercise = watch(`${nameBase}.exercise`);
   const isReps = repetitionExercises.includes(exercise);
   const isCustom = exercise === 'custom';
 
   useEffect(() => {
-    // console.log('I AM RUNNING....STOP ME', `${nameBase}.activeHolds`);
     register({ name: `${nameBase}.activeHolds` });
     return () => {
       unregister(`${nameBase}.activeHolds`);

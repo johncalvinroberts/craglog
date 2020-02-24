@@ -19,13 +19,12 @@ const HangboardPlaceholder = () => (
 
 const ItemDraggable = ({
   draggableId,
-  index,
   isActive,
   handleDelete,
   realIndex,
   ...props
 }) => {
-  const nameBase = `sequence[${index}]`;
+  const nameBase = `sequence[${draggableId}]`;
   const { watch } = useFormContext();
 
   const exercise = watch(`${nameBase}.exercise`);
@@ -97,13 +96,13 @@ const ItemDraggable = ({
 };
 
 const SequenceBuilder = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeId, setActiveId] = useState(0);
   const { watch, setValue } = useFormContext();
 
   const boardName = watch('boardName');
 
   const currentSequenceActiveHolds =
-    watch(`sequence[${activeIndex}].activeHolds`) || [];
+    watch(`sequence[${activeId}].activeHolds`) || [];
 
   const Hangboard = useMemo(
     () => hangBoardMap[boardName] || HangboardPlaceholder,
@@ -121,10 +120,10 @@ const SequenceBuilder = () => {
   );
 
   const handleSelectItem = useCallback(
-    (index) => {
-      setActiveIndex(index);
+    (id) => {
+      setActiveId(id);
     },
-    [setActiveIndex],
+    [setActiveId],
   );
 
   const handleDragEnd = useCallback(
@@ -132,17 +131,14 @@ const SequenceBuilder = () => {
       if (!result.destination) return;
       const { source, destination } = result;
       move(source.index, destination.index);
-      if (source.index === activeIndex) {
-        setActiveIndex(destination.index);
-      }
     },
-    [activeIndex, move],
+    [move],
   );
 
   const handleClickHold = useCallback(
     (id) => {
       if (typeof activeIndex === 'number') {
-        const name = `sequence[${activeIndex}].activeHolds`;
+        const name = `sequence[${activeId}].activeHolds`;
         let nextValue;
         const isAlreadyChosen = currentSequenceActiveHolds.includes(id);
 
@@ -156,12 +152,12 @@ const SequenceBuilder = () => {
         setValue(name, nextValue);
       }
     },
-    [activeIndex, currentSequenceActiveHolds, setValue],
+    [activeId, currentSequenceActiveHolds, setValue],
   );
 
   const handleDelete = useCallback(
-    (index) => {
-      remove(index);
+    (id) => {
+      remove(id);
     },
     [remove],
   );
@@ -178,15 +174,14 @@ const SequenceBuilder = () => {
                 overflowY="scroll"
                 maxHeight="600px"
               >
-                {indexes.map(({ index, id }, realIndex) => (
+                {indexes.map(({ id }, realIndex) => (
                   <ItemDraggable
                     key={id}
-                    index={index}
                     draggableId={id}
                     realIndex={realIndex}
-                    onClick={() => handleSelectItem(index)}
-                    isActive={activeIndex === index}
-                    handleDelete={() => handleDelete(index, id)}
+                    onClick={() => handleSelectItem(id)}
+                    isActive={activeId === id}
+                    handleDelete={() => handleDelete(id)}
                   />
                 ))}
                 {provided.placeholder}
@@ -220,10 +215,10 @@ const SequenceBuilder = () => {
             activeHolds={currentSequenceActiveHolds}
           />
         </Box>
-        {indexes.map(({ id, index }) => (
+        {indexes.map(({ id }) => (
           <SequenceBuilderItemFields
-            index={index}
-            d={index === activeIndex ? 'flex' : 'none'}
+            id={id}
+            d={id === activeId ? 'flex' : 'none'}
             key={id}
           />
         ))}
