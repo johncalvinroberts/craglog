@@ -22,6 +22,7 @@ const ItemDraggable = ({
   isActive,
   handleDelete,
   realIndex,
+  handleDuplicate,
   ...props
 }) => {
   const nameBase = `sequence[${draggableId}]`;
@@ -42,10 +43,6 @@ const ItemDraggable = ({
 
   const [hovered, bindHover] = useHover();
 
-  const handleDuplicate = () => {};
-
-  const handleMouseOver = () => {};
-
   return (
     <Draggable draggableId={draggableId} index={realIndex}>
       {(provided, snapshot) => (
@@ -59,12 +56,7 @@ const ItemDraggable = ({
           {...props}
           {...bindHover}
         >
-          <HangboardSequenceItem
-            item={itemToPass}
-            isActive={isActive}
-            onMouseOver={handleMouseOver}
-            onFocus={() => {}}
-          >
+          <HangboardSequenceItem item={itemToPass} isActive={isActive}>
             <Box
               flex="1"
               d="flex"
@@ -109,14 +101,16 @@ const SequenceBuilder = () => {
     [boardName],
   );
 
-  const { move, remove, add, indexes } = useArrayFieldUtils('sequence');
+  const { move, remove, add, indexes, duplicate } = useArrayFieldUtils(
+    'sequence',
+  );
 
   const handleAdd = useCallback(
     (e) => {
       e.preventDefault();
-      add();
+      add(indexes.length);
     },
-    [add],
+    [add, indexes.length],
   );
 
   const handleSelectItem = useCallback(
@@ -162,6 +156,10 @@ const SequenceBuilder = () => {
     [remove],
   );
 
+  const handleDuplicate = (index) => {
+    duplicate(index);
+  };
+
   return (
     <Box borderWidth="1px" d="flex">
       <Box borderRightWidth="1px" position="relative" flex="0 0 17rem">
@@ -182,6 +180,7 @@ const SequenceBuilder = () => {
                     onClick={() => handleSelectItem(id)}
                     isActive={activeId === id}
                     handleDelete={() => handleDelete(id)}
+                    handleDuplicate={() => handleDuplicate(realIndex)}
                   />
                 ))}
                 {provided.placeholder}

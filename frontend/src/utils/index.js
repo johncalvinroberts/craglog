@@ -5,4 +5,5 @@ export { default as calculateGeoDistance } from './calculateGeoDistance';
 export { default as merge } from './merge';
 export { default as move } from './move';
 export { default as remove } from './remove';
+export { default as insert } from './insert';
 export { default as getUuidV4 } from './getUuidv4';

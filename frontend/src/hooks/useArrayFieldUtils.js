@@ -1,18 +1,49 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { getUuidV4, move as moveUtil } from '@/utils';
+import { getUuidV4, move as moveUtil, insert } from '@/utils';
 
 /* eslint-disable no-restricted-syntax */
 export default (arrName) => {
   const [indexes, setIndexes] = useState([]);
+  const [idsToCopy, setIdsToCopy] = useState({});
   const [, setCount] = useState(0);
-  const { getValues, unregister } = useFormContext();
-  const allValues = getValues();
+  const { getValues, unregister, setValue } = useFormContext();
 
-  const add = useCallback(() => {
-    setIndexes((prevIndexes) => [...prevIndexes, { id: getUuidV4() }]);
-    setCount((prevCount) => prevCount + 1);
-  }, []);
+  useEffect(() => {
+    const { newId, idToDuplicate } = idsToCopy;
+    if (newId && idToDuplicate) {
+      copyValues(idsToCopy);
+    }
+  }, [copyValues, idsToCopy]);
+
+  const copyValues = useCallback(
+    ({ newId, idToDuplicate }) => {
+      const allValues = getValues();
+      const nameBase = `${arrName}[${idToDuplicate}]`;
+      for (const [key, value] of Object.entries(allValues)) {
+        if (key.startsWith(nameBase)) {
+          const nextKey = key.replace(idToDuplicate, newId);
+          setValue(nextKey, value);
+        }
+      }
+    },
+    [arrName, getValues, setValue],
+  );
+
+  const add = useCallback(
+    (insertAt) => {
+      insertAt = typeof insertAt === 'number' ? insertAt : indexes.length;
+      const id = getUuidV4();
+      const nextIndexes = insert(indexes, insertAt, {
+        id,
+      });
+
+      setIndexes(nextIndexes);
+      setCount((prevCount) => prevCount + 1);
+      return id;
+    },
+    [indexes],
+  );
 
   const move = useCallback(
     (from, to) => {
@@ -22,17 +53,27 @@ export default (arrName) => {
     [indexes],
   );
 
+  const duplicate = useCallback(
+    (index) => {
+      const newId = add(index + 1);
+      const { id: idToDuplicate } = indexes[index];
+      setIdsToCopy({ newId, idToDuplicate });
+    },
+    [add, indexes],
+  );
+
   const remove = useCallback(
     (id) => {
+      const allValues = getValues();
       setIndexes((indexes) => indexes.filter((current) => current.id !== id));
       const nameBase = `${arrName}[${id}]`;
       for (const [key] of Object.entries(allValues)) {
         if (key.startsWith(nameBase)) unregister(key);
       }
     },
-    [allValues, arrName, unregister],
+    [arrName, getValues, unregister],
   );
-  return { move, remove, add, indexes };
+  return { move, remove, add, indexes, duplicate };
 };
 
 /* eslint-enable no-restricted-syntax */
