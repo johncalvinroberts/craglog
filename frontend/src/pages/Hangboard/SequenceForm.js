@@ -14,13 +14,29 @@ const validationSchema = yup.object().shape({
   name: yup.string().required(),
   description: yup.string(),
   boardName: yup.string().required(),
-  sequence: yup.array().of(yup.object().shape({})),
+  sequence: yup
+    .array()
+    .transform((value, originalValue) => {
+      return Object.keys(originalValue)
+        .map((key) => originalValue[key])
+        .filter(Boolean);
+    })
+    .of(
+      yup.object().shape({
+        rest: yup.number().nullable(),
+        exercise: yup.string().required(),
+        repetitions: yup.number().nullable(),
+        duration: yup.number().nullable(),
+        customExerciseName: yup.string().nullable(),
+        activeHolds: yup.array(),
+      }),
+    ),
 });
 
 const SequenceForm = ({ defaultValues, onSubmit }) => {
   const dispatch = useDispatch();
   const formMethods = useForm({ defaultValues, validationSchema });
-
+  console.log(formMethods.errors);
   // toggle mobile nav on mount/unmount
   useEffect(() => {
     dispatch(toggleMobileNav(false));
