@@ -4,10 +4,29 @@ import { getUuidV4, move as moveUtil, insert } from '@/utils';
 
 /* eslint-disable no-restricted-syntax */
 export default (arrName) => {
+  const {
+    getValues,
+    unregister,
+    setValue,
+    defaultValues = {},
+  } = useFormContext();
   const [indexes, setIndexes] = useState([]);
   const [idsToCopy, setIdsToCopy] = useState({});
   const [, setCount] = useState(0);
-  const { getValues, unregister, setValue } = useFormContext();
+
+  useEffect(() => {
+    const initialArray = defaultValues[arrName] || [];
+    const initialIndexes = [];
+    for (const item of initialArray) {
+      const id = getUuidV4();
+      initialIndexes.push({ id });
+      const nameBase = `${arrName}[${id}]`;
+      Object.keys(item).forEach((key) =>
+        setValue(`${nameBase}.${key}`, item[key]),
+      );
+    }
+    setIndexes(initialIndexes);
+  }, [arrName, defaultValues, setValue]);
 
   useEffect(() => {
     const { newId, idToDuplicate } = idsToCopy;

@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import _get from 'lodash/get';
 import { Box, Icon, Text, IconButton } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -11,9 +12,13 @@ import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';
 
 const HangboardPlaceholder = () => (
-  <Box d="flex" justifyContent="center" alignItems="center" height="10rem">
-    <Text size="md">No hangboard chosen</Text>
-    <Text size="sm">Choose one from dropdown above</Text>
+  <Box height="10rem">
+    <Text size="md" height="2rem" width="auto" d="block" textAlign="center">
+      No hangboard chosen
+    </Text>
+    <Text size="sm" height="2rem" width="auto" d="block" textAlign="center">
+      Choose one from dropdown above
+    </Text>
   </Box>
 );
 
@@ -88,6 +93,10 @@ const ItemDraggable = ({
 };
 
 const SequenceBuilder = () => {
+  const { move, remove, add, indexes, duplicate } = useArrayFieldUtils(
+    'sequence',
+  );
+
   const [activeId, setActiveId] = useState(0);
   const { watch, setValue } = useFormContext();
 
@@ -99,10 +108,6 @@ const SequenceBuilder = () => {
   const Hangboard = useMemo(
     () => hangBoardMap[boardName] || HangboardPlaceholder,
     [boardName],
-  );
-
-  const { move, remove, add, indexes, duplicate } = useArrayFieldUtils(
-    'sequence',
   );
 
   const handleAdd = useCallback(
@@ -152,13 +157,26 @@ const SequenceBuilder = () => {
   const handleDelete = useCallback(
     (id) => {
       remove(id);
+      if (activeId === id) {
+        const prevIndex = indexes.findIndex((item) => item.id === id);
+        const nextActiveId = _get(indexes, `[${prevIndex - 1}].id`, null);
+        setActiveId(nextActiveId);
+      }
     },
-    [remove],
+    [activeId, indexes, remove],
   );
 
-  const handleDuplicate = (index) => {
-    duplicate(index);
-  };
+  const handleDuplicate = useCallback(
+    (index) => {
+      duplicate(index);
+    },
+    [duplicate],
+  );
+
+  useEffect(() => {
+    const initialActiveId = _get(indexes, '[0].id', null);
+    if (!activeId && initialActiveId) setActiveId(initialActiveId);
+  }, [activeId, indexes]);
 
   return (
     <Box borderWidth="1px" d="flex">

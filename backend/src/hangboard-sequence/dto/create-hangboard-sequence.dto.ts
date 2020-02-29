@@ -23,7 +23,7 @@ export class CreateHangboardSequenceDto {
 
   @IsOptional()
   @IsBoolean()
-  isPublic: false;
+  isPublic = false;
 
   @IsOptional()
   @IsString()

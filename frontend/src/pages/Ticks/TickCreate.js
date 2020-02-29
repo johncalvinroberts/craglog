@@ -6,7 +6,7 @@ import TickForm from './TickForm';
 import useTitle from '@/hooks/useTitle';
 import http from '@/http';
 import { DATE_INPUT_FORMAT } from '@/constants';
-import getErrorMessage from '@/utils/getErrorMessage';
+import { getErrorMessage } from '@/utils';
 
 const defaultValues = {
   type: 'redpoint',
@@ -27,7 +27,7 @@ const LogCreate = () => {
   const onSubmit = async (values) => {
     try {
       await http.post('/tick', values);
-      toast({ description: 'Log created :)' });
+      toast({ description: 'Sequence created :)' });
       history.replace('/app');
     } catch (error) {
       toast({

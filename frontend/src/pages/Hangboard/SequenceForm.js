@@ -28,7 +28,7 @@ const validationSchema = yup.object().shape({
         repetitions: yup.number().nullable(),
         duration: yup.number().nullable(),
         customExerciseName: yup.string().nullable(),
-        activeHolds: yup.array(),
+        activeHolds: yup.array().default([]),
       }),
     ),
 });

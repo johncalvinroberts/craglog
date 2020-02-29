@@ -43,7 +43,7 @@ export class HangboardSequenceEntity {
   userId: number;
 
   @Column('boolean')
-  isPublic: false;
+  isPublic = false;
 
   @CreateDateColumn()
   createdAt: Date;
