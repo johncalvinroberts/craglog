@@ -96,9 +96,8 @@ const SequenceBuilder = () => {
   const { move, remove, add, indexes, duplicate } = useArrayFieldUtils(
     'sequence',
   );
-
   const [activeId, setActiveId] = useState(0);
-  const { watch, setValue } = useFormContext();
+  const { watch, setValue, errors } = useFormContext();
 
   const boardName = watch('boardName');
 
@@ -177,6 +176,13 @@ const SequenceBuilder = () => {
     const initialActiveId = _get(indexes, '[0].id', null);
     if (!activeId && initialActiveId) setActiveId(initialActiveId);
   }, [activeId, indexes]);
+
+  useEffect(() => {
+    if (errors.sequence) {
+      const nextActiveId = Object.keys(errors.sequence)[0];
+      setActiveId(nextActiveId);
+    }
+  }, [errors]);
 
   return (
     <Box borderWidth="1px" d="flex">

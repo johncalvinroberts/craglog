@@ -23,12 +23,33 @@ const validationSchema = yup.object().shape({
     })
     .of(
       yup.object().shape({
-        rest: yup.number().nullable(),
-        exercise: yup.string().required(),
-        repetitions: yup.number().nullable(),
-        duration: yup.number().nullable(),
-        customExerciseName: yup.string().nullable(),
-        activeHolds: yup.array().default([]),
+        rest: yup
+          .number()
+          .nullable()
+          .default(0)
+          .label('rest'),
+        repetitions: yup
+          .number()
+          .default(0)
+          .nullable()
+          .label('repetitions'),
+        duration: yup
+          .number()
+          .default(0)
+          .nullable()
+          .label('duration'),
+        customExerciseName: yup
+          .string()
+          .nullable()
+          .label('Custom Exercise Name'),
+        exercise: yup
+          .string()
+          .required()
+          .label('exercise'),
+        activeHolds: yup
+          .array()
+          .default([])
+          .label('Holds'),
       }),
     ),
 });
@@ -36,7 +57,6 @@ const validationSchema = yup.object().shape({
 const SequenceForm = ({ defaultValues, onSubmit }) => {
   const dispatch = useDispatch();
   const formMethods = useForm({ defaultValues, validationSchema });
-  console.log(formMethods.errors);
   // toggle mobile nav on mount/unmount
   useEffect(() => {
     dispatch(toggleMobileNav(false));

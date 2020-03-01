@@ -5,6 +5,7 @@ import {
   FormErrorMessage,
   FormHelperText,
 } from '@chakra-ui/core';
+import _get from 'lodash/get';
 import { useFormContext } from 'react-hook-form';
 
 const FormFieldInner = memo(
@@ -53,7 +54,7 @@ const FormFieldInner = memo(
 
 const FormField = ({ name, ...rest }) => {
   const { errors, register } = useFormContext();
-  const error = errors[name];
+  const error = _get(errors, name);
   return <FormFieldInner error={error} register={register} {...rest} />;
 };
 

@@ -8,6 +8,9 @@ export default (arrName) => {
     getValues,
     unregister,
     setValue,
+    errors,
+    setError,
+    clearError,
     defaultValues = {},
   } = useFormContext();
   const [indexes, setIndexes] = useState([]);
@@ -21,9 +24,9 @@ export default (arrName) => {
       const id = getUuidV4();
       initialIndexes.push({ id });
       const nameBase = `${arrName}[${id}]`;
-      Object.keys(item).forEach((key) =>
-        setValue(`${nameBase}.${key}`, item[key]),
-      );
+      for (const [key, value] of Object.entries(item)) {
+        setValue(`${nameBase}.${key}`, value);
+      }
     }
     setIndexes(initialIndexes);
   }, [arrName, defaultValues, setValue]);
@@ -34,6 +37,21 @@ export default (arrName) => {
       copyValues(idsToCopy);
     }
   }, [copyValues, idsToCopy]);
+
+  useEffect(() => {
+    const relevantErrors = errors[arrName];
+    clearError(arrName);
+    if (relevantErrors && relevantErrors.length > 0) {
+      const errorsToSet = relevantErrors.map((error, index) => {
+        const { id } = indexes[index];
+        const errorField = Object.keys(error)[0];
+        const { type, message } = error[errorField];
+        const name = `${arrName}[${id}].${errorField}`;
+        return { name, type, message };
+      });
+      setError(errorsToSet);
+    }
+  }, [arrName, clearError, errors, indexes, setError]);
 
   const copyValues = useCallback(
     ({ newId, idToDuplicate }) => {

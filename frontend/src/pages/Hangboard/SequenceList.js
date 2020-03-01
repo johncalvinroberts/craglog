@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Heading, Text, Button, useToast, Spinner } from '@chakra-ui/core';
-import { Link } from 'react-router-dom';
 import useSWR, { useSWRPages } from 'swr';
 import http from '@/http';
 import EmptyView from '@/components/EmptyView';
@@ -98,23 +97,7 @@ const SequenceList = () => {
           <Spinner size="md" />
         </Box>
       )}
-      {isReachingEnd && (
-        <EmptyView message="You have not added any hangboard sequences yet.">
-          <Button
-            as={Link}
-            to="/app/hangboard/sequence/new"
-            backgroundColor="teal.300"
-            variant="solid"
-            color="white"
-            _hover={{
-              backgroundColor: 'teal.200',
-            }}
-            my={8}
-          >
-            Add a new hangboard sequence
-          </Button>
-        </EmptyView>
-      )}
+      {isReachingEnd && <EmptyView message="Nothing more to show." />}
       {!isLoadingMore && (
         <Box
           d="flex"
