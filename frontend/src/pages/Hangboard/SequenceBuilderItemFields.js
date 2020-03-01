@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box, InputRightAddon } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
-import SelectField from '@/components/SelectField';
-import TextField from '@/components/TextField';
+import { SelectField, TextField } from '@/components/Form';
 import { sequenceItemDefaultValue } from './SequenceCreate';
 import { exercises, repetitionExercises } from '@/constants';
 import { camelCaseToTitleCase } from '@/utils';

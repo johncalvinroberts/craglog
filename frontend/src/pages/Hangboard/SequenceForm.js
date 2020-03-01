@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { Box, Button } from '@chakra-ui/core';
-import Form from '@/components/Form';
-import SelectField from '@/components/SelectField';
-import TextField from '@/components/TextField';
+import Form, { SelectField, TextField } from '@/components/Form';
+
 import { useDispatch } from '@/components/State';
 import { toggleMobileNav } from '@/states';
 import { boards } from '@/constants';

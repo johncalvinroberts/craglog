@@ -7,7 +7,7 @@ import http from '@/http';
 import { getErrorMessage } from '@/utils';
 
 export const sequenceItemDefaultValue = {
-  rest: 10,
+  rest: 0,
   duration: 0,
   repetitions: 0,
   exercise: '',

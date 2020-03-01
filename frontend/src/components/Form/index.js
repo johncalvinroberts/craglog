@@ -3,6 +3,12 @@ import { Box } from '@chakra-ui/core';
 import { FormContext } from 'react-hook-form';
 import { useMounted } from '@/hooks';
 
+export { default as SelectField } from './SelectField';
+export { default as SliderField } from './SliderField';
+export { default as TextField } from './TextField';
+export { default as TextAreaField } from './TextAreaField';
+export { default as FormField } from './FormField';
+
 const Form = forwardRef((props, ref) => {
   const {
     onSubmit,

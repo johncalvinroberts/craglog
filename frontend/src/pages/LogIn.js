@@ -13,10 +13,9 @@ import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
 import LoginLayout from '@/components/LogInLayout';
 import { useTitle, useAuthState } from '@/hooks';
-import TextField from '@/components/TextField';
 import { performLogin } from '@/states';
 import { useDispatch } from '@/components/State';
-import Form from '@/components/Form';
+import Form, { TextField } from '@/components/Form';
 
 const validationSchema = yup.object().shape({
   email: yup

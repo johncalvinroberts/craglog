@@ -29,15 +29,16 @@ import {
   boulderTickTypeEnum,
   notesPlaceHolders,
 } from '@/constants';
-import Form from '@/components/Form';
+import Form, {
+  TextAreaField,
+  SelectField,
+  TextField,
+  SliderField,
+} from '@/components/Form';
 import Map from '@/components/Map';
 import EmptyView from '@/components/EmptyView';
 import { toggleMobileNav } from '@/states';
 import { useDispatch } from '@/components/State';
-import TextAreaField from '@/components/TextAreaField';
-import SelectField from '@/components/SelectField';
-import TextField from '@/components/TextField';
-import SliderField from '@/components/SliderField';
 import Marker from '@/components/Marker';
 import RouteCard from '@/components/RouteCard';
 import { calculateGeoDistance, camelCaseToTitleCase } from '@/utils';

@@ -8,7 +8,7 @@ import State from './State';
 import theme from '../theme';
 import ProtectedRoute from './ProtectedRoute';
 import NotFound from '../pages/NotFound';
-import Landing from '../pages/Landing';
+import Landing from '../pages/index';
 import ErrorBoundary from './ErrorBoundary';
 
 const LogIn = lazy(() => import('../pages/LogIn'));

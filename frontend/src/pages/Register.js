@@ -14,8 +14,8 @@ import { useHistory, Link } from 'react-router-dom';
 import { useTitle, useAuthState } from '@/hooks';
 import LoginLayout from '@/components/LogInLayout';
 import { useDispatch } from '@/components/State';
-import TextField from '@/components/TextField';
-import Form from '@/components/Form';
+import Form, { TextField } from '@/components/Form';
+
 import { performRegistration, performLogin } from '@/states';
 
 const validationSchema = yup.object().shape({

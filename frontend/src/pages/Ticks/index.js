@@ -6,7 +6,7 @@ import DashboardWrapper from '@/components/DashboardWrapper';
 import NotFound from '../NotFound';
 import TickCreate from './TickCreate';
 import TickEdit from './TickEdit';
-import TicksList from './TicksList';
+import TickList from './TickList';
 
 const Hangboard = lazy(() => import('../Hangboard'));
 
@@ -16,7 +16,7 @@ const Home = ({ match }) => {
       <Suspense fallback={<Loading />}>
         <DashboardWrapper>
           <Switch>
-            <Route path={match.path} exact component={TicksList} />
+            <Route path={match.path} exact component={TickList} />
             <Route
               path={`${match.path}/tick/new`}
               exact
