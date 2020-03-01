@@ -46,6 +46,7 @@ export const MenuLink = forwardRef(({ to, ...props }, ref) => {
   const { colorMode } = useColorMode();
   const hoverColor = { light: 'gray.900', dark: 'whiteAlpha.900' };
   const activeColor = { light: 'teal.400', dark: 'teal.200' };
+  const bg = { light: 'white', dark: 'whiteAlpha.100' };
 
   return (
     <NavLink to={to}>
@@ -53,9 +54,11 @@ export const MenuLink = forwardRef(({ to, ...props }, ref) => {
         <SideNavLink
           ref={ref}
           aria-current={isActive ? 'page' : undefined}
+          borderRadius="2px"
           _hover={{
             color: hoverColor[colorMode],
             transform: 'translateX(2px)',
+            backgroundColor: bg[colorMode],
           }}
           {...(isActive && {
             rounded: 'sm',

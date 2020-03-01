@@ -12,13 +12,15 @@ import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';
 
 const HangboardPlaceholder = () => (
-  <Box height="10rem">
-    <Text size="md" height="2rem" width="auto" d="block" textAlign="center">
-      No hangboard chosen
-    </Text>
-    <Text size="sm" height="2rem" width="auto" d="block" textAlign="center">
-      Choose one from dropdown above
-    </Text>
+  <Box height="10rem" d="flex" alignItems="center" justifyContent="center">
+    <Box>
+      <Text size="md" height="2rem" width="auto" d="block" textAlign="center">
+        No hangboard chosen
+      </Text>
+      <Text size="sm" height="2rem" width="auto" d="block" textAlign="center">
+        Choose one from dropdown above
+      </Text>
+    </Box>
   </Box>
 );
 

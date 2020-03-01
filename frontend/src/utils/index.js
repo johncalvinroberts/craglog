@@ -7,3 +7,4 @@ export { default as move } from './move';
 export { default as remove } from './remove';
 export { default as insert } from './insert';
 export { default as getUuidV4 } from './getUuidv4';
+export * from './calculateSequenceTime';

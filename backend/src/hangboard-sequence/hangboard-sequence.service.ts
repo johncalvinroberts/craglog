@@ -42,6 +42,7 @@ export class HangboardSequenceService {
     if (item.userId !== userId && !item.isPublic) {
       throw new UnauthorizedException();
     }
+    return item;
   }
 
   create(

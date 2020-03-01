@@ -4,6 +4,7 @@ import { useTitle } from '@/hooks';
 import NotFound from '@/pages/NotFound';
 import SequenceList from './SequenceList';
 import SequenceCreate from './SequenceCreate';
+import SequenceEdit from './SequenceEdit';
 
 const Hangboard = ({ match }) => {
   useTitle('Hangboard');
@@ -14,6 +15,11 @@ const Hangboard = ({ match }) => {
         path="/app/hangboard/sequence/new"
         exact
         component={SequenceCreate}
+      />
+      <Route
+        path="/app/hangboard/sequence/:id/edit"
+        exact
+        component={SequenceEdit}
       />
       <Route component={NotFound} />
     </Switch>

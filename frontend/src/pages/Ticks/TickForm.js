@@ -68,6 +68,7 @@ const notePlaceHolder =
   notesPlaceHolders[
     Math.floor(Math.random() * Math.ceil(notesPlaceHolders.length - 1))
   ];
+
 const concatRoutesList = ({ currentRoute, queriedRoutes }) => {
   if (!currentRoute && !queriedRoutes) return undefined;
   if (currentRoute && !queriedRoutes) return [currentRoute];

@@ -3,6 +3,7 @@ import { Box, Heading, Text, Button, useToast, Spinner } from '@chakra-ui/core';
 import useSWR, { useSWRPages } from 'swr';
 import http from '@/http';
 import EmptyView from '@/components/EmptyView';
+import SequenceCard from '@/components/SequenceCard';
 import { QuietLink } from '@/components/Link';
 
 const SequenceList = () => {
@@ -39,7 +40,7 @@ const SequenceList = () => {
         );
       }
       return data.map((item) => {
-        return <Box key={item.id}>{item.name}</Box>;
+        return <SequenceCard key={item.id} sequence={item} />;
       });
     },
 
@@ -64,7 +65,7 @@ const SequenceList = () => {
         justifyContent="space-between"
         mb={[2, 4]}
       >
-        <Box>
+        <Box width="100%">
           <Box
             d="flex"
             justifyContent="space-between"
@@ -81,8 +82,8 @@ const SequenceList = () => {
               New
             </QuietLink>
           </Box>
-          <Text size="xs" as="div" width="auto" height="auto">
-            Your hangboard sequences. Choose a sequence to start the workout.
+          <Text size="xs" as="div" width="auto" height="auto" mb={2}>
+            Choose a sequence to start the workout.
           </Text>
         </Box>
       </Box>

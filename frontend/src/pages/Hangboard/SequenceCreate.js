@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useToast } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
 import SequenceForm from './SequenceForm';
 import { boards } from '@/constants';
 import http from '@/http';
+import { useTitle } from '@/hooks';
 import { getErrorMessage } from '@/utils';
 
 export const sequenceItemDefaultValue = {
@@ -24,21 +25,25 @@ const defaultValues = {
 const SequenceCreate = () => {
   const toast = useToast();
   const history = useHistory();
+  useTitle('Create Hangboard Sequence');
 
-  const onSubmit = async (values) => {
-    try {
-      await http.post('/hangboard-sequence', values);
-      toast({ description: 'Hangboard sequence created :)' });
-      history.replace('/app/hangboard');
-    } catch (error) {
-      toast({
-        description: getErrorMessage(error),
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  };
+  const onSubmit = useCallback(
+    async (values) => {
+      try {
+        await http.post('/hangboard-sequence', values);
+        toast({ description: 'Hangboard sequence created :)' });
+        history.replace('/app/hangboard');
+      } catch (error) {
+        toast({
+          description: getErrorMessage(error),
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    },
+    [history, toast],
+  );
   return <SequenceForm defaultValues={defaultValues} onSubmit={onSubmit} />;
 };
 
