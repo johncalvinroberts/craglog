@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import useSWR, { mutate } from 'swr';
 import { useToast } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
 import format from 'date-fns/format';
@@ -18,42 +19,33 @@ const normalize = (tick) => {
   };
 };
 
-const LogEdit = ({ match, location }) => {
+const LogEdit = ({ match }) => {
   const { params: { id } = {} } = match;
-  const { item } = location;
-  const initialValue = item ? normalize(item) : null;
-  const [defaultValues, setDefaultValues] = useState(initialValue);
 
   const toast = useToast();
   const history = useHistory();
 
   useTitle(`Edit Log`);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await http.get(`/tick/${id}`);
-        setDefaultValues(normalize(res));
-      } catch (error) {
-        toast({
-          status: 'error',
-          isClosable: true,
-          description: getErrorMessage(error),
-        });
-      }
-    };
+  const { data, error } = useSWR(`/tick/${id}`, http.get);
 
-    if (!defaultValues) {
-      fetchData();
+  useEffect(() => {
+    if (error) {
+      toast({
+        status: 'error',
+        isClosable: true,
+        description: getErrorMessage(error),
+      });
     }
-  }, []); //eslint-disable-line
+  }, [error, toast]);
 
   const onSubmit = useCallback(
     async (values) => {
       try {
-        await http.patch(`/tick/${id}`, values);
+        const res = await http.patch(`/tick/${id}`, values);
         toast({ description: 'Log Updated :)' });
         history.replace('/app');
+        mutate(`/tick/${id}`, res);
       } catch (error) {
         toast({
           description: getErrorMessage(error),
@@ -66,11 +58,11 @@ const LogEdit = ({ match, location }) => {
     [history, id, toast],
   );
 
-  if (!defaultValues) {
+  if (!data) {
     return <Loading />;
   }
 
-  return <TickForm onSubmit={onSubmit} defaultValues={defaultValues} />;
+  return <TickForm onSubmit={onSubmit} defaultValues={normalize(data)} />;
 };
 
 export default LogEdit;

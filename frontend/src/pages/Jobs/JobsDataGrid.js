@@ -61,7 +61,7 @@ const JobsDataGrid = ({ params }) => {
       if (SWR.data && SWR.data.length === 0) return null;
 
       // offset = pageCount × pageSize
-      return (index + 1) * 3;
+      return (index + 1) * 25;
     },
 
     // deps of the page component

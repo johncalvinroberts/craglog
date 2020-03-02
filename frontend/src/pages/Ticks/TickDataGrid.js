@@ -25,7 +25,7 @@ import {
   ModalCloseButton,
   ModalBody,
 } from '@chakra-ui/core';
-import useSWR, { useSWRPages } from 'swr';
+import useSWR, { useSWRPages, mutate } from 'swr';
 import format from 'date-fns/format';
 import differenceInDays from 'date-fns/differenceInDays';
 import isSameDay from 'date-fns/isSameDay';
@@ -419,6 +419,7 @@ const TickDataGrid = ({ query }) => {
       dispatch(nextDatesDict);
       // return nothing, not needed
       return data.map((item, index) => {
+        mutate(`/tick/${item.id}`, item, false);
         return (
           <TickCard
             item={item}

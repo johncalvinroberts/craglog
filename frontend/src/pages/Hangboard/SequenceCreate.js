@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { mutate } from 'swr';
 import { useToast } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
 import SequenceForm from './SequenceForm';
@@ -30,8 +31,9 @@ const SequenceCreate = () => {
   const onSubmit = useCallback(
     async (values) => {
       try {
-        await http.post('/hangboard-sequence', values);
+        const res = await http.post('/hangboard-sequence', values);
         toast({ description: 'Hangboard sequence created :)' });
+        mutate(`/hangboard-sequence/${res.id}`, res, false);
         history.replace('/app/hangboard');
       } catch (error) {
         toast({

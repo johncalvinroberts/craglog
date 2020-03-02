@@ -1,5 +1,6 @@
 import React from 'react';
 import { useToast } from '@chakra-ui/core';
+import { mutate } from 'swr';
 import { useHistory } from 'react-router-dom';
 import format from 'date-fns/format';
 import TickForm from './TickForm';
@@ -26,8 +27,9 @@ const LogCreate = () => {
 
   const onSubmit = async (values) => {
     try {
-      await http.post('/tick', values);
+      const res = await http.post('/tick', values);
       toast({ description: 'Sequence created :)' });
+      mutate(`/tick/${res.id}`, res);
       history.replace('/app');
     } catch (error) {
       toast({

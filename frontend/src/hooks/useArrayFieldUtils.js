@@ -15,21 +15,33 @@ export default (arrName) => {
   } = useFormContext();
   const [indexes, setIndexes] = useState([]);
   const [idsToCopy, setIdsToCopy] = useState({});
+  const [valuesToSet, setValuesToSet] = useState([]);
   const [, setCount] = useState(0);
 
   useEffect(() => {
     const initialArray = defaultValues[arrName] || [];
     const initialIndexes = [];
+    const appendValuesToSet = [];
     for (const item of initialArray) {
       const id = getUuidV4();
       initialIndexes.push({ id });
       const nameBase = `${arrName}[${id}]`;
       for (const [key, value] of Object.entries(item)) {
-        setValue(`${nameBase}.${key}`, value);
+        appendValuesToSet.push({ key: `${nameBase}.${key}`, value });
       }
     }
+    setValuesToSet(appendValuesToSet);
     setIndexes(initialIndexes);
   }, [arrName, defaultValues, setValue]);
+
+  useEffect(() => {
+    if (valuesToSet.length > 0) {
+      for (const { key, value } of valuesToSet) {
+        setValue(key, value);
+      }
+      setValuesToSet([]);
+    }
+  }, [setValue, valuesToSet]);
 
   useEffect(() => {
     const { newId, idToDuplicate } = idsToCopy;

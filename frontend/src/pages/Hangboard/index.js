@@ -1,13 +1,11 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { useTitle } from '@/hooks';
 import NotFound from '@/pages/NotFound';
 import SequenceList from './SequenceList';
 import SequenceCreate from './SequenceCreate';
 import SequenceEdit from './SequenceEdit';
 
 const Hangboard = ({ match }) => {
-  useTitle('Hangboard');
   return (
     <Switch>
       <Route path={match.path} exact component={SequenceList} />

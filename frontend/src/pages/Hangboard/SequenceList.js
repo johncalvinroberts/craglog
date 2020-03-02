@@ -1,13 +1,15 @@
 import React from 'react';
 import { Box, Heading, Text, Button, useToast, Spinner } from '@chakra-ui/core';
-import useSWR, { useSWRPages } from 'swr';
+import useSWR, { useSWRPages, mutate } from 'swr';
 import http from '@/http';
 import EmptyView from '@/components/EmptyView';
 import SequenceCard from '@/components/SequenceCard';
 import { QuietLink } from '@/components/Link';
+import { useTitle } from '@/hooks';
 
 const SequenceList = () => {
   const toast = useToast();
+  useTitle('Hangboard');
 
   const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
     // page key
@@ -40,6 +42,7 @@ const SequenceList = () => {
         );
       }
       return data.map((item) => {
+        mutate(`/hangboard-sequence/${item.id}`, item, false);
         return <SequenceCard key={item.id} sequence={item} />;
       });
     },
@@ -50,7 +53,7 @@ const SequenceList = () => {
       if (SWR.data && SWR.data.length === 0) return null;
 
       // offset = pageCount × pageSize
-      return (index + 1) * 3;
+      return (index + 1) * 25;
     },
 
     // deps of the page component
