@@ -3,7 +3,11 @@ import { useHangboardColors } from '@/hooks';
 
 const noop = () => {};
 
-const MetoliusSimulator3d = ({ activeHolds = [], handleClickHold = noop }) => {
+const MetoliusSimulator3d = ({
+  activeHolds = [],
+  handleClickHold = noop,
+  height = 200,
+}) => {
   const { line, defaultFill, activeFill } = useHangboardColors();
 
   const getHoldProps = (id) => {
@@ -18,7 +22,7 @@ const MetoliusSimulator3d = ({ activeHolds = [], handleClickHold = noop }) => {
   return (
     <svg
       width="100%"
-      height="200"
+      height={height}
       viewBox="0 0 785 270"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
