@@ -249,7 +249,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       <Box>
         <Heading size="md">Info</Heading>
         <Text size="xs" mb={4} as="div" width="auto" height="auto">
-          Fill in the basics about the climb you&apos;re loggin.
+          Fill in the basics about the climb you&apos;re logging.
         </Text>
       </Box>
       <Box d="flex" justifyContent="space-between" flexWrap="wrap">

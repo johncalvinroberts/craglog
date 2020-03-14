@@ -43,7 +43,7 @@ const LogEdit = ({ match }) => {
     async (values) => {
       try {
         const res = await http.patch(`/tick/${id}`, values);
-        toast({ description: 'Log Updated :)' });
+        toast({ description: 'Log Updated' });
         history.replace('/app');
         mutate(`/tick/${id}`, res);
       } catch (error) {

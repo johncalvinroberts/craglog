@@ -32,7 +32,7 @@ const SequenceCreate = () => {
     async (values) => {
       try {
         const res = await http.post('/hangboard-sequence', values);
-        toast({ description: 'Hangboard sequence created :)' });
+        toast({ description: 'Hangboard sequence created' });
         mutate(`/hangboard-sequence/${res.id}`, res, false);
         history.replace('/app/hangboard');
       } catch (error) {

@@ -5,7 +5,7 @@ import { boards } from '@/constants';
 import { hangBoardMap } from './hangboards';
 import { calculateSequenceTimeInWords } from '@/utils';
 
-const SequenceCard = ({ sequence, ...props }) => {
+const SequenceCard = ({ sequence, children, ...props }) => {
   const boardName = useMemo(() => {
     const board = boards.find((item) => item.value === sequence.boardName);
     return board && board.label;
@@ -25,40 +25,47 @@ const SequenceCard = ({ sequence, ...props }) => {
       borderWidth="1px"
       _hover={{ transform: 'translateX(2px)' }}
       transition="all 0.2s"
-      as={RouterLink}
       d="flex"
       justifyContent="flex-start"
       alignItems="center"
-      width="100%"
-      flexWrap="wrap"
-      to={`/app/hangboard/sequence/${sequence.id}/edit`}
       {...props}
     >
-      <Text
-        width="6rem"
-        height="auto"
-        fontWeight="500"
-        fontSize="xl"
-        textOverflow="ellipsis"
-        overflow="hidden"
-        whiteSpace="nowrap"
-        d="block"
+      <Box
+        as={RouterLink}
+        to={`/app/hangboard/sequence/${sequence.id}`}
+        d="flex"
+        justifyContent="flex-start"
+        alignItems="center"
+        width="100%"
+        flexWrap="wrap"
       >
-        {sequence.name}
-      </Text>
-      <Text width="auto" height="auto" fontSize="md">
-        {boardName}
-      </Text>
-      <Box flex="1" ml={1}>
-        <Box maxWidth="180px" margin="0 auto">
-          <Hangboard height="42px" />
+        <Text
+          width="6rem"
+          height="auto"
+          fontWeight="500"
+          fontSize="xl"
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+          d="block"
+        >
+          {sequence.name}
+        </Text>
+        <Text width="auto" height="auto" fontSize="md">
+          {boardName}
+        </Text>
+        <Box flex="1" ml={1}>
+          <Box maxWidth="180px" margin="0 auto">
+            <Hangboard height="42px" />
+          </Box>
+        </Box>
+        <Box flex="0 0 100%" pl="6rem">
+          <Text fontSize="sm" width="auto" height="auto">
+            {totalTime}
+          </Text>
         </Box>
       </Box>
-      <Box flex="0 0 100%" pl="6rem">
-        <Text fontSize="sm" width="auto" height="auto">
-          {totalTime}
-        </Text>
-      </Box>
+      {children}
     </PseudoBox>
   );
 };

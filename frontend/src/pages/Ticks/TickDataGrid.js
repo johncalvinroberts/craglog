@@ -17,13 +17,6 @@ import {
   useDisclosure,
   Collapse,
   IconButton,
-  SlideIn,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
 } from '@chakra-ui/core';
 import useSWR, { useSWRPages, mutate } from 'swr';
 import format from 'date-fns/format';
@@ -36,6 +29,7 @@ import EmptyView from '@/components/EmptyView';
 import RouteCard from '@/components/RouteCard';
 import TickStyleChip from '@/components/TickStyleChip';
 import TickTypeChip from '@/components/TickTypeChip';
+import DeleteModal from '@/components/DeleteModal';
 import { DATE_FORMAT } from '@/constants';
 
 const DatesContext = createContext();
@@ -89,19 +83,17 @@ const TickCard = ({ item, dictKey }) => {
     try {
       setIsDeleting(true);
       await http.delete(`/tick/${item.id}`);
-      setIsDeleting(false);
       setIsDeleted(true);
     } catch (error) {
-      setIsDeleting(false);
       toast({
         description: getErrorMessage(error),
         status: 'error',
         isClosable: true,
       });
     }
+    setIsDeleting(false);
   };
-  const disabled = isDeleted || isDeleting;
-
+  if (isDeleted) return <></>;
   return (
     <>
       {isFirstOfYear && (
@@ -186,14 +178,14 @@ const TickCard = ({ item, dictKey }) => {
             borderWidth="1px"
             borderTopWidth={isSameDayAsPrevDate ? 0 : '1px'}
             position="relative"
-            {...(disabled
+            {...(isDeleting
               ? {
                   opacity: 0.6,
                   pointerEvents: 'none',
                 }
               : null)}
           >
-            {disabled && (
+            {isDeleting && (
               <Box
                 zIndex="99"
                 d="flex"
@@ -302,46 +294,14 @@ const TickCard = ({ item, dictKey }) => {
                 </Box>
               </Box>
             </Collapse>
-            <SlideIn in={isDeleteModalOpen}>
-              {(styles) => (
-                <Modal
-                  finalFocusRef={deleteBtnRef}
-                  onClose={onCloseDeleteModal}
-                  isOpen
-                  isCentered
-                >
-                  <ModalOverlay opacity={styles.opacity} />
-                  <ModalContent pb={5} {...styles}>
-                    <ModalHeader>Delete this log?</ModalHeader>
-                    <ModalCloseButton onClick={onCloseDeleteModal} />
-                    <ModalBody>
-                      <Icon name="warning-2" mr={2} />
-                      This action is permanent
-                      <Box pt={2} d="flex">
-                        <Button
-                          aria-label="confirm delete"
-                          variant="solid"
-                          variantColor="red"
-                          size="sm"
-                          onClick={handleDelete}
-                          mr={2}
-                        >
-                          Delete
-                        </Button>
-                        <Button
-                          aria-label="confirm delete"
-                          variant="solid"
-                          size="sm"
-                          onClick={onCloseDeleteModal}
-                        >
-                          Cancel
-                        </Button>
-                      </Box>
-                    </ModalBody>
-                  </ModalContent>
-                </Modal>
-              )}
-            </SlideIn>
+            <DeleteModal
+              deleteBtnRef={deleteBtnRef}
+              onClose={onCloseDeleteModal}
+              handleDelete={handleDelete}
+              isOpen={isDeleteModalOpen}
+            >
+              Delete this log?
+            </DeleteModal>
             <Button
               flex="1"
               d="flex"

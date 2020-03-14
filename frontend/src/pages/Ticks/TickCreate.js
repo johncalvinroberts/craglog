@@ -28,7 +28,7 @@ const LogCreate = () => {
   const onSubmit = async (values) => {
     try {
       const res = await http.post('/tick', values);
-      toast({ description: 'Sequence created :)' });
+      toast({ description: 'Sequence created' });
       mutate(`/tick/${res.id}`, res);
       history.replace('/app');
     } catch (error) {

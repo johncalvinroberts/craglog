@@ -30,7 +30,7 @@ const SequenceEdit = ({ match }) => {
     async (values) => {
       try {
         const res = await http.patch(`/hangboard-sequence/${id}`, values);
-        toast({ description: 'Hangboard sequence created :)' });
+        toast({ description: 'Hangboard sequence updated' });
         mutate(`/hangboard-sequence/${res.id}`, res, false);
         history.replace('/app/hangboard');
       } catch (error) {
