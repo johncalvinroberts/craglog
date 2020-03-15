@@ -51,7 +51,12 @@ const SequenceCard = ({ sequence, children, ...props }) => {
         >
           {sequence.name}
         </Text>
-        <Text width="auto" height="auto" fontSize="md">
+        <Box d={['block', 'none']}>
+          <Text fontSize="sm" width="auto" height="auto">
+            {totalTime}
+          </Text>
+        </Box>
+        <Text width="auto" height="auto" fontSize="md" mr={[2, 0]}>
           {boardName}
         </Text>
         <Box flex="1" ml={1}>
@@ -59,7 +64,7 @@ const SequenceCard = ({ sequence, children, ...props }) => {
             <Hangboard height="42px" />
           </Box>
         </Box>
-        <Box flex="0 0 100%" pl="6rem">
+        <Box flex="0 0 100%" pl="6rem" d={['none', 'block']}>
           <Text fontSize="sm" width="auto" height="auto">
             {totalTime}
           </Text>

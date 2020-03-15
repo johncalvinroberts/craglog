@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 import { getInnerText } from '@/utils';
 import { useDispatch } from '@/components/State';
 
@@ -7,10 +7,10 @@ import { useDispatch } from '@/components/State';
 // title could be a component or a string
 export default (Title) => {
   const dispatch = useDispatch('UI');
+  const titleText = getInnerText(Title);
 
-  useEffect(() => {
-    const titleText = getInnerText(Title);
+  useDeepCompareEffect(() => {
     document.title = `craglog | ${titleText}`;
     dispatch({ UI: { Title } });
-  }, [dispatch]); //eslint-disable-line
+  }, [dispatch, titleText]); //eslint-disable-line
 };

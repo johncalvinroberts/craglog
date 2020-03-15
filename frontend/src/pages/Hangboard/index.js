@@ -4,6 +4,7 @@ import NotFound from '@/pages/NotFound';
 import SequenceList from './SequenceList';
 import SequenceCreate from './SequenceCreate';
 import SequenceEdit from './SequenceEdit';
+import SequenceDetail from './SequenceDetail';
 
 const Hangboard = ({ match }) => {
   return (
@@ -18,6 +19,11 @@ const Hangboard = ({ match }) => {
         path="/app/hangboard/sequence/:id/edit"
         exact
         component={SequenceEdit}
+      />
+      <Route
+        path="/app/hangboard/sequence/:id"
+        component={SequenceDetail}
+        exact
       />
       <Route component={NotFound} />
     </Switch>

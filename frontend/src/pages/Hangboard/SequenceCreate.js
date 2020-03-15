@@ -26,7 +26,7 @@ const defaultValues = {
 const SequenceCreate = () => {
   const toast = useToast();
   const history = useHistory();
-  useTitle('Create Hangboard Sequence');
+  useTitle('Create Sequence');
 
   const onSubmit = useCallback(
     async (values) => {

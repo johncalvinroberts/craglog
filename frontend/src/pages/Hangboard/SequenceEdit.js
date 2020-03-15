@@ -12,7 +12,7 @@ const SequenceEdit = ({ match }) => {
   const toast = useToast();
   const history = useHistory();
 
-  useTitle(`Edit Hangboard Sequence`);
+  useTitle(`Edit Sequence`);
   const { data, error } = useSWR(`/hangboard-sequence/${id}`, http.get);
 
   useEffect(() => {
