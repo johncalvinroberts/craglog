@@ -5,7 +5,7 @@ import { camelCaseToTitleCase } from '@/utils';
 const bg = { light: 'white', dark: 'gray.800' };
 const HangboardSequenceItem = ({ isActive, item, children, ...rest }) => {
   const { colorMode } = useColorMode();
-  const showRest = !!(item.rest && parseInt(item.rest, 10) > 0);
+  const showRest = item.rest && parseInt(item.rest, 10) > 0;
 
   const exerciseName = item.exercise ? (
     camelCaseToTitleCase(item.exercise)
