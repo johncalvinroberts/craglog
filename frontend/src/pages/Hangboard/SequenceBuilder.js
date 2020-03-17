@@ -11,7 +11,29 @@ import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';
 
-const HangboardPlaceholder = () => (
+export const AddButton = ({ handleAdd, ...rest }) => (
+  <PseudoButton
+    position="absolute"
+    bottom="0"
+    left="0"
+    right="0"
+    d="flex"
+    justifyContent="center"
+    alignItems="center"
+    height="3rem"
+    width="17rem"
+    _hover={{
+      backgroundColor: 'teal.400',
+    }}
+    backgroundColor="teal.300"
+    onClick={handleAdd}
+    {...rest}
+  >
+    <Icon name="add" />
+  </PseudoButton>
+);
+
+export const HangboardPlaceholder = () => (
   <Box height="10rem" d="flex" alignItems="center" justifyContent="center">
     <Box>
       <Text size="md" height="2rem" width="auto" d="block" textAlign="center">
@@ -214,24 +236,7 @@ const SequenceBuilder = () => {
             )}
           </Droppable>
         </DragDropContext>
-        <PseudoButton
-          position="absolute"
-          bottom="0"
-          left="0"
-          right="0"
-          d="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="3rem"
-          width="17rem"
-          _hover={{
-            backgroundColor: 'teal.400',
-          }}
-          backgroundColor="teal.300"
-          onClick={handleAdd}
-        >
-          <Icon name="add" />
-        </PseudoButton>
+        <AddButton handleAdd={handleAdd} />
       </Box>
       <Box flexGrow="1" height="600px">
         <Box p={2}>

@@ -143,7 +143,7 @@ const SequenceList = () => {
   );
 
   return (
-    <Box d="block" mb={[4, 8]} p={2}>
+    <Box d="block" mb={[4, 8]}>
       <Box
         d="flex"
         alignItems="center"

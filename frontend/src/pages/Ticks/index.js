@@ -4,11 +4,11 @@ import Loading from '@/components/Loading';
 import DashboardLayout from '@/components/DashboardLayout';
 import DashboardWrapper from '@/components/DashboardWrapper';
 import NotFound from '../NotFound';
-import TickCreate from './TickCreate';
-import TickEdit from './TickEdit';
 import TickList from './TickList';
 
 const Hangboard = lazy(() => import('../Hangboard'));
+const TickCreate = lazy(() => import('./TickCreate'));
+const TickEdit = lazy(() => import('./TickEdit'));
 
 const Home = ({ match }) => {
   return (

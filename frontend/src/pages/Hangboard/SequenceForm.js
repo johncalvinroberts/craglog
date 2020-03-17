@@ -3,11 +3,13 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { Box, Button } from '@chakra-ui/core';
 import Form, { SelectField, TextField } from '@/components/Form';
-
+import { useWindowSize } from '@/hooks';
 import { useDispatch } from '@/components/State';
 import { toggleMobileNav } from '@/states';
 import { boards } from '@/constants';
 import SequenceBuilder from './SequenceBuilder';
+import SequenceBuilderMobile from './SequenceBuilderMobile';
+import { UtilBar } from '@/components/DashboardHeader';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
@@ -56,6 +58,8 @@ const validationSchema = yup.object().shape({
 const SequenceForm = ({ defaultValues, onSubmit }) => {
   const dispatch = useDispatch();
   const formMethods = useForm({ defaultValues, validationSchema });
+  const { width: windowWidth } = useWindowSize();
+  const isMobile = windowWidth < 650;
   // toggle mobile nav on mount/unmount
   useEffect(() => {
     dispatch(toggleMobileNav(false));
@@ -67,7 +71,21 @@ const SequenceForm = ({ defaultValues, onSubmit }) => {
       onSubmit={onSubmit}
       methods={formMethods}
       defaultValues={defaultValues}
+      id="sequence-form"
     >
+      <UtilBar>
+        <Button
+          backgroundColor="teal.300"
+          variant="solid"
+          type="submit"
+          loadingText="Submitting"
+          color="white"
+          form="sequence-form"
+          borderRadius="0"
+        >
+          Save
+        </Button>
+      </UtilBar>
       <Box d="flex" flexWrap="wrap" justifyContent="space-between">
         <SelectField
           name="boardName"
@@ -83,27 +101,8 @@ const SequenceForm = ({ defaultValues, onSubmit }) => {
           required
         />
       </Box>
-      <SequenceBuilder />
-      <Box
-        position="fixed"
-        bottom="20px"
-        maxWidth="100px"
-        right="20px"
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="center"
-      >
-        <Button
-          backgroundColor="teal.300"
-          variant="solid"
-          type="submit"
-          loadingText="Submitting"
-          color="white"
-          mb={2}
-        >
-          Save
-        </Button>
-      </Box>
+      {!isMobile && <SequenceBuilder />}
+      {isMobile && <SequenceBuilderMobile />}
     </Form>
   );
 };

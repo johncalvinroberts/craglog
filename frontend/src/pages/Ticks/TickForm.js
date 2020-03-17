@@ -41,6 +41,7 @@ import { toggleMobileNav } from '@/states';
 import { useDispatch } from '@/components/State';
 import Marker from '@/components/Marker';
 import RouteCard from '@/components/RouteCard';
+import { UtilBar } from '@/components/DashboardHeader';
 import { calculateGeoDistance, camelCaseToTitleCase } from '@/utils';
 import { useGeoLocation, useThrottle } from '@/hooks';
 import http from '@/http';
@@ -245,7 +246,21 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       methods={formMethods}
       defaultValues={defaultValues}
       ref={formRef}
+      id="tick-form"
     >
+      <UtilBar>
+        <Button
+          backgroundColor="teal.300"
+          variant="solid"
+          type="submit"
+          loadingText="Submitting"
+          color="white"
+          form="tick-form"
+          borderRadius="0"
+        >
+          Save
+        </Button>
+      </UtilBar>
       <Box>
         <Heading size="md">Info</Heading>
         <Text size="xs" mb={4} as="div" width="auto" height="auto">
@@ -397,26 +412,6 @@ const TickForm = ({ defaultValues, onSubmit }) => {
         </Text>
       </Box>
       <TextAreaField name="notes" placeholder={notePlaceHolder} />
-      <Box
-        position="fixed"
-        bottom="20px"
-        maxWidth="100px"
-        right="20px"
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="center"
-      >
-        <Button
-          backgroundColor="teal.300"
-          variant="solid"
-          type="submit"
-          loadingText="Submitting"
-          color="white"
-          mb={2}
-        >
-          Save
-        </Button>
-      </Box>
     </Form>
   );
 };
