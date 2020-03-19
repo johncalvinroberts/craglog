@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Box, IconButton } from '@chakra-ui/core';
+import { Box, IconButton, Collapse, useDisclosure } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
 import { AddButton } from './SequenceBuilder';
 import { useArrayFieldUtils } from '@/hooks';
@@ -29,9 +29,15 @@ const SequenceBuilderMobileItem = ({
     customExerciseName,
     rest,
   };
+  const { isOpen, onToggle } = useDisclosure();
   return (
-    <Box borderWidth="1px" d="flex" borderBottomWidth={isFinalItem ? '1px' : 0}>
-      <Box flex="1">
+    <Box
+      borderWidth="1px"
+      d="flex"
+      borderBottomWidth={isFinalItem ? '1px' : 0}
+      flexWrap="wrap"
+    >
+      <Box flex="1" onClick={onToggle}>
         <HangboardSequenceItem
           item={itemToPass}
           px={2}
@@ -73,7 +79,13 @@ const SequenceBuilderMobileItem = ({
           color="gray.500"
           onClick={handleMoveDown}
           borderRadius="0"
+          borderBottomWidth={isOpen ? '1px' : 0}
         />
+      </Box>
+      <Box flex=" 0 0 100%">
+        <Collapse isOpen={isOpen} animateOpacity>
+          <Box>stufffff heeere</Box>
+        </Collapse>
       </Box>
     </Box>
   );
@@ -101,22 +113,22 @@ const SequenceBuilderMobile = () => {
     [duplicate],
   );
 
-  const handleMoveUp = useCallback(
+  const handleMoveDown = useCallback(
     (index) => {
       if (index === indexes.length - 1) {
         return;
       }
-      move(index + 1);
+      move(index, index + 1);
     },
     [indexes.length, move],
   );
 
-  const handleMoveDown = useCallback(
+  const handleMoveUp = useCallback(
     (index) => {
       if (index === 0) {
         return;
       }
-      move(index - 1);
+      move(index, index - 1);
     },
     [move],
   );

@@ -93,7 +93,9 @@ const TickCard = ({ item, dictKey }) => {
     }
     setIsDeleting(false);
   };
+
   if (isDeleted) return <></>;
+
   return (
     <>
       {isFirstOfYear && (
