@@ -18,6 +18,7 @@ export const AddButton = ({ handleAdd, ...rest }) => (
     left="0"
     right="0"
     d="flex"
+    color="white"
     justifyContent="center"
     alignItems="center"
     height="3rem"

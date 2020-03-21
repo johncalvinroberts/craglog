@@ -6,7 +6,6 @@ const PseudoButton = ({ children, ...props }) => {
     <PseudoBox
       as="button"
       _focus={{ outline: 'none' }}
-      color="white"
       p={2}
       transition="all 0.3s"
       {...props}
