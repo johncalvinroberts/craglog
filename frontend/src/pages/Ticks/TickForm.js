@@ -257,6 +257,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           color="white"
           form="tick-form"
           borderRadius="0"
+          _hover={{ backgroundColor: 'teal.400' }}
         >
           Save
         </Button>

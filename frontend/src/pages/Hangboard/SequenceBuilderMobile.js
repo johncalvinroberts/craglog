@@ -1,10 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 import { Box, IconButton, Collapse, useDisclosure } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
-import { AddButton } from './SequenceBuilder';
+import _get from 'lodash/get';
+import { AddButton, HangboardPlaceholder } from './SequenceBuilder';
 import { useArrayFieldUtils } from '@/hooks';
 import HangboardSequenceItem from '@/components/HangboardSequenceItem';
 import EmptyView from '@/components/EmptyView';
+import { hangBoardMap } from '@/components/hangboards';
+import { scrollToRef } from '@/utils';
+import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 
 const SequenceBuilderMobileItem = ({
   id,
@@ -14,8 +18,9 @@ const SequenceBuilderMobileItem = ({
   handleMoveUp,
   handleMoveDown,
 }) => {
+  const ref = useRef();
   const nameBase = `sequence[${id}]`;
-  const { watch } = useFormContext();
+  const { watch, setValue, errors } = useFormContext();
 
   const exercise = watch(`${nameBase}.exercise`);
   const repetitions = watch(`${nameBase}.repetitions`);
@@ -29,13 +34,54 @@ const SequenceBuilderMobileItem = ({
     customExerciseName,
     rest,
   };
-  const { isOpen, onToggle } = useDisclosure();
+
+  const activeHolds = watch(`${nameBase}.activeHolds`) || [];
+
+  const boardName = watch('boardName');
+
+  const { isOpen, onToggle, onOpen } = useDisclosure();
+  const Hangboard = useMemo(
+    () => hangBoardMap[boardName] || HangboardPlaceholder,
+    [boardName],
+  );
+
+  const handleClickHold = useCallback(
+    (id) => {
+      const name = `${nameBase}.activeHolds`;
+      let nextValue;
+      const isAlreadyChosen = activeHolds.includes(id);
+
+      if (isAlreadyChosen) {
+        nextValue = activeHolds.filter((item) => item !== id);
+      }
+
+      if (!isAlreadyChosen) {
+        nextValue = [...activeHolds, id];
+      }
+      setValue(name, nextValue);
+    },
+    [activeHolds, nameBase, setValue],
+  );
+
+  useEffect(() => {
+    if (isFinalItem) scrollToRef(ref);
+  }, [isFinalItem]);
+
+  const relevantErrors = _get(errors, nameBase);
+  useEffect(() => {
+    if (relevantErrors) {
+      onOpen();
+      scrollToRef(ref);
+    }
+  }, [onOpen, onToggle, relevantErrors]);
+
   return (
     <Box
       borderWidth="1px"
       d="flex"
       borderBottomWidth={isFinalItem ? '1px' : 0}
       flexWrap="wrap"
+      ref={ref}
     >
       <Box flex="1" onClick={onToggle}>
         <HangboardSequenceItem
@@ -43,6 +89,7 @@ const SequenceBuilderMobileItem = ({
           px={2}
           minHeight="5rem"
           borderRightWidth="1px"
+          isActive={isOpen}
         >
           <Box
             flex="1"
@@ -54,13 +101,19 @@ const SequenceBuilderMobileItem = ({
               icon="delete"
               variant="ghost"
               color="gray.500"
-              onClick={handleDelete}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
             />
             <IconButton
               icon="copy"
               variant="ghost"
               color="gray.500"
-              onClick={handleDuplicate}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDuplicate();
+              }}
             />
           </Box>
         </HangboardSequenceItem>
@@ -84,7 +137,18 @@ const SequenceBuilderMobileItem = ({
       </Box>
       <Box flex=" 0 0 100%">
         <Collapse isOpen={isOpen} animateOpacity>
-          <Box>stufffff heeere</Box>
+          <Box mb={2}>
+            {isOpen && (
+              <Box p={2}>
+                <Hangboard
+                  handleClickHold={handleClickHold}
+                  activeHolds={activeHolds}
+                />
+              </Box>
+            )}
+
+            <SequenceBuilderItemFields id={id} />
+          </Box>
         </Collapse>
       </Box>
     </Box>
@@ -147,7 +211,12 @@ const SequenceBuilderMobile = () => {
         />
       ))}
       {!indexes.length && <EmptyView message="Empty!" />}
-      <AddButton handleAdd={handleAdd} width="100%" position="fixed" />
+      <AddButton
+        handleAdd={handleAdd}
+        width="100%"
+        position="fixed"
+        zIndex="999"
+      />
     </Box>
   );
 };

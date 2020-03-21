@@ -40,8 +40,9 @@ const SequenceCard = ({ sequence, children, ...props }) => {
         flexWrap="wrap"
       >
         <Text
-          width="6rem"
+          width={['4rem', '6rem']}
           height="auto"
+          minWidth="4rem"
           fontWeight="500"
           fontSize="xl"
           textOverflow="ellipsis"

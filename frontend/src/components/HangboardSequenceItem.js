@@ -14,14 +14,7 @@ const HangboardSequenceItem = ({ isActive, item, children, ...rest }) => {
   );
   return (
     <Box>
-      <Box
-        d="flex"
-        p={2}
-        bg={bg[colorMode]}
-        alignItems="center"
-        {...(showRest ? { borderBottomWidth: '1px' } : null)}
-        {...rest}
-      >
+      <Box d="flex" p={2} bg={bg[colorMode]} alignItems="center" {...rest}>
         <Text
           fontSize="md"
           fontWeight={isActive ? 'bold' : ''}
@@ -36,25 +29,25 @@ const HangboardSequenceItem = ({ isActive, item, children, ...rest }) => {
           fontWeight={isActive ? 'bold' : ''}
           width="auto"
           height="auto"
+          mr={1}
         >
           {item.repetitions
             ? `${item.repetitions} reps`
             : `${item.duration || '0'}s`}
         </Text>
+        {showRest && (
+          <Text
+            fontSize="xs"
+            width="auto"
+            height="auto"
+            fontWeight={isActive ? 'bold' : ''}
+          >
+            + {item.rest}s rest
+          </Text>
+        )}
         {/* children appear at end of the row */}
         {children}
       </Box>
-      {showRest && (
-        <Box
-          bg="red.100"
-          {...(colorMode === 'dark' ? { color: 'white' } : null)}
-          px={2}
-        >
-          <Text fontSize="xs" width="auto" height="auto" color="black">
-            Rest {item.rest}s
-          </Text>
-        </Box>
-      )}
     </Box>
   );
 };

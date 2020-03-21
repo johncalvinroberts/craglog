@@ -82,6 +82,7 @@ const SequenceForm = ({ defaultValues, onSubmit }) => {
           color="white"
           form="sequence-form"
           borderRadius="0"
+          _hover={{ backgroundColor: 'teal.400' }}
         >
           Save
         </Button>
