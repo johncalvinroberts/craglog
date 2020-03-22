@@ -9,3 +9,5 @@ export { default as insert } from './insert';
 export { default as getUuidV4 } from './getUuidv4';
 export * from './calculateSequenceTime';
 export { default as scrollToRef } from './scrollToRef';
+export { default as delay } from './delay';
+export { default as getSpeechSynthesisVoices } from './getSpeechSynthesisVoices';
