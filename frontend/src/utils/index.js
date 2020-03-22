@@ -11,3 +11,6 @@ export * from './calculateSequenceTime';
 export { default as scrollToRef } from './scrollToRef';
 export { default as delay } from './delay';
 export { default as getSpeechSynthesisVoices } from './getSpeechSynthesisVoices';
+export { default as addZero } from './addZero';
+export { default as parseMs } from './parseMs';
+export { default as formatMs } from './formatMs';

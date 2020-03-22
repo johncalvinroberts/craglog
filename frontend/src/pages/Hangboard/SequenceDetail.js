@@ -2,12 +2,15 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
 import useSWR from 'swr';
 import { useTitle, useCountdown } from '@/hooks';
-import { getErrorMessage } from '@/utils';
+import { getErrorMessage, formatMs } from '@/utils';
 import { hangBoardMap } from '@/components/hangboards';
 import http from '@/http';
 import PseudoButton from '@/components/PseudoButton';
 import { useDispatch } from '@/components/State';
 import { toggleMobileNav } from '@/states';
+
+const REST_MS_UNIT = 1000;
+const EXERCISE_MS_UNIT = 100;
 
 const BottomButton = ({ children, ...props }) => (
   <PseudoButton
@@ -32,7 +35,7 @@ const BottomButton = ({ children, ...props }) => (
 
 const SequenceDetailInner = ({ data }) => {
   const [isRunning, setIsRunning] = useState(false);
-  const { countdown, start } = useCountdown();
+  const { timeRemaining, start } = useCountdown();
 
   const Hangboard = useMemo(() => {
     if (!data) return <></>;
@@ -41,7 +44,7 @@ const SequenceDetailInner = ({ data }) => {
 
   const handleStart = useCallback(() => {
     setIsRunning(true);
-    start(10000);
+    start(10000, EXERCISE_MS_UNIT);
   }, [start]);
 
   const handlePause = useCallback(() => {
@@ -55,7 +58,7 @@ const SequenceDetailInner = ({ data }) => {
       </Box>
       <Box flex="0 0 100%">
         <Heading fontSize="16rem" textAlign="center">
-          {countdown}
+          {formatMs(timeRemaining, { milliseconds: true })}
         </Heading>
       </Box>
       {!isRunning && <BottomButton onClick={handleStart}>START</BottomButton>}

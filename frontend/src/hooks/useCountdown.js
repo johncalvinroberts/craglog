@@ -1,22 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export default ({ onExpire, onReset } = {}) => {
-  const [countdown, setCountdown] = useState();
+  const [timeRemaining, setTimeRemaining] = useState();
   const [canStart, setCanStart] = useState();
   const [updateInterval, setUpdateInterval] = useState();
 
-  const countdownRef = useRef();
+  const timeRemainingRef = useRef();
 
   const start = useCallback((durationMs, interval = 1000) => {
     setCanStart(true);
     setUpdateInterval(interval);
-    setCountdown(durationMs);
-    countdownRef.current = durationMs;
+    setTimeRemaining(durationMs);
+    timeRemainingRef.current = durationMs;
   }, []);
 
   const reset = useCallback(() => {
     setCanStart(false);
-    setCountdown(null);
+    setTimeRemaining(null);
     if (onReset && typeof onReset === 'function') {
       onReset();
     }
@@ -24,22 +24,22 @@ export default ({ onExpire, onReset } = {}) => {
 
   const expire = useCallback(() => {
     setCanStart(false);
-    setCountdown(0);
+    setTimeRemaining(0);
     if (onExpire && typeof onExpire === 'function') {
       onExpire();
     }
   }, [onExpire]);
 
   useEffect(() => {
-    countdownRef.current = countdown;
-  }, [countdown]);
+    timeRemainingRef.current = timeRemaining;
+  }, [timeRemaining]);
 
   useEffect(() => {
     const tick = () => {
-      if (countdownRef.current / 1000 <= 0) {
+      if (timeRemainingRef.current / 1000 <= 0) {
         expire();
       } else {
-        setCountdown((prev) => prev - updateInterval);
+        setTimeRemaining((prev) => prev - updateInterval);
       }
     };
 
@@ -51,7 +51,7 @@ export default ({ onExpire, onReset } = {}) => {
   }, [expire, canStart, updateInterval]);
 
   return {
-    countdown,
+    timeRemaining,
     start,
     reset,
   };
