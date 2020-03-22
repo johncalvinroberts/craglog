@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { Spinner, useToast, Box } from '@chakra-ui/core';
+import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
 import useSWR from 'swr';
-import { useTitle } from '@/hooks';
+import { useTitle, useCountdown } from '@/hooks';
 import { getErrorMessage } from '@/utils';
 import { hangBoardMap } from '@/components/hangboards';
 import http from '@/http';
@@ -32,6 +32,7 @@ const BottomButton = ({ children, ...props }) => (
 
 const SequenceDetailInner = ({ data }) => {
   const [isRunning, setIsRunning] = useState(false);
+  const { countdown, start } = useCountdown();
 
   const Hangboard = useMemo(() => {
     if (!data) return <></>;
@@ -40,16 +41,22 @@ const SequenceDetailInner = ({ data }) => {
 
   const handleStart = useCallback(() => {
     setIsRunning(true);
-  }, []);
+    start(10000);
+  }, [start]);
 
   const handlePause = useCallback(() => {
     setIsRunning(false);
   }, []);
 
   return (
-    <Box d="flex" justifyContent="center" width="100%">
-      <Box flex="1" px={1} py={2}>
+    <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">
+      <Box flex="0 0 100%" px={1} py={2}>
         <Hangboard viewBox="0 0 781 277" />
+      </Box>
+      <Box flex="0 0 100%">
+        <Heading fontSize="16rem" textAlign="center">
+          {countdown}
+        </Heading>
       </Box>
       {!isRunning && <BottomButton onClick={handleStart}>START</BottomButton>}
       {isRunning && (
