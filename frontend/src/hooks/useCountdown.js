@@ -19,18 +19,14 @@ export default () => {
 
   const reset = useCallback(() => {
     setCanStart(false);
-    setTimeRemaining(null);
+    setTimeRemaining(0);
   }, []);
 
   const expire = useCallback(() => {
     setCanStart(false);
     setTimeRemaining(0);
-  }, []);
-
-  const cancel = useCallback(() => {
     clearInterval(intervalRef.current);
-    expire();
-  }, [expire]);
+  }, []);
 
   useEffect(() => {
     timeRemainingRef.current = timeRemaining;
@@ -55,6 +51,6 @@ export default () => {
     timeRemaining,
     start,
     reset,
-    cancel,
+    expire,
   };
 };

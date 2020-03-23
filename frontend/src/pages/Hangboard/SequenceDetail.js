@@ -8,7 +8,7 @@ import React, {
 import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
 import useSWR from 'swr';
 import { useTitle, useCountdown } from '@/hooks';
-import { getErrorMessage, formatMs } from '@/utils';
+import { getErrorMessage, formatMs, getUuidV4 } from '@/utils';
 import { hangBoardMap } from '@/components/hangboards';
 import http from '@/http';
 import PseudoButton from '@/components/PseudoButton';
@@ -42,15 +42,18 @@ const BottomButton = ({ children, ...props }) => (
 const initialStackEntry = {
   duration: 1000,
   interval: REST_MS_INTERVAL,
+  id: getUuidV4(),
 };
 
 const normalizeSequenceToStack = (sequence) => {
   return sequence.reduce((memo, current) => {
+    const id = getUuidV4();
     if (current.duration) {
       memo.push({
         ...current,
         duration: current.duration * 1000,
         interval: EXERCISE_MS_INTERVAL,
+        id,
       });
     }
 
@@ -63,6 +66,7 @@ const normalizeSequenceToStack = (sequence) => {
         duration: current.rest * 1000,
         unit: REST_MS_INTERVAL,
         isRest: true,
+        id,
       });
     }
     return memo;
@@ -72,14 +76,15 @@ const normalizeSequenceToStack = (sequence) => {
 /* eslint-disable no-await-in-loop */
 const SequenceDetailInner = ({ data }) => {
   const [isRunning, setIsRunning] = useState(false);
-  const initialStack = [
-    initialStackEntry,
-    ...normalizeSequenceToStack(data.sequence),
-  ];
+  const initialStack = useMemo(
+    () => [initialStackEntry, ...normalizeSequenceToStack(data.sequence)],
+    [data.sequence],
+  );
   const [stack, setStack] = useState(initialStack);
   const stackRef = useRef();
+  const isRunningRef = useRef();
   const [currentItem, setCurrentItem] = useState(initialStack[0]);
-  const { timeRemaining, start, reset, cancel } = useCountdown();
+  const { timeRemaining, start, reset, expire } = useCountdown();
 
   const Hangboard = useMemo(() => {
     if (!data) return <></>;
@@ -88,9 +93,10 @@ const SequenceDetailInner = ({ data }) => {
 
   const handleStart = useCallback(async () => {
     setIsRunning(true);
-
+    isRunningRef.current = true;
     for (const item of stack) {
       setCurrentItem(item);
+      if (!isRunningRef.current) break;
       await start(item.duration, item.interval);
       const [, ...nextStack] = stackRef.current;
       setStack(nextStack);
@@ -103,24 +109,37 @@ const SequenceDetailInner = ({ data }) => {
     const [, ...endOfNextStack] = stackRef.current;
     const nextHeadItem = { ...currentItem, duration: timeRemaining };
     setStack([nextHeadItem, ...endOfNextStack]);
-    cancel();
-  }, [cancel, currentItem, timeRemaining]);
+    expire();
+  }, [currentItem, expire, timeRemaining]);
 
   useEffect(() => {
     stackRef.current = stack;
   }, [stack]);
-  console.log({ stack, currentItem });
+
+  useEffect(() => {
+    isRunningRef.current = isRunning;
+  }, [isRunning]);
+  console.log({ stack });
   return (
     <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">
       <Box flex="0 0 100%" px={1} py={2}>
         <Hangboard viewBox="0 0 781 277" />
       </Box>
       <Box flex="0 0 100%">
-        <Heading fontSize="16rem" textAlign="center">
-          {formatMs(timeRemaining, {
-            milliseconds: currentItem.interval === EXERCISE_MS_INTERVAL,
-          })}
-        </Heading>
+        {isRunning && (
+          <Heading fontSize="14rem" textAlign="center">
+            {formatMs(timeRemaining, {
+              milliseconds: currentItem.interval === EXERCISE_MS_INTERVAL,
+            })}
+          </Heading>
+        )}
+        {!isRunning && stack.length > 0 && (
+          <Heading fontSize="14rem" textAlign="center">
+            {formatMs(stack[0].duration, {
+              milliseconds: stack[0].interval === EXERCISE_MS_INTERVAL,
+            })}
+          </Heading>
+        )}
       </Box>
       {!isRunning && <BottomButton onClick={handleStart}>START</BottomButton>}
       {isRunning && (
