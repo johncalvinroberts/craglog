@@ -8,7 +8,8 @@ export default (ms, options) => {
   const t = parseMs(unsignedMs);
   const seconds = addZero(t.seconds);
   const minutes = addZero(t.minutes);
-  const milliseconds = addZero(t.milliseconds, 3);
+  const { milliseconds } = t;
+  console.log({ milliseconds });
 
   if (options.minutes && options.milliseconds) {
     return `${minutes}:${seconds}.${milliseconds}`;

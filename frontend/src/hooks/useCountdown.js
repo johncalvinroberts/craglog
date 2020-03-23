@@ -1,34 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { delay } from '@/utils';
 
-export default ({ onExpire, onReset } = {}) => {
+export default () => {
   const [timeRemaining, setTimeRemaining] = useState();
   const [canStart, setCanStart] = useState();
   const [updateInterval, setUpdateInterval] = useState();
+  const intervalRef = useRef();
 
   const timeRemainingRef = useRef();
 
-  const start = useCallback((durationMs, interval = 1000) => {
+  const start = useCallback(async (durationMs, interval = 1000) => {
     setCanStart(true);
     setUpdateInterval(interval);
     setTimeRemaining(durationMs);
     timeRemainingRef.current = durationMs;
+    await delay(durationMs);
   }, []);
 
   const reset = useCallback(() => {
     setCanStart(false);
     setTimeRemaining(null);
-    if (onReset && typeof onReset === 'function') {
-      onReset();
-    }
-  }, [onReset]);
+  }, []);
 
   const expire = useCallback(() => {
     setCanStart(false);
     setTimeRemaining(0);
-    if (onExpire && typeof onExpire === 'function') {
-      onExpire();
-    }
-  }, [onExpire]);
+  }, []);
+
+  const cancel = useCallback(() => {
+    clearInterval(intervalRef.current);
+    expire();
+  }, [expire]);
 
   useEffect(() => {
     timeRemainingRef.current = timeRemaining;
@@ -43,16 +45,16 @@ export default ({ onExpire, onReset } = {}) => {
       }
     };
 
-    let id;
     if (canStart) {
-      id = setInterval(tick, updateInterval);
+      intervalRef.current = setInterval(tick, updateInterval);
     }
-    return () => clearInterval(id);
+    return () => clearInterval(intervalRef.current);
   }, [expire, canStart, updateInterval]);
 
   return {
     timeRemaining,
     start,
     reset,
+    cancel,
   };
 };
