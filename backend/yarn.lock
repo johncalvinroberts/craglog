@@ -452,9 +452,9 @@
     fs-extra "8.1.0"
 
 "@nestjs/swagger@^4.2.3":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.2.3.tgz#5667d7ce67bab207d200832894ba0b1954df5490"
-  integrity sha512-5QFy6/PRFG65m0FO1VR9XYHtXo6fdbqXJlkQKw4QmtTmIdcGgVQcByeBafE+OTArWYlDCnpMTI5G1Rh7OPGhlQ==
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.4.0.tgz#0d778b9e0c6cf68acb378d46332439c173e867e3"
+  integrity sha512-QatyTW8VANCEltPErW1t3yBam17e/5fsaZI7DfnLEMtya5LypDlicKdQN1BrWDbhBEhSbwQ5TZifdUs7lo3dlw==
   dependencies:
     lodash "4.17.15"
     path-to-regexp "3.2.0"
