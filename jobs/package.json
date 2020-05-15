@@ -36,6 +36,6 @@
     "eslint-config-wcl-backend": "^0.4.0",
     "eslint-plugin-prettier": "^3.1.0",
     "prettier": "^2.0.5",
-    "tap": "^12.5.3"
+    "tap": "^14.10.7"
   }
 }
