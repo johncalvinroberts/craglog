@@ -1166,9 +1166,10 @@ fastify-plugin@^1.2.0, fastify-plugin@^1.5.0, fastify-plugin@^1.6.0:
   dependencies:
     semver "^6.0.0"
 
-fastify-redis@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/fastify-redis/-/fastify-redis-3.1.1.tgz#217a3dd48f5081963f361b78e21c6cb39420374d"
+fastify-redis@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/fastify-redis/-/fastify-redis-3.3.1.tgz#cc0a161ef52481791cea3d751b3d038e39a9e53a"
+  integrity sha512-QEZP3iYpK4WoM6EQPHVSIET+RBWWfmXKUBz2yJcCsQUNWkv6n6ArIM8JXMt5AChKXo0m+ZkAUmvDNuGEm00GcQ==
   dependencies:
     fastify-plugin "^1.6.0"
     ioredis "^4.10.0"
