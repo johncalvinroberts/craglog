@@ -426,6 +426,11 @@
     "@types/jsonwebtoken" "7.2.8"
     jsonwebtoken "8.4.0"
 
+"@nestjs/mapped-types@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-0.0.4.tgz#a55d3e78905a019abb42c69763d04b976e6a8a92"
+  integrity sha512-+LER9UCm/BHPRm0qk3Uv0KLywedru4cr211oaGYA7bIDrHlQZeeqGAfGhVXBiVgZ6w5JWJkBwzsPEFtt5Zw78Q==
+
 "@nestjs/passport@^6.1.1":
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-6.1.1.tgz#991b8736c0ebffabb85a6455f0288055e5b52755"
@@ -452,10 +457,11 @@
     fs-extra "8.1.0"
 
 "@nestjs/swagger@^4.2.3":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.2.3.tgz#5667d7ce67bab207d200832894ba0b1954df5490"
-  integrity sha512-5QFy6/PRFG65m0FO1VR9XYHtXo6fdbqXJlkQKw4QmtTmIdcGgVQcByeBafE+OTArWYlDCnpMTI5G1Rh7OPGhlQ==
+  version "4.5.7"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-4.5.7.tgz#f38d73c984af70f95655b2828c539fab5482129b"
+  integrity sha512-EOQ0UE+//kGbTb5N3wLBcA4lOzihgKNco0tkJy8Pn2EXS8Q23wD7TbsVxchPkQqjGkbhI7ijZdosnEnuj4wyeA==
   dependencies:
+    "@nestjs/mapped-types" "0.0.4"
     lodash "4.17.15"
     path-to-regexp "3.2.0"
 
