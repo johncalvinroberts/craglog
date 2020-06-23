@@ -37,9 +37,9 @@ module.exports = (env) => {
         },
       }),
     }),
-    new WebpackCopyPlugin([
-      { from: 'src/assets/*', to: 'assets', flatten: true },
-    ]),
+    new WebpackCopyPlugin({
+      patterns: [{ from: 'src/assets/*', to: 'assets', flatten: true }],
+    }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ];
 
