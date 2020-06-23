@@ -9,7 +9,9 @@ describe('HangboardSequence Controller', () => {
       controllers: [HangboardSequenceController],
     }).compile();
 
-    controller = module.get<HangboardSequenceController>(HangboardSequenceController);
+    controller = module.get<HangboardSequenceController>(
+      HangboardSequenceController,
+    );
   });
 
   it('should be defined', () => {

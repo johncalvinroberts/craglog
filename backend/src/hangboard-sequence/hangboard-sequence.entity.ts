@@ -32,11 +32,10 @@ export class HangboardSequenceEntity {
   @MaxLength(2000)
   description = '';
 
-  @ManyToOne(
-    () => UserEntity,
-    user => user.hangboardSequences,
-    { nullable: false, eager: false },
-  )
+  @ManyToOne(() => UserEntity, (user) => user.hangboardSequences, {
+    nullable: false,
+    eager: false,
+  })
   user: UserEntity;
 
   @Column({ nullable: true })

@@ -10,7 +10,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(6)
   @MaxLength(250)
-  @Transform(val => val.toLowerCase())
+  @Transform((val) => val.toLowerCase())
   readonly email: string;
 
   @IsNotEmpty()

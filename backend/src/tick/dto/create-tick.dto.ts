@@ -24,7 +24,7 @@ export class CreateTickDto {
   @MaxLength(500)
   style: string;
 
-  @ValidateIf(tick => routeStyles.includes(tick.style))
+  @ValidateIf((tick) => routeStyles.includes(tick.style))
   @IsOptional()
   @ApiProperty()
   routeId: number;

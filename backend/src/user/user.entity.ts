@@ -42,16 +42,10 @@ export class UserEntity {
   @Column('varchar', { array: true })
   roles: string[] = ['user'];
 
-  @OneToMany(
-    () => TickEntity,
-    tick => tick.user,
-  )
+  @OneToMany(() => TickEntity, (tick) => tick.user)
   ticks: TickEntity[];
 
-  @OneToMany(
-    () => TickEntity,
-    tick => tick.user,
-  )
+  @OneToMany(() => TickEntity, (tick) => tick.user)
   hangboardSequences: HangboardSequenceEntity[];
 
   @CreateDateColumn()

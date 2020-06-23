@@ -10,11 +10,11 @@ export class RouteQueryDto extends PaginationDto {
 
   @IsOptional()
   @ApiProperty()
-  @Transform(val => (val ? `%${val}%` : undefined))
+  @Transform((val) => (val ? `%${val}%` : undefined))
   name = '';
 
   @IsOptional()
   @ApiProperty()
-  @Transform(val => (val ? val.split(',').map(parseFloat) : undefined))
+  @Transform((val) => (val ? val.split(',').map(parseFloat) : undefined))
   origin = '';
 }

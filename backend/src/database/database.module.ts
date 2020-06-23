@@ -12,7 +12,7 @@ import { HangboardSequenceEntity } from '../hangboard-sequence/hangboard-sequenc
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        type: 'postgres',//eslint-disable-line
+        type: 'postgres', //eslint-disable-line
         host: configService.get('DATABASE_HOST'),
         port: configService.get('DATABASE_PORT'),
         database: configService.get('POSTGRES_DB'),

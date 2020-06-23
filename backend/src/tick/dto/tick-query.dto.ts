@@ -35,7 +35,7 @@ export class TickQueryDto extends PaginationDto {
       ...(self.style ? { style: self.style } : null),
     };
   })
-  where: object;
+  where: unknown;
 
   @IsOptional()
   @Transform(decodeURIComponent)

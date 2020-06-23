@@ -11,6 +11,6 @@ export class HangboardSequenceQueryDto extends PaginationDto {
   @ApiProperty()
   @IsBooleanString()
   @IsOptional()
-  @Transform(val => val === 'true')
+  @Transform((val) => val === 'true')
   isPublic = 'false';
 }

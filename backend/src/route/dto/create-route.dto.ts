@@ -37,7 +37,7 @@ export class CreateRouteDto {
   @Transform((val = []) => {
     const [latitude, longitude] = val
       .filter(Boolean)
-      .map(item => parseFloat(item));
+      .map((item) => parseFloat(item));
     return {
       type: 'Point',
       coordinates: [latitude || 0, longitude || 0],

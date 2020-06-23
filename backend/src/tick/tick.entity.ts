@@ -9,7 +9,6 @@ import {
 import { IsEnum, MaxLength, Max } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
 import { RouteEntity } from '../route/route.entity';
-import { LocationDto } from '../shared/location.dto';
 
 export enum TickTypeEnum {
   lead,
@@ -70,11 +69,10 @@ export class TickEntity {
   @IsEnum(TickStyleEnum)
   style = '';
 
-  @ManyToOne(
-    () => UserEntity,
-    user => user.ticks,
-    { nullable: false, eager: false },
-  )
+  @ManyToOne(() => UserEntity, (user) => user.ticks, {
+    nullable: false,
+    eager: false,
+  })
   user: UserEntity;
 
   @Column({ nullable: true })

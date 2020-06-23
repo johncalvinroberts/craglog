@@ -39,5 +39,5 @@ export class PaginationDto {
   @Transform((val, obj: PaginationDto) =>
     obj.orderBy ? { [obj.orderBy]: obj.sort } : undefined,
   )
-  order: object;
+  order: unknown;
 }

@@ -28,7 +28,7 @@ export class UserService {
 
   async findAll(query: PaginationDto): Promise<FindUserDto[]> {
     const res = await this.userRepository.find(query);
-    return res.map(item => this.buildUserRO(item));
+    return res.map((item) => this.buildUserRO(item));
   }
 
   findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
