@@ -1618,10 +1618,10 @@ fastify-plugin@^2.0.0:
   dependencies:
     semver "^7.3.2"
 
-fastify-redis@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/fastify-redis/-/fastify-redis-4.0.1.tgz#af8284c7844963c1e9e13c40948dd8c9554fab32"
-  integrity sha512-Ia5jNdhPLHFwRWd+TXnPkhGEMOQg8TsTWbAotUQrX4c4sredpRV0/w6My6P+M4iAi6qwUnRTBpvo6nE3Pit2uw==
+fastify-redis@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/fastify-redis/-/fastify-redis-4.0.3.tgz#3d4c7b16ba20590bac5c78a2508196f345154528"
+  integrity sha512-b+6pJlpWjHIC9y/i8LCKXduv2MNTpFP6cgsFHGZ+pyK+PkcLkvZaEMtUXTSfAkj99+T3ctRHfE8xtRHxQ2ITfQ==
   dependencies:
     fastify-plugin "^2.0.0"
     ioredis "^4.10.0"
