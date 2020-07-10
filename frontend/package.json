@@ -66,7 +66,7 @@
   },
   "devDependencies": {
     "acorn": "^7.3.1",
-    "eslint-config-wcl-frontend": "^1.0.9",
+    "eslint-config-wcl-frontend": "^2.0.1",
     "rimraf": "^3.0.2"
   },
   "browserslist": [
