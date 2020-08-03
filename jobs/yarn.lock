@@ -1604,17 +1604,17 @@ fastify-cli@^1.5.0:
     resolve-from "^4.0.0"
     yargs-parser "^16.0.0"
 
-fastify-plugin@^1.5.0, fastify-plugin@^1.6.0, fastify-plugin@^1.6.1:
+fastify-plugin@^1.5.0, fastify-plugin@^1.6.0:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-1.6.1.tgz#122f5a5eeb630d55c301713145a9d188e6d5dd5b"
   integrity sha512-APBcb27s+MjaBIerFirYmBLatoPCgmHZM6XP0K+nDL9k0yX8NJPWDY1RAC3bh6z+AB5ULS2j31BUfLMT3uaZ4A==
   dependencies:
     semver "^6.3.0"
 
-fastify-plugin@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-2.0.0.tgz#e1ac8fa0b4a9c65b83f40fc7f6a60f5ac6776326"
-  integrity sha512-5c7xwArjeY5T7PFw+TM66gz7E6mQpEK4PXKXVOmxLXUYh49D34pLAL+gbSRLgr7gg8fTOaNjB9fSj0adV5rrXg==
+fastify-plugin@^2.0.0, fastify-plugin@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-2.1.0.tgz#fda306356104e0549959e2a932136e28e76091a6"
+  integrity sha512-5quClufwUb304h4ZiwN7tJWvkucUEuFxkK+BLPDKH8fP5lIB0Hf9tzHd56wy1Xu3FMAOP8rhqiOlSslRAJtb7Q==
   dependencies:
     semver "^7.3.2"
 
