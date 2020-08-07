@@ -18,7 +18,7 @@ import {
   Collapse,
   IconButton,
 } from '@chakra-ui/core';
-import useSWR, { useSWRPages, mutate } from 'swr';
+import useSWR, { useSWRInfinite, mutate } from 'swr';
 import format from 'date-fns/format';
 import differenceInDays from 'date-fns/differenceInDays';
 import isSameDay from 'date-fns/isSameDay';
@@ -337,78 +337,53 @@ const TickDataGrid = ({ query }) => {
   const toast = useToast();
   const [datesDict, dispatch] = useReducer(reducer, {});
 
-  const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
-    // page key
-    'ticks',
-    /* eslint-disable react-hooks/rules-of-hooks */
-    // page component
-    ({ offset, withSWR }) => {
-      const { data, error } = withSWR(
-        // use the wrapper to wrap the *pagination API SWR*
-        useSWR(`/tick?take=10&skip=${offset || 0}&${query}`, http.get, {
-          refreshInterval: 10000,
-        }),
-      );
-      /* eslint-enable react-hooks/rules-of-hooks */
-      // you can still use other SWRs outside
-      if (error) {
-        toast({
-          status: 'error',
-          description: getErrorMessage(error),
-          isClosable: true,
-        });
-      }
+  const getKey = (pageIndex, previousPageData) => {
+    if (previousPageData && !previousPageData.length) return null; // reached the end
+    const offSet = pageIndex + 1 * 10;
+    return `/tick?take=10&skip=${offSet}&${query}`;
+  };
 
-      if (!data) {
-        return (
-          <Box
-            d="flex"
-            alignItems="center"
-            p={4}
-            justifyContent="center"
-            width="100%"
-          >
-            <Spinner />
-          </Box>
-        );
-      }
-
-      const nextDatesDict = data.reduce((memo, current, index) => {
-        const key = `${offset || 0}_${index}`;
-        return { ...memo, [key]: current.tickDate };
-      }, {});
-
-      dispatch(nextDatesDict);
-      // return nothing, not needed
-      return data.map((item, index) => {
-        mutate(`/tick/${item.id}`, item, false);
-        return (
-          <TickCard
-            item={item}
-            key={item.id}
-            dictKey={`${offset || 0}_${index}`}
-          />
-        );
-      });
-    },
-
-    // get next page's offset from the index of current page
-    (SWR, index) => {
-      // there's no next page
-      if (SWR.data && SWR.data.length === 0) return null;
-
-      // offset = pageCount × pageSize
-      return (index + 1) * 10;
-    },
-
-    // deps of the page component
-    [query, dispatch],
+  const { data, error, size, setSize, isValidating } = useSWRInfinite(
+    getKey,
+    http.get,
   );
+  if (error) {
+    toast({
+      status: 'error',
+      description: getErrorMessage(error),
+      isClosable: true,
+    });
+  }
+
+  if (!data) {
+    return (
+      <Box
+        d="flex"
+        alignItems="center"
+        p={4}
+        justifyContent="center"
+        width="100%"
+      >
+        <Spinner />
+      </Box>
+    );
+  }
+
+  const nextDatesDict = data.reduce((memo, current, index) => {
+    const key = `${size || 0}_${index}`;
+    return { ...memo, [key]: current.tickDate };
+  }, {});
+
+  dispatch(nextDatesDict);
+  // return nothing, not needed
+  const pages = data.map((item) => {
+    return <TickCard item={item} key={item.id} dictKey={nextDatesDict} />;
+  });
 
   return (
     <DatesContext.Provider value={datesDict}>
       <Box position="relative">{pages}</Box>
-      {isLoadingMore && (
+      {isValidating && (
         <Box
           d="flex"
           alignItems="center"
@@ -418,7 +393,7 @@ const TickDataGrid = ({ query }) => {
           loading....
         </Box>
       )}
-      {isReachingEnd && (
+      {!data && (
         <EmptyView message="No more logs to show">
           <Button
             as={Link}
@@ -434,14 +409,14 @@ const TickDataGrid = ({ query }) => {
           </Button>
         </EmptyView>
       )}
-      {!isLoadingMore && !isReachingEnd && (
+      {!isValidating && size && (
         <Box
           d="flex"
           alignItems="center"
           justifyContent="center"
           minHeight="100px"
         >
-          <Button onClick={loadMore} disabled={isReachingEnd || isLoadingMore}>
+          <Button onClick={() => setSize(size + 1)} disabled={isValidating}>
             Load More
           </Button>
         </Box>
