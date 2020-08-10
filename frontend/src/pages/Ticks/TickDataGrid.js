@@ -4,6 +4,7 @@ import React, {
   useReducer,
   useRef,
   useState,
+  useEffect,
 } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -18,7 +19,7 @@ import {
   Collapse,
   IconButton,
 } from '@chakra-ui/core';
-import useSWR, { useSWRInfinite, mutate } from 'swr';
+import { useSWRInfinite } from 'swr';
 import format from 'date-fns/format';
 import differenceInDays from 'date-fns/differenceInDays';
 import isSameDay from 'date-fns/isSameDay';
@@ -333,13 +334,29 @@ const TickCard = ({ item, dictKey }) => {
   );
 };
 
+const TickPage = ({ page, size, dispatch }) => {
+  useEffect(() => {
+    if (page && page.length > 0) {
+      const nextDatesDict = page.reduce((memo, current, index) => {
+        const key = `${size || 0}_${index}`;
+        return { ...memo, [key]: current.tickDate };
+      }, {});
+      dispatch(nextDatesDict);
+    }
+  }, [page, size, dispatch]);
+
+  return page.map((item, index) => (
+    <TickCard item={item} key={item.id} dictKey={`${size || 0}_${index}`} />
+  ));
+};
+
 const TickDataGrid = ({ query }) => {
   const toast = useToast();
   const [datesDict, dispatch] = useReducer(reducer, {});
 
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.length) return null; // reached the end
-    const offSet = pageIndex + 1 * 10;
+    const offSet = pageIndex + 1 * 10 - 10;
     return `/tick?take=10&skip=${offSet}&${query}`;
   };
 
@@ -347,6 +364,7 @@ const TickDataGrid = ({ query }) => {
     getKey,
     http.get,
   );
+
   if (error) {
     toast({
       status: 'error',
@@ -369,15 +387,8 @@ const TickDataGrid = ({ query }) => {
     );
   }
 
-  const nextDatesDict = data.reduce((memo, current, index) => {
-    const key = `${size || 0}_${index}`;
-    return { ...memo, [key]: current.tickDate };
-  }, {});
-
-  dispatch(nextDatesDict);
-  // return nothing, not needed
   const pages = data.map((item) => {
-    return <TickCard item={item} key={item.id} dictKey={nextDatesDict} />;
+    return <TickPage page={item} key={item} size={size} dispatch={dispatch} />;
   });
 
   return (
