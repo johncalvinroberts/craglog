@@ -33,7 +33,7 @@
     "@types/express-serve-static-core": "^4.17.7",
     "@types/geojson": "^7946.0.7",
     "@types/node-fetch": "^2.5.7",
-    "@typescript-eslint/eslint-plugin": "^3.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.4.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
