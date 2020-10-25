@@ -11,8 +11,8 @@ import {
   useColorMode,
   Box,
 } from '@chakra-ui/core';
-import { useDispatch } from './State';
 import { performLogout } from '@/states';
+import { useDispatch } from './State';
 
 const UtilMenu = () => {
   const dispatch = useDispatch();

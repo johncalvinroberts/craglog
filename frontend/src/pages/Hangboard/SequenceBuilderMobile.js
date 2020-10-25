@@ -2,12 +2,12 @@ import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 import { Box, IconButton, Collapse, useDisclosure } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
 import _get from 'lodash/get';
-import { AddButton, HangboardPlaceholder } from './SequenceBuilder';
 import { useArrayFieldUtils } from '@/hooks';
 import HangboardSequenceItem from '@/components/HangboardSequenceItem';
 import EmptyView from '@/components/EmptyView';
 import { hangBoardMap } from '@/components/hangboards';
 import { scrollToRef } from '@/utils';
+import { AddButton, HangboardPlaceholder } from './SequenceBuilder';
 import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 
 const SequenceBuilderMobileItem = ({

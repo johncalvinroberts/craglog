@@ -21,7 +21,7 @@ module.exports = (env) => {
         '@': path.resolve(ENTRY),
       },
     },
-    node: { fs: 'empty' },
+    node: { fs: 'empty', Buffer: false, process: false },
     devtool: isProduction ? false : 'inline-source-maps',
     output: {
       path: path.resolve(OUTPUT_DIR),
@@ -49,6 +49,7 @@ module.exports = (env) => {
           sourceMap: !isProduction,
         }),
       ],
+      chunkIds: 'named',
       runtimeChunk: true,
       splitChunks: {
         name: !isProduction,
@@ -65,7 +66,7 @@ module.exports = (env) => {
             name: 'chakra',
             chunks: 'initial',
           },
-          vendor: {
+          defaultVendors: {
             test: /node_modules\/(?!(react|react-dom|react-router-dom|@chakra-ui)\/).*/,
             maxSize: 300000,
             name: 'vendor',
@@ -81,7 +82,6 @@ module.exports = (env) => {
         },
       },
       namedModules: !isProduction,
-      namedChunks: !isProduction,
     },
     plugins: configurePlugins(env),
   };

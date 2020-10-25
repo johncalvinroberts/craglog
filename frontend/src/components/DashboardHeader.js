@@ -2,9 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Box, Flex, IconButton, useColorMode, Heading } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
+import { getUIState } from '@/states';
 import UtilMenu from './UtilMenu';
 import { useGlobalState } from './State';
-import { getUIState } from '@/states';
 
 const utilBarOuterRef = { current: null };
 const bg = { light: 'white', dark: 'gray.800' };

@@ -7,9 +7,9 @@ import { useWindowSize } from '@/hooks';
 import { useDispatch } from '@/components/State';
 import { toggleMobileNav } from '@/states';
 import { boards } from '@/constants';
+import { UtilBar } from '@/components/DashboardHeader';
 import SequenceBuilder from './SequenceBuilder';
 import SequenceBuilderMobile from './SequenceBuilderMobile';
-import { UtilBar } from '@/components/DashboardHeader';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required(),
