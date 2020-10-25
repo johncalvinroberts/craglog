@@ -35,6 +35,9 @@ module.exports = (env) => {
         cacheCompression: isProduction,
         compact: isProduction,
       },
+      resolve: {
+        fullySpecified: false,
+      },
     },
     {
       test: /\.css$/,

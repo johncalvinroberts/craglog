@@ -21,12 +21,11 @@ module.exports = (env) => {
         '@': path.resolve(ENTRY),
       },
     },
-    node: { fs: 'empty', Buffer: false, process: false },
-    devtool: isProduction ? false : 'inline-source-maps',
+    // devtool: 'inline-module-source-maps',
     output: {
       path: path.resolve(OUTPUT_DIR),
       publicPath: PUBLIC_PATH,
-      filename: isProduction ? 'js/[name].[chunkhash:8].js' : 'js/bundle.js',
+      filename: isProduction ? 'js/[name].[chunkhash:8].js' : 'js/[name].js',
       chunkFilename: isProduction
         ? 'js/[name].[chunkhash:8].chunk.js'
         : 'js/[name].chunk.js',
@@ -45,14 +44,11 @@ module.exports = (env) => {
             },
           },
           parallel: true,
-          cache: true,
-          sourceMap: !isProduction,
         }),
       ],
       chunkIds: 'named',
       runtimeChunk: true,
       splitChunks: {
-        name: !isProduction,
         minSize: 0,
         cacheGroups: {
           react: {
@@ -81,7 +77,6 @@ module.exports = (env) => {
           },
         },
       },
-      namedModules: !isProduction,
     },
     plugins: configurePlugins(env),
   };
