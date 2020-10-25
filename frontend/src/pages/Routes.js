@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import useSWR, { useSWRPages, mutate } from 'swr';
+import useSWR from 'swr';
 import {
   Box,
   Spinner,
@@ -13,13 +13,10 @@ import {
   StatHelpText,
   useToast,
 } from '@chakra-ui/core';
-import EmptyView from '@/components/EmptyView';
 import DashboardWrapper from '@/components/DashboardWrapper';
 import RouteCard from '@/components/RouteCard';
 import { useTitle, useThrottle } from '@/hooks';
 import http from '@/http';
-
-const PAGE_KEY = 'admin-routes';
 
 const composeUrlString = ({ query, offset }) => {
   const params = new URLSearchParams({
@@ -40,14 +37,17 @@ export default function Routes() {
   );
 
   const [query, setQuery] = useState('');
+  const [pageIndex, setPageIndex] = useState(0);
   const throttledQuery = useThrottle(query, 800);
-  useEffect(() => {
-    mutate(`_swr_page_count_${PAGE_KEY}`, 0);
-    mutate(`_swr_page_offset_${PAGE_KEY}`, 0);
-  }, [query]);
+
+  const offset = pageIndex * 25;
 
   const toast = useToast();
   const { data: stats, error: statsError } = useSWR('/route/stats', http.get);
+  const { data, error } = useSWR(
+    composeUrlString({ offset, query: throttledQuery }),
+    http.get,
+  );
 
   useEffect(() => {
     if (statsError) {
@@ -55,38 +55,11 @@ export default function Routes() {
     }
   }, [statsError, toast]);
 
-  const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
-    // page key
-    PAGE_KEY,
-    /* eslint-disable react-hooks/rules-of-hooks */
-    // page component
-    ({ offset, withSWR }) => {
-      const { data } = withSWR(
-        // use the wrapper to wrap the *pagination API SWR*
-        useSWR(composeUrlString({ offset, query: throttledQuery }), http.get),
-      );
-      /* eslint-enable react-hooks/rules-of-hooks */
-      // you can still use other SWRs outside
-
-      if (!data) {
-        return <p>loading</p>;
-      }
-
-      return data.map((item) => <RouteCard key={item.id} route={item} />);
-    },
-
-    // get next page's offset from the index of current page
-    (SWR, index) => {
-      // there's no next page
-      if (SWR.data && SWR.data.length === 0) return null;
-
-      // offset = pageCount × pageSize
-      return (index + 1) * 25;
-    },
-
-    // deps of the page component
-    [throttledQuery],
-  );
+  useEffect(() => {
+    if (error) {
+      toast({ description: error.message, status: 'error' });
+    }
+  }, [error, toast]);
 
   return (
     <DashboardWrapper>
@@ -126,8 +99,10 @@ export default function Routes() {
             onChange={(e) => setQuery(e.currentTarget.value)}
           />
         </Box>
-        <Box>{pages}</Box>
-        {isLoadingMore && (
+        <Box>
+          {data && data.map((item) => <RouteCard route={item} key={item.id} />)}
+        </Box>
+        {!data && (
           <Box
             d="flex"
             alignItems="center"
@@ -137,22 +112,13 @@ export default function Routes() {
             <Spinner size="md" />
           </Box>
         )}
-        {isReachingEnd && <EmptyView />}
-        {!isLoadingMore && (
-          <Box
-            d="flex"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="100px"
-          >
-            <Button
-              onClick={loadMore}
-              disabled={isReachingEnd || isLoadingMore}
-            >
-              Load More
-            </Button>
-          </Box>
-        )}
+        <Button
+          onClick={() => setPageIndex(pageIndex - 1)}
+          disabled={pageIndex === 0}
+        >
+          Previous
+        </Button>
+        <Button onClick={() => setPageIndex(pageIndex + 1)}>Next</Button>
       </Box>
     </DashboardWrapper>
   );

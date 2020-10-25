@@ -1,72 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Spinner, Heading, Button, Text, useToast } from '@chakra-ui/core';
-import useSWR, { useSWRPages } from 'swr';
+import useSWR from 'swr';
 import http from '@/http';
-import EmptyView from '@/components/EmptyView';
 import JobItem from './JobItem';
 
 const JobsDataGrid = ({ params }) => {
   const toast = useToast();
-
-  const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
-    // page key
-    'admin-jobs',
-    /* eslint-disable react-hooks/rules-of-hooks */
-    // page component
-    ({ offset, withSWR }) => {
-      const { data, error, revalidate } = withSWR(
-        // use the wrapper to wrap the *pagination API SWR*
-        useSWR(
-          `/job?skip=${offset || 0}&limit=25&type=${params.type}&status=${
-            params.status
-          }`,
-          http.get,
-        ),
-      );
-      if (error)
-        toast({
-          description: error.message,
-          status: 'error',
-          isClosable: true,
-        });
-      /* eslint-enable react-hooks/rules-of-hooks */
-      // you can still use other SWRs outside
-      if (!data) {
-        return (
-          <Box
-            d="flex"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="200px"
-          >
-            <Spinner size="xl" />
-          </Box>
-        );
-      }
-      return data.map((job) => {
-        return (
-          <JobItem
-            item={job}
-            key={job.id}
-            type={params.type}
-            revalidate={revalidate}
-          />
-        );
-      });
-    },
-
-    // get next page's offset from the index of current page
-    (SWR, index) => {
-      // there's no next page
-      if (SWR.data && SWR.data.length === 0) return null;
-
-      // offset = pageCount × pageSize
-      return (index + 1) * 25;
-    },
-
-    // deps of the page component
-    [params.type, params.status],
+  const [pageIndex, setPageIndex] = useState(0);
+  const offset = pageIndex * 25;
+  const { data, error, revalidate } = useSWR(
+    `/job?skip=${offset || 0}&limit=25&type=${params.type}&status=${
+      params.status
+    }`,
+    http.get,
   );
+
+  useEffect(() => {
+    if (error)
+      toast({
+        description: error.message,
+        status: 'error',
+        isClosable: true,
+      });
+  }, [error, toast]);
+
+  useEffect(() => {
+    setPageIndex(0);
+    revalidate();
+  }, [params.status, params.type, revalidate, setPageIndex]);
 
   return (
     <Box d="block" mb={8} borderWidth="1px" p={2}>
@@ -75,30 +36,34 @@ const JobsDataGrid = ({ params }) => {
         <Text color="gray.500">Type: {params.type}</Text>
         <Text color="gray.500">Status: {params.status}</Text>
       </Box>
-      <Box>{pages}</Box>
-      {isLoadingMore && (
+      {!data && (
         <Box
           d="flex"
           alignItems="center"
           justifyContent="center"
-          minHeight="50px"
+          minHeight="200px"
         >
-          <Spinner size="md" />
+          <Spinner size="xl" />
         </Box>
       )}
-      {isReachingEnd && <EmptyView />}
-      {!isLoadingMore && (
-        <Box
-          d="flex"
-          alignItems="center"
-          justifyContent="center"
-          minHeight="100px"
-        >
-          <Button onClick={loadMore} disabled={isReachingEnd || isLoadingMore}>
-            Load More
-          </Button>
-        </Box>
-      )}
+      {data &&
+        data.map((job) => {
+          return (
+            <JobItem
+              item={job}
+              key={job.id}
+              type={params.type}
+              revalidate={revalidate}
+            />
+          );
+        })}
+      <Button
+        onClick={() => setPageIndex(pageIndex - 1)}
+        disabled={pageIndex === 0}
+      >
+        Previous
+      </Button>
+      <Button onClick={() => setPageIndex(pageIndex + 1)}>Next</Button>
     </Box>
   );
 };

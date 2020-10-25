@@ -9,7 +9,7 @@ import {
   IconButton,
   useDisclosure,
 } from '@chakra-ui/core';
-import useSWR, { useSWRPages, mutate } from 'swr';
+import { useSWRInfinite } from 'swr';
 import { Link as RouterLink } from 'react-router-dom';
 import http from '@/http';
 import EmptyView from '@/components/EmptyView';
@@ -93,54 +93,26 @@ const SequenceList = () => {
   const toast = useToast();
   useTitle('Hangboard');
 
-  const { pages, isLoadingMore, isReachingEnd, loadMore } = useSWRPages(
-    // page key
-    'admin-jobs',
-    /* eslint-disable react-hooks/rules-of-hooks */
-    // page component
-    ({ offset, withSWR }) => {
-      const { data, error } = withSWR(
-        // use the wrapper to wrap the *pagination API SWR*
-        useSWR(`/hangboard-sequence?skip=${offset || 0}&take=25&`, http.get),
-      );
-      if (error)
-        toast({
-          description: error.message,
-          status: 'error',
-          isClosable: true,
-        });
-      /* eslint-enable react-hooks/rules-of-hooks */
-      // you can still use other SWRs outside
-      if (!data) {
-        return (
-          <Box
-            d="flex"
-            alignItems="center"
-            justifyContent="center"
-            minHeight="200px"
-          >
-            <Spinner size="xl" />
-          </Box>
-        );
-      }
-      return data.map((item) => {
-        mutate(`/hangboard-sequence/${item.id}`, item, false);
-        return <SequenceListCard key={item.id} sequence={item} />;
-      });
-    },
+  const getKey = (pageIndex, previousPageData) => {
+    if (previousPageData && !previousPageData.length) return null; // reached the end
+    const offSet = pageIndex + 1 * 10 - 10;
+    return `/hangboard-sequence?take=10&skip=${offSet}`;
+  };
 
-    // get next page's offset from the index of current page
-    (SWR, index) => {
-      // there's no next page
-      if (SWR.data && SWR.data.length === 0) return null;
-
-      // offset = pageCount × pageSize
-      return (index + 1) * 25;
-    },
-
-    // deps of the page component
-    [],
+  const { data, error, size, setSize, isValidating } = useSWRInfinite(
+    getKey,
+    http.get,
   );
+
+  if (error) {
+    toast({
+      status: 'error',
+      description: getErrorMessage(error),
+      isClosable: true,
+    });
+  }
+
+  const pages = data && data.reduce((memo, item) => [...memo, ...item], []);
 
   return (
     <Box d="block" mb={[4, 8]}>
@@ -172,8 +144,13 @@ const SequenceList = () => {
           </Text>
         </Box>
       </Box>
-      <Box>{pages}</Box>
-      {isLoadingMore && (
+      <Box>
+        {pages &&
+          pages.map((item) => {
+            return <SequenceListCard key={item.id} sequence={item} />;
+          })}
+      </Box>
+      {isValidating && (
         <Box
           d="flex"
           alignItems="center"
@@ -183,15 +160,15 @@ const SequenceList = () => {
           <Spinner size="md" />
         </Box>
       )}
-      {isReachingEnd && <EmptyView message="Nothing more to show." />}
-      {!isLoadingMore && (
+      {!isValidating && !data && <EmptyView message="Nothing more to show." />}
+      {!isValidating && size && (
         <Box
           d="flex"
           alignItems="center"
           justifyContent="center"
           minHeight="100px"
         >
-          <Button onClick={loadMore} disabled={isReachingEnd || isLoadingMore}>
+          <Button onClick={() => setSize(size + 1)} disabled={isValidating}>
             Load More
           </Button>
         </Box>

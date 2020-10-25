@@ -29,12 +29,12 @@ export class HangboardSequenceController {
   ) {}
 
   @Get()
-  findAll(@Query() query: HangboardSequenceQueryDto, @User('id') userId) {
+  findAll(@Query() query: HangboardSequenceQueryDto, @User() { id: userId }) {
     return this.hangboardSequenceService.findAll(query, userId);
   }
 
   @Get(':id')
-  findById(@Param('id') id, @User('id') userId) {
+  findById(@Param('id') id, @User() { id: userId }) {
     return this.hangboardSequenceService.findById(id, userId);
   }
 
@@ -47,13 +47,13 @@ export class HangboardSequenceController {
   update(
     @Param('id') id,
     @Body() payload: UpdateHangboardSequenceDto,
-    @User('id') userId,
+    @User() { id: userId },
   ) {
     return this.hangboardSequenceService.update(id, payload, userId);
   }
 
   @Delete(':id')
-  delete(@Param('id') id, @User('id') userId) {
+  delete(@Param('id') id, @User() { id: userId }) {
     return this.hangboardSequenceService.delete(id, userId);
   }
 }

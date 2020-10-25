@@ -29,12 +29,12 @@ export class TickController {
 
   @Get()
   @ApiQuery(TickQueryDto)
-  findAll(@Query() query: TickQueryDto, @User('id') userId) {
+  findAll(@Query() query: TickQueryDto, @User() { id: userId }) {
     return this.tickService.findAll(query, userId);
   }
 
   @Get('stats')
-  getStats(@User('id') userId, @Query() query: TickStatsDto) {
+  getStats(@User() { id: userId }, @Query() query: TickStatsDto) {
     return this.tickService.getStats(userId, query);
   }
 
@@ -56,7 +56,7 @@ export class TickController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id, @User('id') userId) {
+  delete(@Param('id') id, @User() { id: userId }) {
     return this.tickService.delete(id, userId);
   }
 }

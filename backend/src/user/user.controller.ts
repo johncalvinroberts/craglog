@@ -57,7 +57,7 @@ export class UserController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  delete(@Param('id') targetUserId, @User('id') userId) {
+  delete(@Param('id') targetUserId, @User() { id: userId }) {
     return this.userService.delete(targetUserId, userId);
   }
 

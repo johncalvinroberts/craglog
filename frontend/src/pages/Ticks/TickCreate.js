@@ -3,11 +3,11 @@ import { useToast } from '@chakra-ui/core';
 import { mutate } from 'swr';
 import { useHistory } from 'react-router-dom';
 import format from 'date-fns/format';
-import TickForm from './TickForm';
 import useTitle from '@/hooks/useTitle';
 import http from '@/http';
 import { DATE_INPUT_FORMAT } from '@/constants';
 import { getErrorMessage } from '@/utils';
+import TickForm from './TickForm';
 
 const defaultValues = {
   type: 'redpoint',
