@@ -782,9 +782,9 @@
     "@types/node" "*"
 
 "@types/cheerio@^0.22.18":
-  version "0.22.21"
-  resolved "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.21.tgz#5e37887de309ba11b2e19a6e14cad7874b31a8a3"
-  integrity sha512-aGI3DfswwqgKPiEOTaiHV2ZPC9KEhprpgEbJnv0fZl3SGX0cGgEva1126dGrMC6AJM6v/aihlUgJn9M5DbDZ/Q==
+  version "0.22.22"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.22.tgz#ae71cf4ca59b8bbaf34c99af7a5d6c8894988f5f"
+  integrity sha512-05DYX4zU96IBfZFY+t3Mh88nlwSMtmmzSYaQkKN48T495VV1dkHSah6qYyDTN5ngaS0i0VonH37m+RuzSM0YiA==
   dependencies:
     "@types/node" "*"
 
@@ -913,12 +913,7 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*":
-  version "14.0.20"
-  resolved "https://registry.npmjs.org/@types/node/-/node-14.0.20.tgz#0da05cddbc761e1fa98af88a17244c8c1ff37231"
-  integrity sha512-MRn/NP3dee8yL5QhbSA6riuwkS+UOcsPUMOIOG3KMUQpuor/2TopdRBu8QaaB4fGU+gz/bzyDWt0FtUbeJ8H1A==
-
-"@types/node@^14.14.2":
+"@types/node@*", "@types/node@^14.14.2":
   version "14.14.2"
   resolved "https://registry.npmjs.org/@types/node/-/node-14.14.2.tgz#d25295f9e4ca5989a2c610754dc02a9721235eeb"
   integrity sha512-jeYJU2kl7hL9U5xuI/BhKPZ4vqGM/OmK6whiFAXVhlstzZhVamWhDSmHyGLIp+RVyuF9/d0dqr2P85aFj4BvJg==
