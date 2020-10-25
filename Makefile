@@ -19,4 +19,4 @@ dev-all: dev-jobs dev-backend
 dev-frontend:
 	cd frontend && yarn start
 seed:
-	cd backend && node ./scripts/seed.js
+	cd backend && yarn seed
