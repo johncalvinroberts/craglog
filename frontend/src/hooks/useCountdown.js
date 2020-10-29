@@ -20,13 +20,13 @@ export default () => {
   const reset = useCallback(() => {
     setCanStart(false);
     setTimeRemaining(0);
-  }, []);
+  }, [setCanStart, setTimeRemaining]);
 
   const expire = useCallback(() => {
     setCanStart(false);
     setTimeRemaining(0);
     clearInterval(intervalRef.current);
-  }, []);
+  }, [setCanStart, setTimeRemaining]);
 
   useEffect(() => {
     timeRemainingRef.current = timeRemaining;

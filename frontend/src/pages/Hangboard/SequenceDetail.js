@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-  useRef,
-} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
 import useSWR from 'swr';
 import { useTitle, useCountdown } from '@/hooks';
@@ -39,6 +33,7 @@ const BottomButton = ({ children, ...props }) => (
   </PseudoButton>
 );
 
+// this is the initial rest, should update this to account for a config/setting
 const initialStackEntry = {
   duration: 1000,
   interval: REST_MS_INTERVAL,
@@ -74,24 +69,20 @@ const normalizeSequenceToStack = (sequence) => {
 };
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
-const SequenceDetailInner = ({ data }) => {
+const SequenceDetailInner = ({ data, Hangboard }) => {
   const [isRunning, setIsRunning] = useState(false);
-  const initialStack = useMemo(
-    () => [initialStackEntry, ...normalizeSequenceToStack(data.sequence)],
-    [data.sequence],
-  );
-  const [stack, setStack] = useState(initialStack);
+
+  const [stack, setStack] = useState([
+    initialStackEntry,
+    ...normalizeSequenceToStack(data.sequence),
+  ]);
+
   const stackRef = useRef();
   const isRunningRef = useRef();
-  const [currentItem, setCurrentItem] = useState(initialStack[0]);
+  const [currentItem, setCurrentItem] = useState(stack[0]);
   const { timeRemaining, start, reset, expire } = useCountdown();
 
-  const Hangboard = useMemo(() => {
-    if (!data) return <></>;
-    return hangBoardMap[data.boardName] || <></>;
-  }, [data]);
-
-  const handleStart = useCallback(async () => {
+  const handleStart = async () => {
     setIsRunning(true);
     isRunningRef.current = true;
     for (const item of stack) {
@@ -102,15 +93,25 @@ const SequenceDetailInner = ({ data }) => {
       setStack(nextStack);
       reset();
     }
-  }, [reset, stack, start]);
+  };
 
-  const handlePause = useCallback(() => {
+  const handlePause = () => {
     setIsRunning(false);
     const [, ...endOfNextStack] = stackRef.current;
     const nextHeadItem = { ...currentItem, duration: timeRemaining };
     setStack([nextHeadItem, ...endOfNextStack]);
     expire();
-  }, [currentItem, expire, timeRemaining]);
+  };
+
+  const handleRestart = () => {
+    const nextStack = [
+      initialStackEntry,
+      ...normalizeSequenceToStack(data.sequence),
+    ];
+    setStack(nextStack);
+    setCurrentItem(nextStack[0]);
+    handleStart();
+  };
 
   useEffect(() => {
     stackRef.current = stack;
@@ -119,7 +120,19 @@ const SequenceDetailInner = ({ data }) => {
   useEffect(() => {
     isRunningRef.current = isRunning;
   }, [isRunning]);
-  console.log({ stack });
+
+  useEffect(() => {
+    if (stack.length === 0) {
+      setCurrentItem(undefined);
+      expire();
+      reset();
+      setIsRunning(false);
+    }
+  }, [stack, expire, reset]);
+
+  const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
+  const isDone = !isRunning && !currentItem;
+
   return (
     <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">
       <Box flex="0 0 100%" px={1} py={2}>
@@ -129,20 +142,21 @@ const SequenceDetailInner = ({ data }) => {
         {isRunning && (
           <Heading fontSize="14rem" textAlign="center">
             {formatMs(timeRemaining, {
-              milliseconds: currentItem.interval === EXERCISE_MS_INTERVAL,
+              milliseconds: !isRest,
             })}
           </Heading>
         )}
         {!isRunning && stack.length > 0 && (
           <Heading fontSize="14rem" textAlign="center">
             {formatMs(stack[0].duration, {
-              milliseconds: stack[0].interval === EXERCISE_MS_INTERVAL,
+              milliseconds: !isRest,
             })}
           </Heading>
         )}
+        <Box textAlign="center">{isRest && 'rest'}</Box>
       </Box>
       {!isRunning && <BottomButton onClick={handleStart}>START</BottomButton>}
-      {isRunning && (
+      {isRunning && !isDone && (
         <BottomButton
           onClick={handlePause}
           backgroundColor="yellow.400"
@@ -152,6 +166,14 @@ const SequenceDetailInner = ({ data }) => {
         >
           PAUSE
         </BottomButton>
+      )}
+      {isDone && (
+        <>
+          <Heading fontSize="14rem" textAlign="center">
+            DONE. Good Job.
+          </Heading>
+          <BottomButton onClick={handleRestart}>Restart</BottomButton>
+        </>
       )}
     </Box>
   );
@@ -183,10 +205,10 @@ const SequenceDetail = ({ match }) => {
   }, [dispatch]);
 
   if (!data) return <Spinner />;
-
+  const Hangboard = hangBoardMap[data.boardName] || <></>;
   return (
     <Box d="flex" flexDirection="column">
-      <SequenceDetailInner data={data} />
+      <SequenceDetailInner data={data} Hangboard={Hangboard} />
     </Box>
   );
 };
