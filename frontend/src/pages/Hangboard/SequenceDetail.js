@@ -2,7 +2,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
 import useSWR from 'swr';
 import { useTitle, useCountdown } from '@/hooks';
-import { getErrorMessage, formatMs, getUuidV4 } from '@/utils';
+import {
+  getErrorMessage,
+  formatMs,
+  getUuidV4,
+  camelCaseToTitleCase,
+  calculateSequenceTimeInWords,
+} from '@/utils';
 import { hangBoardMap } from '@/components/hangboards';
 import http from '@/http';
 import PseudoButton from '@/components/PseudoButton';
@@ -11,6 +17,17 @@ import { toggleMobileNav } from '@/states';
 
 const REST_MS_INTERVAL = 1000;
 const EXERCISE_MS_INTERVAL = 100;
+
+const INTERVAL_LABELS = {
+  1000: `s`,
+  100: `ms`,
+};
+
+const getCurrentItemDisplayText = (item = {}) => {
+  const { customExerciseName, exercise } = item;
+  if (customExerciseName) return customExerciseName;
+  return camelCaseToTitleCase(exercise);
+};
 
 const BottomButton = ({ children, ...props }) => (
   <PseudoButton
@@ -35,20 +52,23 @@ const BottomButton = ({ children, ...props }) => (
 
 // this is the initial rest, should update this to account for a config/setting
 const initialStackEntry = {
-  duration: 1000,
+  duration: 5000,
   interval: REST_MS_INTERVAL,
   id: getUuidV4(),
+  stepIndex: 0,
 };
 
 const normalizeSequenceToStack = (sequence) => {
-  return sequence.reduce((memo, current) => {
+  return sequence.reduce((memo, current, index) => {
     const id = getUuidV4();
+    const stepIndex = index + 1;
     if (current.duration) {
       memo.push({
         ...current,
         duration: current.duration * 1000,
         interval: EXERCISE_MS_INTERVAL,
         id,
+        stepIndex,
       });
     }
 
@@ -59,9 +79,10 @@ const normalizeSequenceToStack = (sequence) => {
     if (current.rest) {
       memo.push({
         duration: current.rest * 1000,
-        unit: REST_MS_INTERVAL,
+        interval: REST_MS_INTERVAL,
         isRest: true,
         id,
+        stepIndex,
       });
     }
     return memo;
@@ -69,7 +90,7 @@ const normalizeSequenceToStack = (sequence) => {
 };
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
-const SequenceDetailInner = ({ data, Hangboard }) => {
+const SequenceDetailInner = ({ data, Hangboard, totalTime }) => {
   const [isRunning, setIsRunning] = useState(false);
 
   const [stack, setStack] = useState([
@@ -132,28 +153,53 @@ const SequenceDetailInner = ({ data, Hangboard }) => {
 
   const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
   const isDone = !isRunning && !currentItem;
+  const totalLength = data.sequence?.length;
 
   return (
     <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">
+      <Box flex="0 0 100%" p={2} display="flex" justifyContent="space-between">
+        <Box>
+          <Box fontSize="1rem" fontWeight="bold" as="span">
+            {data.name}
+          </Box>
+          , {totalTime}
+        </Box>
+        <Box>
+          {isDone && `${totalLength}/${totalLength}`}
+          {!isDone && `${currentItem.stepIndex}/${totalLength}`}
+        </Box>
+      </Box>
       <Box flex="0 0 100%" px={1} py={2}>
-        <Hangboard viewBox="0 0 781 277" />
+        <Hangboard
+          viewBox="0 0 781 277"
+          activeHolds={currentItem && currentItem.activeHolds}
+        />
       </Box>
       <Box flex="0 0 100%">
+        <Box textAlign="center" fontSize="3rem">
+          {isRest && 'Rest'}
+          {!isRest && !isDone && getCurrentItemDisplayText(currentItem)}
+        </Box>
         {isRunning && (
-          <Heading fontSize="14rem" textAlign="center">
+          <Heading fontSize={['6rem', '14rem']} textAlign="center">
             {formatMs(timeRemaining, {
               milliseconds: !isRest,
             })}
+            <Box ml={1} fontSize="14px" display="inline-block">
+              {INTERVAL_LABELS[currentItem.interval]}
+            </Box>
           </Heading>
         )}
         {!isRunning && stack.length > 0 && (
-          <Heading fontSize="14rem" textAlign="center">
-            {formatMs(stack[0].duration, {
+          <Heading fontSize={['6rem', '14rem']} textAlign="center">
+            {formatMs(currentItem.duration, {
               milliseconds: !isRest,
             })}
+            <Box ml={1} fontSize="14px" display="inline-block">
+              {INTERVAL_LABELS[currentItem.interval || INTERVAL_LABELS[100]]}
+            </Box>
           </Heading>
         )}
-        <Box textAlign="center">{isRest && 'rest'}</Box>
       </Box>
       {!isRunning && <BottomButton onClick={handleStart}>START</BottomButton>}
       {isRunning && !isDone && (
@@ -169,9 +215,14 @@ const SequenceDetailInner = ({ data, Hangboard }) => {
       )}
       {isDone && (
         <>
-          <Heading fontSize="14rem" textAlign="center">
-            DONE. Good Job.
+          <Heading
+            fontSize={['6rem', '10rem']}
+            textAlign="center"
+            flex="0 0 100%"
+          >
+            DONE.
           </Heading>
+          <Box>Good Job.</Box>
           <BottomButton onClick={handleRestart}>Restart</BottomButton>
         </>
       )}
@@ -206,9 +257,15 @@ const SequenceDetail = ({ match }) => {
 
   if (!data) return <Spinner />;
   const Hangboard = hangBoardMap[data.boardName] || <></>;
+  const totalTime = calculateSequenceTimeInWords(data.sequence);
+
   return (
     <Box d="flex" flexDirection="column">
-      <SequenceDetailInner data={data} Hangboard={Hangboard} />
+      <SequenceDetailInner
+        data={data}
+        Hangboard={Hangboard}
+        totalTime={totalTime}
+      />
     </Box>
   );
 };
