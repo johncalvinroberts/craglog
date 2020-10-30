@@ -9,13 +9,13 @@ export default () => {
 
   const timeRemainingRef = useRef();
 
-  const start = useCallback(async (durationMs, interval = 1000) => {
+  const start = async (durationMs, interval = 1000) => {
     setCanStart(true);
     setUpdateInterval(interval);
     setTimeRemaining(durationMs);
     timeRemainingRef.current = durationMs;
     await delay(durationMs);
-  }, []);
+  };
 
   const reset = useCallback(() => {
     setCanStart(false);

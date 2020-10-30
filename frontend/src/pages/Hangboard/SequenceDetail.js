@@ -124,16 +124,6 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime }) => {
     expire();
   };
 
-  const handleRestart = () => {
-    const nextStack = [
-      initialStackEntry,
-      ...normalizeSequenceToStack(data.sequence),
-    ];
-    setStack(nextStack);
-    setCurrentItem(nextStack[0]);
-    handleStart();
-  };
-
   useEffect(() => {
     stackRef.current = stack;
   }, [stack]);
@@ -201,7 +191,9 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime }) => {
           </Heading>
         )}
       </Box>
-      {!isRunning && <BottomButton onClick={handleStart}>START</BottomButton>}
+      {!isRunning && !isDone && (
+        <BottomButton onClick={handleStart}>START</BottomButton>
+      )}
       {isRunning && !isDone && (
         <BottomButton
           onClick={handlePause}
@@ -223,7 +215,6 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime }) => {
             DONE.
           </Heading>
           <Box>Good Job.</Box>
-          <BottomButton onClick={handleRestart}>Restart</BottomButton>
         </>
       )}
     </Box>
