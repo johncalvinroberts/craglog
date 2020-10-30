@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useTitle, useCountdown } from '@/hooks';
 import {
   getErrorMessage,
@@ -90,7 +90,7 @@ const normalizeSequenceToStack = (sequence) => {
 };
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
-const SequenceDetailInner = ({ data, Hangboard, totalTime }) => {
+const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   const [isRunning, setIsRunning] = useState(false);
 
   const [stack, setStack] = useState([
@@ -140,6 +140,12 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime }) => {
       setIsRunning(false);
     }
   }, [stack, expire, reset]);
+
+  useEffect(() => {
+    if (isDone) {
+      handleDone({ type: 'hangboard' });
+    }
+  }, [isDone, handleDone]);
 
   const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
   const isDone = !isRunning && !currentItem;
@@ -250,12 +256,19 @@ const SequenceDetail = ({ match }) => {
   const Hangboard = hangBoardMap[data.boardName] || <></>;
   const totalTime = calculateSequenceTimeInWords(data.sequence);
 
+  const handleDone = async (values) => {
+    const res = await http.post('/tick', values);
+    toast({ description: 'Saved Tick' });
+    mutate(`/tick/${res.id}`, res);
+  };
+
   return (
     <Box d="flex" flexDirection="column">
       <SequenceDetailInner
         data={data}
         Hangboard={Hangboard}
         totalTime={totalTime}
+        handleDone={handleDone}
       />
     </Box>
   );
