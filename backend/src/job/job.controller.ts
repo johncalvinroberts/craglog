@@ -1,24 +1,54 @@
-import { Controller, UseGuards, All, Req, Res } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as Server from 'http-proxy';
-import { Request, Response } from 'express';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+} from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 import { RolesGuard } from '../shared/guards';
 import { Roles } from '../shared/decorators';
+
+// TODO: use classes for these, for validation
+interface JobQueryDto {
+  skip: number;
+  limit: number;
+  status: string;
+}
+
+interface CreateJobDto {
+  url: string;
+}
 
 @Controller('job')
 @UseGuards(RolesGuard)
 export class JobController {
-  private server: Server;
-  constructor(private readonly configService: ConfigService) {
-    this.server = Server.createProxyServer();
+  constructor(@InjectQueue('scraper') private readonly scraperQueue: Queue) {}
+
+  @Roles('admin')
+  @Get('/admin')
+  proxyAll(@Query() query: JobQueryDto) {
+    const { skip = 0, limit = 100, status } = query;
+    return this.scraperQueue.getJobs([status], skip, limit);
   }
 
-  @All()
-  @Roles('admin')
-  proxyAll(@Req() request: Request, @Res() response: Response): void {
-    this.server.web(request, response, {
-      changeOrigin: false,
-      target: this.configService.get('JOBS_BACKEND_URL'),
-    });
+  @Post()
+  async create(@Body() payload: CreateJobDto) {
+    const { url } = payload;
+    const { hostname } = new URL(url);
+    const id = await this.scraperQueue.add(hostname, payload);
+    return id;
+  }
+
+  @Get(':id')
+  async findById(@Param('id') id) {
+    const [job, logs] = await Promise.all([
+      this.scraperQueue.getJob(id),
+      this.scraperQueue.getJobLogs(id),
+    ]);
+    return { ...job, logs };
   }
 }
