@@ -7,35 +7,61 @@ import {
   Param,
   Query,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiBody,
+  ApiQuery,
+  ApiProperty,
+} from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { RolesGuard } from '../shared/guards';
 import { Roles } from '../shared/decorators';
+import { PaginationDto } from '../shared/pagination.dto';
+import { IsOptional, IsEnum } from 'class-validator';
 
-// TODO: use classes for these, for validation
-interface JobQueryDto {
-  skip: number;
-  limit: number;
+enum StatusEnum {
+  waiting,
+  active,
+  completed,
+  failed,
+  delayed,
+  paused,
+}
+
+class JobQueryDto extends PaginationDto {
+  constructor() {
+    super();
+  }
+
+  @IsEnum(StatusEnum)
+  @IsOptional()
   status: string;
 }
 
-interface CreateJobDto {
-  url: string;
+class CreateJobDto {
+  @IsOptional()
+  @ApiProperty()
+  url = '';
 }
 
-@Controller('job')
+@Controller('jobs')
+@ApiBearerAuth()
 @UseGuards(RolesGuard)
 export class JobController {
   constructor(@InjectQueue('scraper') private readonly scraperQueue: Queue) {}
 
   @Roles('admin')
-  @Get('/admin')
+  @Get()
+  @ApiQuery(JobQueryDto)
   proxyAll(@Query() query: JobQueryDto) {
-    const { skip = 0, limit = 100, status } = query;
-    return this.scraperQueue.getJobs([status], skip, limit);
+    const { skip = 0, take = 100, status } = query;
+    return this.scraperQueue.getJobs([status], skip, take);
   }
 
   @Post()
+  @ApiBody({ type: CreateJobDto })
   async create(@Body() payload: CreateJobDto) {
     const { url } = payload;
     const { hostname } = new URL(url);
