@@ -46,7 +46,7 @@ const JobsCountData = ({ params, handleChangeParams }) => {
     }
   };
 
-  const { data: countData, error } = useSWR('/job/count', http.get);
+  const { data: countData, error } = useSWR('/jobs/count', http.get);
 
   useEffect(() => {
     if (error) toast({ description: error.message, status: 'error' });

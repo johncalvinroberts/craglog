@@ -6,6 +6,7 @@ import {
   Body,
   Param,
   Query,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -30,6 +31,11 @@ enum StatusEnum {
   paused,
 }
 
+enum CommandEnum {
+  pause,
+  resume,
+}
+
 class JobQueryDto extends PaginationDto {
   constructor() {
     super();
@@ -46,7 +52,15 @@ class CreateJobDto {
   url = '';
 }
 
+class CommandQueueDto {
+  @IsOptional()
+  @ApiProperty()
+  @IsEnum(CommandEnum)
+  command = '';
+}
+
 @Controller('jobs')
+@ApiTags('jobs')
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 export class JobController {
@@ -67,6 +81,16 @@ export class JobController {
     const { hostname } = new URL(url);
     const id = await this.scraperQueue.add(hostname, payload);
     return id;
+  }
+
+  @Get('count')
+  async count() {
+    return this.scraperQueue.getJobCounts();
+  }
+
+  @Patch('command')
+  async command(@Body() { command }: CommandQueueDto) {
+    return this.scraperQueue[command];
   }
 
   @Get(':id')
