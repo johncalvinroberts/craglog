@@ -75,6 +75,7 @@ export class JobController {
       this.scraperQueue.getJob(id),
       this.scraperQueue.getJobLogs(id),
     ]);
-    return { ...job, logs };
+
+    return { ...job.toJSON(), logs: logs.logs };
   }
 }
