@@ -7,6 +7,7 @@ import {
   Param,
   Query,
   Patch,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,7 +17,7 @@ import {
   ApiProperty,
 } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+import { Queue, Job } from 'bull';
 import { RolesGuard } from '../shared/guards';
 import { Roles } from '../shared/decorators';
 import { PaginationDto } from '../shared/pagination.dto';
@@ -31,9 +32,18 @@ enum StatusEnum {
   paused,
 }
 
-enum CommandEnum {
+enum QueueCommandEnum {
   pause,
   resume,
+}
+
+enum JobCommandEnum {
+  retry,
+  remove,
+  promote,
+  discard,
+  moveToCompled,
+  moveToFailed,
 }
 
 class JobQueryDto extends PaginationDto {
@@ -55,7 +65,14 @@ class CreateJobDto {
 class CommandQueueDto {
   @IsOptional()
   @ApiProperty()
-  @IsEnum(CommandEnum)
+  @IsEnum(QueueCommandEnum)
+  command = '';
+}
+
+class CommandJobDto {
+  @IsOptional()
+  @ApiProperty()
+  @IsEnum(JobCommandEnum)
   command = '';
 }
 
@@ -84,13 +101,26 @@ export class JobController {
   }
 
   @Get('count')
+  @Roles('admin')
   async count() {
     return this.scraperQueue.getJobCounts();
   }
 
+  @Roles('admin')
   @Patch('command')
-  async command(@Body() { command }: CommandQueueDto) {
-    return this.scraperQueue[command];
+  async commandQueue(@Body() { command }: CommandQueueDto) {
+    return this.scraperQueue[command]();
+  }
+
+  @Roles('admin')
+  @Patch(':id')
+  async commandJob(@Body() { command }: CommandJobDto, @Param('id') id) {
+    const job: Job = await this.scraperQueue.getJob(id);
+    if (!job) {
+      throw new NotFoundException();
+    }
+    const res = await job[command]();
+    return res;
   }
 
   @Get(':id')
@@ -99,6 +129,10 @@ export class JobController {
       this.scraperQueue.getJob(id),
       this.scraperQueue.getJobLogs(id),
     ]);
+
+    if (!job) {
+      throw new NotFoundException();
+    }
 
     return { ...job.toJSON(), logs: logs.logs };
   }

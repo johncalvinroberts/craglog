@@ -11,8 +11,7 @@ export class JobProcessor {
   async handleTheCrag(job: Job) {
     this.logger.debug('Received job to scrape thecrag');
     const ret = await processTheCrag(job);
-    console.log({ ret });
-    this.logger.debug('finished scraping thecrag', JSON.stringify(ret));
+    this.logger.debug(`finished scraping thecrag, ${JSON.stringify(ret)}`);
     return ret;
   }
 }

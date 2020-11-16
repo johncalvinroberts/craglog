@@ -1,9 +1,9 @@
 import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import climbingGrade from 'climbing-grade';
-import debugModule from 'debug';
-const debug = debugModule('scraper:route');
-const baseUrl = 'https://thecrag.com';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('jobs:33:thecrag.process');
 
 function trimWhiteSpace(string) {
   return string && string.replace(/\s+/g, '');
@@ -29,19 +29,21 @@ function convertFont({ grade, gradecontext }) {
   return { gradecontext, grade };
 }
 
-async function fetchAndFormatRoute(href) {
-  const broken = href.split('/');
+async function fetchAndFormatRoute(url, job) {
+  const broken = url.split('/');
   const id = broken[broken.length - 1];
-  const region = broken[2];
-  const area = broken[3];
 
-  debug(`scraping route id ${id} from the crag`);
-  const res = await fetch(`${baseUrl}/${href}`);
+  const msg1 = `id: ${id}, FULLURL: ${url}`;
+  job.log(msg1);
+  logger.debug(msg1);
+  const res = await fetch(url);
   const html = await res.text();
-  debug(`FINISHED scraping route id ${id} from the crag. Now parsing html.`);
+  const msg2 = `FINISHED scraping route id ${id} from the crag. Now parsing html.`;
+  logger.debug(msg2);
+  job.log(msg2);
 
   const $ = cheerio.load(html);
-  const name = $('span[itemprop=name]').text();
+
   const originalGrade = $('span.grade').text();
 
   const style = $('.style-band').text().trim().toLowerCase();
@@ -96,18 +98,26 @@ async function fetchAndFormatRoute(href) {
     grade = originalGrade;
   }
 
-  const breadCrumbs = $('.crumb__a');
-  const cragNameEl = breadCrumbs[breadCrumbs.length - 2];
-  const cragName = $(cragNameEl).text().trim();
-  const cragHref = cragNameEl.attribs && cragNameEl.attribs.href;
-  const externalCragId = cragHref.substring(cragHref.lastIndexOf('/') + 1);
+  const breadCrumbs = $('#breadCrumbs > div > li');
+  const name = $(breadCrumbs[breadCrumbs.length - 1])
+    .text()
+    .trim();
+  const cragName = $(breadCrumbs[breadCrumbs.length - 2])
+    .text()
+    .trim();
+  const region = $(breadCrumbs[breadCrumbs.length - 3])
+    .text()
+    .trim();
+  const area = $(breadCrumbs[breadCrumbs.length - 4])
+    .text()
+    .trim();
+
   const boltsVal = /^-{0,1}\d+$/.test(bolts) && parseInt(bolts);
 
   const location = [latitude, longitude];
 
   return {
     externalId: id,
-    externalCragId,
     name,
     cragName,
     region,
@@ -120,21 +130,19 @@ async function fetchAndFormatRoute(href) {
   };
 }
 
-async function scrapeSingleRoute(href) {
-  const data = await fetchAndFormatRoute(href);
-  debug(`FINISHED scraping and creating route: ${href}`);
-  return data;
-}
-
 export const processTheCrag = async (job) => {
-  const { href } = job.data;
-  debug('Scraper received job to scrape single route', { href, job });
-  job.log('starting scraping');
   try {
-    await scrapeSingleRoute(href);
-    Promise.resolve();
+    const { url } = job.data;
+    logger.debug('Scraper received job to scrape single route');
+    logger.debug(JSON.stringify({ job }));
+    job.log('starting scraping');
+    const data = await fetchAndFormatRoute(url, job);
+    logger.debug(`FINISHED scraping and creating route: ${url}`);
+    logger.debug(JSON.stringify(data));
+    return data;
   } catch (error) {
-    debug('FAILED ROUTE JOB', { error, job });
+    logger.debug('FAILED ROUTE JOB');
+    logger.debug(JSON.stringify({ error, job }));
     throw new Error(JSON.stringify(error));
   }
 };
