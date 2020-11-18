@@ -1,7 +1,6 @@
 import {
   Injectable,
   UnauthorizedException,
-  BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,14 +8,12 @@ import { Repository, DeleteResult, MoreThan, LessThan } from 'typeorm';
 import { TickEntity } from './tick.entity';
 import { CreateTickDto, UpdateTickDto, TickStatsDto } from './dto';
 import { UserEntity } from '../user/user.entity';
-import { RouteService } from '../route/route.service';
 
 @Injectable()
 export class TickService {
   constructor(
     @InjectRepository(TickEntity)
     private readonly tickRepository: Repository<TickEntity>,
-    private readonly routeService: RouteService,
   ) {}
 
   findAll(query, userId) {
@@ -53,19 +50,9 @@ export class TickService {
 
   /* eslint-disable prefer-const */
   async create(payload: CreateTickDto, user: UserEntity): Promise<TickEntity> {
-    let { routeId, ...toSave } = payload;
-
-    let route;
-
-    if (routeId) {
-      route = await this.routeService.findById(routeId);
-      if (!route) throw new BadRequestException('Route not found');
-    }
-
     return this.tickRepository.save({
-      ...toSave,
+      ...payload,
       user,
-      route,
     });
   }
 
@@ -74,8 +61,6 @@ export class TickService {
     payload: UpdateTickDto,
     user: UserEntity,
   ): Promise<TickEntity> {
-    let { routeId, ...toUpdate } = payload;
-
     const prev: TickEntity = await this.tickRepository.findOne({ id });
 
     if (!prev) {
@@ -87,13 +72,7 @@ export class TickService {
     }
 
     // const next = Object.assign(toUpdate, prev);
-    const next = { ...prev, ...toUpdate };
-
-    if (routeId && routeId !== prev.routeId) {
-      const route = await this.routeService.findById(routeId);
-      next.route = route;
-      if (!route) throw new BadRequestException();
-    }
+    const next = { ...prev, ...payload };
 
     return this.tickRepository.save(next);
   }
