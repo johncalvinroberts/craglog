@@ -117,7 +117,7 @@ async function fetchAndFormatRoute(url, job) {
   const location = [latitude, longitude];
 
   return {
-    externalId: id,
+    externalUrl: url,
     name,
     cragName,
     region,

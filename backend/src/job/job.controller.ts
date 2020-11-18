@@ -8,6 +8,7 @@ import {
   Query,
   Patch,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -76,6 +77,12 @@ class CommandJobDto {
   command = '';
 }
 
+enum SupportedScraperSites {
+  'thecrag.com',
+  'mountainproject.com',
+  '27crags.com',
+}
+
 @Controller('jobs')
 @ApiTags('jobs')
 @ApiBearerAuth()
@@ -93,11 +100,18 @@ export class JobController {
 
   @Post()
   @ApiBody({ type: CreateJobDto })
-  async create(@Body() payload: CreateJobDto) {
+  async create(@Body() payload: CreateJobDto): Job {
     const { url } = payload;
-    const { hostname } = new URL(url);
-    const id = await this.scraperQueue.add(hostname, payload);
-    return id;
+    let { hostname } = new URL(url);
+    if (hostname.startsWith('www.')) {
+      hostname = hostname.replace('www.', '');
+    }
+    if (hostname in SupportedScraperSites) {
+      const job = await this.scraperQueue.add(hostname, payload);
+      return job;
+    } else {
+      throw new BadRequestException('Source site not supported');
+    }
   }
 
   @Get('count')

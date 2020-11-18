@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
-import { RouteEntity } from '../route/route.entity';
 import { UserEntity } from '../user/user.entity';
 import { TickEntity } from '../tick/tick.entity';
 import { HangboardSequenceEntity } from '../hangboard-sequence/hangboard-sequence.entity';
@@ -18,12 +17,7 @@ import { HangboardSequenceEntity } from '../hangboard-sequence/hangboard-sequenc
         database: configService.get('POSTGRES_DB'),
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
-        entities: [
-          RouteEntity,
-          UserEntity,
-          TickEntity,
-          HangboardSequenceEntity,
-        ],
+        entities: [UserEntity, TickEntity, HangboardSequenceEntity],
         synchronize: true,
       }),
     }),

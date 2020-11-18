@@ -9,7 +9,8 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { TickTypeEnum, TickStyleEnum, routeStyles } from '../tick.entity';
-import { LocationDto } from 'src/shared/location.dto';
+import { LocationDto } from '../../shared/location.dto';
+import { RouteSnapshot } from '../tick.entity';
 
 export class CreateTickDto {
   @IsEnum(TickTypeEnum)
@@ -27,7 +28,7 @@ export class CreateTickDto {
   @ValidateIf((tick) => routeStyles.includes(tick.style))
   @IsOptional()
   @ApiProperty()
-  routeId: number;
+  routeSnapshot: RouteSnapshot;
 
   @IsOptional()
   @MaxLength(2000)

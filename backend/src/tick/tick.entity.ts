@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { IsEnum, MaxLength, Max } from 'class-validator';
 import { UserEntity } from '../user/user.entity';
-import { RouteEntity } from '../route/route.entity';
 
 export enum TickTypeEnum {
   lead,
@@ -40,6 +39,16 @@ export enum TickStyleEnum {
   trad,
   other,
 }
+
+export type RouteSnapshot = {
+  externalUrl: string;
+  name: string;
+  cragName: string;
+  region: string;
+  area: string;
+  grade: string;
+  bolts: number;
+};
 
 export const routeStyles: string[] = [
   'solo',
@@ -78,11 +87,12 @@ export class TickEntity {
   @Column({ nullable: true })
   userId: number;
 
-  @Column({ nullable: true })
-  routeId: number;
-
-  @ManyToOne(() => RouteEntity, { nullable: true, eager: true })
-  route: RouteEntity;
+  @Column({
+    type: 'jsonb',
+    array: false,
+    nullable: true,
+  })
+  route: RouteSnapshot[];
 
   @Column('int', { nullable: true })
   @Max(100)

@@ -1,6 +1,0 @@
-{
-  "extends": ["wcl-backend", "plugin:prettier/recommended"],
-  "parserOptions":{
-    "ecmaVersion": 2018
-  }
-}
