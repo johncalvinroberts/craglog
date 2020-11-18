@@ -1,25 +1,7 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
-import {
-  Button,
-  Box,
-  useToast,
-  Input,
-  Heading,
-  Spinner,
-  Text,
-  PseudoBox,
-} from '@chakra-ui/core';
+import React, { useEffect, useState, useRef } from 'react';
+import { Button, Box, useToast, Heading, Text } from '@chakra-ui/core';
 import * as yup from 'yup';
-import useSWR from 'swr';
-import useDeepEffect from 'use-deep-compare-effect';
 import { useForm } from 'react-hook-form';
-import _get from 'lodash/get';
 import {
   tickStyleEnum,
   tickTypeEnum,
@@ -35,53 +17,11 @@ import Form, {
   TextField,
   SliderField,
 } from '@/components/Form';
-import Map from '@/components/Map';
-import EmptyView from '@/components/EmptyView';
 import { toggleMobileNav } from '@/states';
 import { useDispatch } from '@/components/State';
-import Marker from '@/components/Marker';
-import RouteCard from '@/components/RouteCard';
 import { UtilBar } from '@/components/DashboardHeader';
-import { calculateGeoDistance, camelCaseToTitleCase } from '@/utils';
-import { useGeoLocation, useThrottle } from '@/hooks';
+import { camelCaseToTitleCase } from '@/utils';
 import http from '@/http';
-
-const getCoordsFromUserPosition = (position) => {
-  if (!position) return null;
-  return [position.coords.latitude, position.coords.longitude];
-};
-
-const getRouteCoords = (route) => _get(route, 'location.coordinates');
-
-const getRouteQueryUrl = ({ center, throttledQuery }) => {
-  if (!center && !throttledQuery) {
-    return null;
-  }
-  if (center && !throttledQuery) {
-    return `/route?origin=${center.join(',')}&take=10`;
-  }
-  if (throttledQuery && center) {
-    return `/route?origin=${center.join(',')}&take=10&name=${throttledQuery}`;
-  }
-};
-
-const notePlaceHolder =
-  notesPlaceHolders[
-    Math.floor(Math.random() * Math.ceil(notesPlaceHolders.length - 1))
-  ];
-
-const concatRoutesList = ({ currentRoute, queriedRoutes }) => {
-  if (!currentRoute && !queriedRoutes) return undefined;
-  if (currentRoute && !queriedRoutes) return [currentRoute];
-  if (!currentRoute) return queriedRoutes;
-  return queriedRoutes.reduce(
-    (memo, current) => {
-      if (current.id !== currentRoute.id) memo.push(current);
-      return memo;
-    },
-    [currentRoute],
-  );
-};
 
 const validationSchema = yup.object().shape({
   type: yup
@@ -94,10 +34,7 @@ const validationSchema = yup.object().shape({
       is: (val) => outdoorStyleEnum.includes(val),
       then: yup.string().required(),
     }),
-  style: yup
-    .string()
-    .required()
-    .oneOf(tickStyleEnum, 'Please choose a style'),
+  style: yup.string().required().oneOf(tickStyleEnum, 'Please choose a style'),
   routeId: yup.string().when('style', {
     is: (val) => outdoorStyleEnum.includes(val),
     then: yup
@@ -115,6 +52,9 @@ const validationSchema = yup.object().shape({
   physicalRating: yup.number().nullable(),
   gymName: yup.string().max(500),
   location: yup.string(),
+  routeSnapshot: yup.object().shape({
+    externalUrl: yup.string().url().nullable(),
+  }),
 });
 
 const formatOptions = (arr) =>
@@ -139,80 +79,45 @@ const tickTypeOptions = {
   other: allTickTypes,
 };
 
+const notePlaceHolder =
+  notesPlaceHolders[
+    Math.floor(Math.random() * Math.ceil(notesPlaceHolders.length - 1))
+  ];
+
 // TickForrm -> main component entrypoint
 const TickForm = ({ defaultValues, onSubmit }) => {
   const dispatch = useDispatch();
-
-  const [center, setCenter] = useState();
-
-  const [mapCenter, setMapCenter] = useState();
-
-  const [query, setQuery] = useState('');
-
-  const throttledQuery = useThrottle(query, 800);
+  const [isImporting, setIsImporting] = useState();
+  const [importJobId, setImportJobId] = useState(null);
 
   const formMethods = useForm({ validationSchema, defaultValues });
 
-  const { watch, register, setValue, errors } = formMethods;
+  const { watch } = formMethods;
 
-  const routeError = errors.routeId;
-
-  const { style, routeId } = watch(['style', 'routeId']);
-
-  const [position] = useGeoLocation();
-
-  const userLocation = getCoordsFromUserPosition(position);
-
+  const { style, 'routeSnapshot.externalUrl': externalUrl } = watch([
+    'style',
+    'routeSnapshot.externalUrl',
+  ]);
   const isOutdoor = outdoorStyleEnum.includes(style);
 
+  const formRef = useRef();
   const toast = useToast();
 
-  const formRef = useRef();
-
-  // fetch routes to show on map
-  const { data: queriedRoutes, error } = useSWR(
-    () => getRouteQueryUrl({ center, throttledQuery }),
-    http.get,
-  );
-
-  const { data: currentRoute } = useSWR(
-    () => routeId && `/route/${routeId}`,
-    http.get,
-  );
-
-  const routes = useMemo(
-    () => concatRoutesList({ currentRoute, queriedRoutes }),
-    [queriedRoutes, currentRoute],
-  );
-
-  // show remote error in toast
-  useEffect(() => {
-    if (error)
-      toast({ description: error.message, isClosable: true, status: 'error' });
-  }, [error, toast]);
-
-  // find center for map
-  useDeepEffect(() => {
-    function findCenterToSet() {
-      if (mapCenter) {
-        return mapCenter;
-      }
-
-      if (routeId) {
-        return (
-          routes && getRouteCoords(routes.find((route) => route.id === routeId))
-        );
-      }
-
-      return userLocation;
+  const handleImport = async () => {
+    try {
+      setIsImporting(true);
+      const { id } = await http.post(`/jobs`, { url: externalUrl });
+      setImportJobId(id);
+    } catch (error) {
+      setIsImporting(false);
+      toast({
+        description: error.message || 'Something broke',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
     }
-
-    setCenter(findCenterToSet());
-  }, [routeId, setCenter, userLocation, mapCenter, routes]);
-
-  useEffect(() => {
-    register({ name: 'routeId' });
-  }, []); //eslint-disable-line
+  };
 
   // toggle mobile nav on mount/unmount
   useEffect(() => {
@@ -220,25 +125,9 @@ const TickForm = ({ defaultValues, onSubmit }) => {
     return () => dispatch(toggleMobileNav(true));
   }, [dispatch]);
 
-  const handleMapChange = useCallback(
-    ({ center: nextMapCenter }) => {
-      const { lat, lng } = nextMapCenter;
-      const distance = calculateGeoDistance([lat, lng], center);
-      if (distance > 200) {
-        setMapCenter([lat, lng]);
-      }
-    },
-    [center],
-  );
-
-  const handleSelectRoute = (route) => {
-    if (route.id === routeId) {
-      setValue('routeId', null);
-    } else {
-      setValue('routeId', route.id);
-      setCenter(getRouteCoords(route));
-    }
-  };
+  useEffect(() => {
+    console.log({ importJobId });
+  }, [importJobId]);
 
   return (
     <Form
@@ -283,13 +172,15 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           label="Date &amp; Time"
         />
         {isOutdoor && (
-          <SelectField
-            name="type"
-            label="Did you send?"
-            required
-            options={tickTypeOptions[style]}
-            helperText="Select a type that describes your accomplishment or failure"
-          />
+          <>
+            <SelectField
+              name="type"
+              label="Did you send?"
+              required
+              options={tickTypeOptions[style]}
+              helperText="Select a type that describes your accomplishment or failure"
+            />
+          </>
         )}
         {style === 'gym' && <TextField name="gymName" label="Gym Name" />}
         <SliderField
@@ -298,111 +189,24 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           helperText="Rate how you felt on this climb. How difficult was this climb for you?"
         />
         {isOutdoor && (
-          <>
-            <Box mt={2} mb={4}>
-              <Box>
-                <Heading size="md">Route</Heading>
-                <Text size="xs" mb={1} as="div" width="auto" height="auto">
-                  Choose a route from the map, or search for a route by name
-                  below.
-                </Text>
-                <Text width="100%" as="div" color="red.500" mb={2}>
-                  {routeError && routeError.message}
-                </Text>
-              </Box>
-              <Map
-                containerStyleProps={{ mb: 5 }}
-                center={center}
-                onChange={({ center }) => handleMapChange({ center })}
-                containerRef={formRef}
+          <Box>
+            <Heading size="md">Import Route</Heading>
+            <Box my={4} d="flex">
+              <TextField
+                placeholder="Enter URL"
+                name="routeSnapshot.externalUrl"
+                disabled={isImporting}
+              />
+              <Button
+                ml={2}
+                disabled={!externalUrl || isImporting}
+                onClick={handleImport}
+                isLoading={isImporting}
               >
-                {userLocation && (
-                  <Marker
-                    lat={userLocation[0]}
-                    lng={userLocation[1]}
-                    color="teal.300"
-                    label="You are here"
-                  />
-                )}
-                {routes &&
-                  routes.map((route) => {
-                    const [lat, lng] = getRouteCoords(route);
-                    return (
-                      <Marker
-                        lat={lat}
-                        lng={lng}
-                        label={route.name}
-                        key={route.id}
-                        color="blue"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          handleSelectRoute(route);
-                        }}
-                      />
-                    );
-                  })}
-              </Map>
-              <Box mb={4}>
-                <Input
-                  placeholder="Search for routes"
-                  onChange={(e) => setQuery(e.currentTarget.value)}
-                  mb={2}
-                />
-                <Box>
-                  {!routes && (
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      p={4}
-                      width="100%"
-                      flexWrap="wrap"
-                    >
-                      <Spinner size="xl" />
-                      <Box flex="0 0 100%" mt={2} textAlign="center">
-                        {!error && <Text>Loading routes 1 sec....</Text>}
-                      </Box>
-                    </Box>
-                  )}
-                  {routes &&
-                    routes.map((route) => {
-                      const isSelected = route.id === routeId;
-                      return (
-                        <PseudoBox
-                          as="button"
-                          display="block"
-                          width="100%"
-                          transition="all 0.2s ease"
-                          key={route.id}
-                          outline="none"
-                          _hover={{
-                            boxShadow: '0px 01px 0px black',
-                          }}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            handleSelectRoute(route);
-                          }}
-                          {...(isSelected
-                            ? {
-                                backgroundColor: 'teal.300',
-                                _hover: {
-                                  boxShadow: 'none',
-                                  opacity: '0.8',
-                                },
-                              }
-                            : null)}
-                        >
-                          <RouteCard route={route} />
-                        </PseudoBox>
-                      );
-                    })}
-                  {routes && routes.length < 1 && (
-                    <EmptyView message="No routes found." />
-                  )}
-                </Box>
-              </Box>
+                Import
+              </Button>
             </Box>
-          </>
+          </Box>
         )}
       </Box>
       <Box>
