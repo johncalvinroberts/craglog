@@ -6,6 +6,11 @@ import { AppModule } from './app.module';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+
+  // only same origin requests in production
+  if (process.env.NODE_ENV !== 'production') {
+    app.enableCors();
+  }
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -18,7 +23,6 @@ async function bootstrap(): Promise<void> {
     .setTitle('Craglog API')
     .setDescription('Craglog REST API specifications')
     .setVersion('1.0')
-    .setBasePath('api')
     .addBearerAuth()
     .build();
 

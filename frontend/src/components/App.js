@@ -15,7 +15,6 @@ const LogIn = lazy(() => import('../pages/LogIn'));
 const Register = lazy(() => import('../pages/Register'));
 const Jobs = lazy(() => import('../pages/Jobs'));
 const Users = lazy(() => import('../pages/Users'));
-const Routes = lazy(() => import('../pages/Routes'));
 const Ticks = lazy(() => import('../pages/Ticks'));
 
 const AdminRoutes = () => {
@@ -34,12 +33,6 @@ const AdminRoutes = () => {
             exact
             rolesNeeded={['admin']}
             component={Users}
-          />
-          <ProtectedRoute
-            path="/admin/routes"
-            exact
-            rolesNeeded={['admin']}
-            component={Routes}
           />
           <Route component={NotFound} />
         </Switch>

@@ -45,7 +45,6 @@ export const SideNavContent = ({
             <Box mb="10">
               <MenuLink to="/admin/jobs">jobs</MenuLink>
               <MenuLink to="/admin/users">users</MenuLink>
-              <MenuLink to="/admin/routes">routes</MenuLink>
             </Box>
           </Box>
         )}
