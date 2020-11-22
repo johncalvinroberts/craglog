@@ -9,9 +9,7 @@ const JobsDataGrid = ({ params }) => {
   const [pageIndex, setPageIndex] = useState(0);
   const offset = pageIndex * 25;
   const { data, error, revalidate } = useSWR(
-    `/jobs?skip=${offset || 0}&limit=25&type=${params.type}&status=${
-      params.status
-    }`,
+    `/jobs?skip=${offset || 0}&take=25&status=${params.status}`,
     http.get,
   );
 

@@ -7,7 +7,6 @@ import JobsDataGrid from './JobsDataGrid';
 
 const Jobs = () => {
   const [params, setParams] = useState({
-    type: 'route',
     status: 'active',
   });
 

@@ -21,11 +21,11 @@ import useSWR from 'swr';
 import { DATE_FORMAT } from '../../constants';
 import http from '../../http';
 
-const JobLogs = ({ item, type }) => {
+const JobLogs = ({ item }) => {
   const { colorMode } = useColorMode();
   const logsBg = { light: 'gray.200', dark: 'gray.900' };
   const toast = useToast();
-  const { data, error } = useSWR(`/job/${item.id}?type=${type}`, http.get);
+  const { data, error } = useSWR(`/jobs/${item.id}`, http.get);
 
   useEffect(() => {
     if (error) toast({ message: error.message, status: 'error' });
@@ -47,7 +47,7 @@ const JobLogs = ({ item, type }) => {
   );
 };
 
-const JobItem = ({ item, type, revalidate }) => {
+const JobItem = ({ item, revalidate }) => {
   const jobCommands = [
     'retry',
     'remove',
@@ -61,7 +61,7 @@ const JobItem = ({ item, type, revalidate }) => {
 
   const handleCommand = async (command) => {
     try {
-      await http.patch(`/jobs/${item.id}`, { command, id: item.id, type });
+      await http.patch(`/jobs/${item.id}`, { command });
       revalidate();
     } catch (error) {
       toast({
@@ -72,7 +72,12 @@ const JobItem = ({ item, type, revalidate }) => {
       });
     }
   };
-  const failedReason = item.failedReason && JSON.parse(item.failedReason);
+  let failedReason;
+  try {
+    failedReason = item.failedReason && JSON.parse(item.failedReason);
+  } catch (error) {
+    // swallow error
+  }
   return (
     <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
       <Box d="flex" width="100%">
@@ -172,7 +177,7 @@ const JobItem = ({ item, type, revalidate }) => {
         </Box>
       </Box>
       <Collapse isOpen={isLogsOpen} width="100%">
-        {isLogsOpen && <JobLogs item={item} type={type} />}
+        {isLogsOpen && <JobLogs item={item} />}
       </Collapse>
     </Box>
   );
