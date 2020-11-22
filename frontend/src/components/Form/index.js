@@ -1,7 +1,7 @@
 import React, { useCallback, useState, forwardRef } from 'react';
 import { Box } from '@chakra-ui/core';
 import { FormContext } from 'react-hook-form';
-import { useMounted } from '@/hooks';
+import { useMounted } from '../../hooks';
 
 export { default as SelectField } from './SelectField';
 export { default as SliderField } from './SliderField';

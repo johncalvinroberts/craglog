@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { PseudoBox, Text, Box } from '@chakra-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-import { boards } from '@/constants';
-import { calculateSequenceTimeInWords } from '@/utils';
+import { boards } from '../constants';
+import { calculateSequenceTimeInWords } from '../utils';
 import { hangBoardMap } from './hangboards';
 
 const SequenceCard = ({ sequence, children, ...props }) => {

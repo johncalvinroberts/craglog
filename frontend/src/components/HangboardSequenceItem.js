@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, useColorMode } from '@chakra-ui/core';
-import { camelCaseToTitleCase } from '@/utils';
+import { camelCaseToTitleCase } from '../utils';
 
 const bg = { light: 'white', dark: 'gray.800' };
 const HangboardSequenceItem = ({ isActive, item, children, ...rest }) => {

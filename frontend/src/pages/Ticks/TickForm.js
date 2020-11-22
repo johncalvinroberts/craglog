@@ -10,18 +10,18 @@ import {
   topRopeTickTypeEnum,
   boulderTickTypeEnum,
   notesPlaceHolders,
-} from '@/constants';
+} from '../../constants';
 import Form, {
   TextAreaField,
   SelectField,
   TextField,
   SliderField,
-} from '@/components/Form';
-import { toggleMobileNav } from '@/states';
-import { useDispatch } from '@/components/State';
-import { UtilBar } from '@/components/DashboardHeader';
-import { camelCaseToTitleCase } from '@/utils';
-import http from '@/http';
+} from '../../components/Form';
+import { toggleMobileNav } from '../../states';
+import { useDispatch } from '../../components/State';
+import { UtilBar } from '../../components/DashboardHeader';
+import { camelCaseToTitleCase } from '../../utils';
+import http from '../../http';
 
 const validationSchema = yup.object().shape({
   type: yup

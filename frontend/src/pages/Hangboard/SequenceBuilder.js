@@ -3,10 +3,10 @@ import _get from 'lodash/get';
 import { Box, Icon, Text, IconButton } from '@chakra-ui/core';
 import { useFormContext } from 'react-hook-form';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import PseudoButton from '@/components/PseudoButton';
-import HangboardSequenceItem from '@/components/HangboardSequenceItem';
-import { hangBoardMap } from '@/components/hangboards';
-import { useArrayFieldUtils, useHover } from '@/hooks';
+import PseudoButton from '../../components/PseudoButton';
+import HangboardSequenceItem from '../../components/HangboardSequenceItem';
+import { hangBoardMap } from '../../components/hangboards';
+import { useArrayFieldUtils, useHover } from '../../hooks';
 import SequenceBuilderItemFields from './SequenceBuilderItemFields';
 
 const draggingBoxShadow = '1px 2px 4px 0px rgba(78, 78, 78, 0.28)';

@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
 import useSWR, { mutate } from 'swr';
-import { useTitle, useCountdown } from '@/hooks';
+import { hangBoardMap } from '../../components/hangboards';
+import PseudoButton from '../../components/PseudoButton';
+import http from '../../http';
+import { useDispatch } from '../../components/State';
+import { toggleMobileNav } from '../../states';
 import {
   getErrorMessage,
   formatMs,
   getUuidV4,
   camelCaseToTitleCase,
   calculateSequenceTimeInWords,
-} from '@/utils';
-import { hangBoardMap } from '@/components/hangboards';
-import http from '@/http';
-import PseudoButton from '@/components/PseudoButton';
-import { useDispatch } from '@/components/State';
-import { toggleMobileNav } from '@/states';
+} from '../../utils';
+import { useTitle, useCountdown } from '../../hooks';
 
 const REST_MS_INTERVAL = 1000;
 const EXERCISE_MS_INTERVAL = 100;

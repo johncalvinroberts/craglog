@@ -11,13 +11,13 @@ import {
 } from '@chakra-ui/core';
 import { useSWRInfinite } from 'swr';
 import { Link as RouterLink } from 'react-router-dom';
-import http from '@/http';
-import EmptyView from '@/components/EmptyView';
-import SequenceCard from '@/components/SequenceCard';
-import { QuietLink } from '@/components/Link';
-import DeleteModal from '@/components/DeleteModal';
-import { useTitle, useHover } from '@/hooks';
-import { getErrorMessage } from '@/utils';
+import EmptyView from '../../components/EmptyView';
+import SequenceCard from '../../components/SequenceCard';
+import { QuietLink } from '../../components/Link';
+import DeleteModal from '../../components/DeleteModal';
+import http from '../../http';
+import { useTitle, useHover } from '../../hooks';
+import { getErrorMessage } from '../../utils';
 
 const SequenceListCard = ({ sequence }) => {
   const [hovered, bindHover] = useHover();

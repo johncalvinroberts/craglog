@@ -1,8 +1,8 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useToast } from '@chakra-ui/core';
-import { useAuthState } from '@/hooks';
-import NotFound from '@/pages/NotFound';
+import { useAuthState } from '../hooks';
+import NotFound from '../pages/NotFound';
 
 const ProtectedRoute = ({
   component: Component,

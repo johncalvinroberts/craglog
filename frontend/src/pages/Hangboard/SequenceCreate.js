@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 import { mutate } from 'swr';
 import { useToast } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
-import { boards } from '@/constants';
-import http from '@/http';
-import { useTitle } from '@/hooks';
-import { getErrorMessage } from '@/utils';
+import { boards } from '../../constants';
+import http from '../../http';
+import { useTitle } from '../../hooks';
+import { getErrorMessage } from '../../utils';
 import SequenceForm from './SequenceForm';
 
 export const sequenceItemDefaultValue = {

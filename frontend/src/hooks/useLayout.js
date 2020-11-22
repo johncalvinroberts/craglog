@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { useDispatch } from '@/components/State';
+import { useDispatch } from '../components/State';
 
 export default (Layout) => {
   const dispatch = useDispatch();

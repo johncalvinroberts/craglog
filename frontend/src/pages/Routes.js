@@ -13,10 +13,10 @@ import {
   StatHelpText,
   useToast,
 } from '@chakra-ui/core';
-import DashboardWrapper from '@/components/DashboardWrapper';
-import RouteCard from '@/components/RouteCard';
-import { useTitle, useThrottle } from '@/hooks';
-import http from '@/http';
+import DashboardWrapper from '../components/DashboardWrapper';
+import RouteCard from '../components/RouteCard';
+import http from '../http';
+import { useTitle, useThrottle } from '../hooks';
 
 const composeUrlString = ({ query, offset }) => {
   const params = new URLSearchParams({
