@@ -103,6 +103,10 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   const [currentItem, setCurrentItem] = useState(stack[0]);
   const { timeRemaining, start, reset, expire } = useCountdown();
 
+  const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
+  const isDone = !isRunning && !currentItem;
+  const totalLength = data.sequence?.length;
+
   const handleStart = async () => {
     setIsRunning(true);
     isRunningRef.current = true;
@@ -146,11 +150,6 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
       handleDone({ type: 'hangboard' });
     }
   }, [isDone, handleDone]);
-
-  const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
-  const isDone = !isRunning && !currentItem;
-  const totalLength = data.sequence?.length;
-
   return (
     <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">
       <Box flex="0 0 100%" p={2} display="flex" justifyContent="space-between">

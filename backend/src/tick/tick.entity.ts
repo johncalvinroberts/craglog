@@ -92,7 +92,7 @@ export class TickEntity {
     array: false,
     nullable: true,
   })
-  route: RouteSnapshot[];
+  routeSnapshot: RouteSnapshot;
 
   @Column('int', { nullable: true })
   @Max(100)
