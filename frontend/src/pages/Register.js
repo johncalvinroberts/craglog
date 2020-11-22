@@ -11,30 +11,17 @@ import {
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
-import { useTitle, useAuthState } from '@/hooks';
-import LoginLayout from '@/components/LogInLayout';
-import { useDispatch } from '@/components/State';
-import Form, { TextField } from '@/components/Form';
+import LoginLayout from '../components/LogInLayout';
+import { useDispatch } from '../components/State';
+import Form, { TextField } from '../components/Form';
 
-import { performRegistration, performLogin } from '@/states';
+import { performRegistration, performLogin } from '../states';
+import { useTitle, useAuthState } from '../hooks';
 
 const validationSchema = yup.object().shape({
-  username: yup
-    .string()
-    .required()
-    .min(6)
-    .max(250),
-  email: yup
-    .string()
-    .email()
-    .required()
-    .min(5)
-    .max(250),
-  password: yup
-    .string()
-    .required()
-    .min(8)
-    .max(20),
+  username: yup.string().required().min(6).max(250),
+  email: yup.string().email().required().min(5).max(250),
+  password: yup.string().required().min(8).max(20),
 });
 
 const defaultValues = {

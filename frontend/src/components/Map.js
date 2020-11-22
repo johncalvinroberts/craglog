@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Spinner, Text } from '@chakra-ui/core';
 import GoogleMap from 'google-map-react';
-import { useWindowSize } from '@/hooks';
-import { GOOGLE_MAPS_API_KEY, fallbackPosition } from '@/constants';
+import { useWindowSize } from '../hooks';
+import { GOOGLE_MAPS_API_KEY, fallbackPosition } from '../constants';
 
 const defaultWidth = ['24rem', '30rem', '30rem', '42rem', '46rem'];
 

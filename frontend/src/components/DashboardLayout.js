@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@chakra-ui/core';
-import { useRouteChanged } from '@/hooks';
+import { useRouteChanged } from '../hooks';
 import DashboardHeader from './DashboardHeader';
 import SideNav from './SideNav';
 import MobileNav from './MobileNav';

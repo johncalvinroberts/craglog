@@ -2,9 +2,9 @@ import React, { useEffect, useCallback } from 'react';
 import useSWR, { mutate } from 'swr';
 import { useToast, Spinner } from '@chakra-ui/core';
 import { useHistory } from 'react-router-dom';
-import http from '@/http';
-import useTitle from '@/hooks/useTitle';
-import { getErrorMessage } from '@/utils';
+import http from '../../http';
+import useTitle from '../../hooks/useTitle';
+import { getErrorMessage } from '../../utils';
 import SequenceForm from './SequenceForm';
 
 const SequenceEdit = ({ match }) => {

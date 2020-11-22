@@ -1,6 +1,6 @@
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import { getInnerText } from '@/utils';
-import { useDispatch } from '@/components/State';
+import { getInnerText } from '../utils';
+import { useDispatch } from '../components/State';
 
 // write the title to the document
 // and to the global 'Interface' store

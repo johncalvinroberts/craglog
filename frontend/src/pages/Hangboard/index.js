@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import NotFound from '@/pages/NotFound';
+import NotFound from '../NotFound';
 import SequenceList from './SequenceList';
 import SequenceCreate from './SequenceCreate';
 import SequenceEdit from './SequenceEdit';

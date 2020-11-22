@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHangboardColors } from '@/hooks';
+import { useHangboardColors } from '../../hooks';
 
 const noop = () => {};
 

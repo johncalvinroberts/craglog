@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { Box, Button } from '@chakra-ui/core';
-import Form, { SelectField, TextField } from '@/components/Form';
-import { useWindowSize } from '@/hooks';
-import { useDispatch } from '@/components/State';
-import { toggleMobileNav } from '@/states';
-import { boards } from '@/constants';
-import { UtilBar } from '@/components/DashboardHeader';
+import Form, { SelectField, TextField } from '../../components/Form';
+import { useDispatch } from '../../components/State';
+import { toggleMobileNav } from '../../states';
+import { boards } from '../../constants';
+import { UtilBar } from '../../components/DashboardHeader';
+import { useWindowSize } from '../../hooks';
 import SequenceBuilder from './SequenceBuilder';
 import SequenceBuilderMobile from './SequenceBuilderMobile';
 
@@ -24,33 +24,15 @@ const validationSchema = yup.object().shape({
     })
     .of(
       yup.object().shape({
-        rest: yup
-          .number()
-          .nullable()
-          .default(0)
-          .label('rest'),
-        repetitions: yup
-          .number()
-          .default(0)
-          .nullable()
-          .label('repetitions'),
-        duration: yup
-          .number()
-          .default(0)
-          .nullable()
-          .label('duration'),
+        rest: yup.number().nullable().default(0).label('rest'),
+        repetitions: yup.number().default(0).nullable().label('repetitions'),
+        duration: yup.number().default(0).nullable().label('duration'),
         customExerciseName: yup
           .string()
           .nullable()
           .label('Custom Exercise Name'),
-        exercise: yup
-          .string()
-          .required()
-          .label('exercise'),
-        activeHolds: yup
-          .array()
-          .default([])
-          .label('Holds'),
+        exercise: yup.string().required().label('exercise'),
+        activeHolds: yup.array().default([]).label('Holds'),
       }),
     ),
 });

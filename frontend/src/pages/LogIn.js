@@ -11,24 +11,15 @@ import {
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
-import LoginLayout from '@/components/LogInLayout';
-import { useTitle, useAuthState } from '@/hooks';
-import { performLogin } from '@/states';
-import { useDispatch } from '@/components/State';
-import Form, { TextField } from '@/components/Form';
+import LoginLayout from '../components/LogInLayout';
+import { performLogin } from '../states';
+import { useDispatch } from '../components/State';
+import Form, { TextField } from '../components/Form';
+import { useTitle, useAuthState } from '../hooks';
 
 const validationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email()
-    .required()
-    .min(5)
-    .max(250),
-  password: yup
-    .string()
-    .required()
-    .min(8)
-    .max(20),
+  email: yup.string().email().required().min(5).max(250),
+  password: yup.string().required().min(8).max(20),
 });
 
 const defaultValues = {

@@ -1,4 +1,4 @@
-import { addReducer } from '@/components/State';
+import { addReducer } from '../components/State';
 
 const stateKey = 'UI';
 const initialState = { Title: 'craglog', showMobileNav: true };

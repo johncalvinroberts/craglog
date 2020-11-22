@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Icon } from '@chakra-ui/core';
-import { useTitle } from '@/hooks';
-import DashboardWrapper from '@/components/DashboardWrapper';
+import DashboardWrapper from '../../components/DashboardWrapper';
+import { useTitle } from '../../hooks';
 import JobsCountData from './JobsCountData';
 import JobsDataGrid from './JobsDataGrid';
 

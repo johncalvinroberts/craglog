@@ -12,8 +12,8 @@ import {
   Button,
 } from '@chakra-ui/core';
 import useSWR from 'swr';
-import PseudoButton from '@/components/PseudoButton';
-import http from '@/http';
+import PseudoButton from '../../components/PseudoButton';
+import http from '../../http';
 
 const JobsCountData = ({ params, handleChangeParams }) => {
   const toast = useToast();

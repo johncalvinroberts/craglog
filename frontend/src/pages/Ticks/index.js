@@ -1,8 +1,8 @@
 import React, { Suspense, lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Loading from '@/components/Loading';
-import DashboardLayout from '@/components/DashboardLayout';
-import DashboardWrapper from '@/components/DashboardWrapper';
+import Loading from '../../components/Loading';
+import DashboardLayout from '../../components/DashboardLayout';
+import DashboardWrapper from '../../components/DashboardWrapper';
 import NotFound from '../NotFound';
 import TickList from './TickList';
 

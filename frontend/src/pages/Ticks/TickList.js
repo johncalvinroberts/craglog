@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useMemo } from 'react';
 import isValid from 'date-fns/isValid';
 import format from 'date-fns/format';
-import { useTitle } from '@/hooks';
-import { DATE_INPUT_FORMAT } from '@/constants';
+import { DATE_INPUT_FORMAT } from '../../constants';
+import { useTitle } from '../../hooks';
 import TickStats from './TickStats';
 import TickDataGrid from './TickDataGrid';
 

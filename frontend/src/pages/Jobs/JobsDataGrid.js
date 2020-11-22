@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Spinner, Heading, Button, Text, useToast } from '@chakra-ui/core';
 import useSWR from 'swr';
-import http from '@/http';
+import http from '../../http';
 import JobItem from './JobItem';
 
 const JobsDataGrid = ({ params }) => {

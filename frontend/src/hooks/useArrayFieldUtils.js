@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { getUuidV4, move as moveUtil, insert } from '@/utils';
+import { getUuidV4, move as moveUtil, insert } from '../utils';
 
 /* eslint-disable no-restricted-syntax */
 export default (arrName) => {
