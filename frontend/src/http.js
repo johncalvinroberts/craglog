@@ -5,44 +5,38 @@ const POST = 'POST';
 const PATCH = 'PATCH';
 const DELETE = 'DELETE';
 
-// TODO: refactor to use Proxy
-class Http {
-  constructor() {
-    this.token = localStorage.getItem(TOKEN_KEY);
+let token = localStorage.getItem(TOKEN_KEY);
+
+const easyFetch = async ({ url, method, body = {} }) => {
+  const headers = {
+    'content-type': 'application/json',
+    accept: 'application/json, text/plain, */*',
+    ...(token ? { authorization: `Bearer ${token}` } : null),
+  };
+
+  const options = {
+    headers,
+    method,
+    ...(method !== GET ? { body: JSON.stringify(body) } : null),
+  };
+  const res = await fetch(API_BASE_PATH + url, options);
+  const value = await res.json();
+  if (!res.ok) {
+    throw value;
+  } else {
+    return value;
   }
+};
 
-  setToken = (token) => {
-    this.token = token;
-  };
+const http = {
+  get: async (url) => easyFetch({ url, method: GET }),
+  post: (url, body) => easyFetch({ url, method: POST, body }),
+  patch: (url, body) => easyFetch({ url, method: PATCH, body }),
+  delete: (url) => easyFetch({ url, method: DELETE }),
+  setToken: (nextToken) => {
+    token = nextToken;
+    localStorage.setItem(TOKEN_KEY, nextToken);
+  },
+};
 
-  fetch = async ({ url, method, body = {} }) => {
-    const headers = {
-      'content-type': 'application/json',
-      accept: 'application/json, text/plain, */*',
-      ...(this.token ? { authorization: `Bearer ${this.token}` } : null),
-    };
-
-    const options = {
-      headers,
-      method,
-      ...(method !== GET ? { body: JSON.stringify(body) } : null),
-    };
-    const res = await fetch(API_BASE_PATH + url, options);
-    const value = await res.json();
-    if (!res.ok) {
-      throw value;
-    } else {
-      return value;
-    }
-  };
-
-  get = async (url) => this.fetch({ url, method: GET });
-
-  post = (url, body) => this.fetch({ url, method: POST, body });
-
-  patch = (url, body) => this.fetch({ url, method: PATCH, body });
-
-  delete = (url) => this.fetch({ url, method: DELETE });
-}
-
-export default new Http();
+export default http;
