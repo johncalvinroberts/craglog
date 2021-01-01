@@ -17,10 +17,10 @@ export default () => {
     await delay(durationMs);
   };
 
-  const reset = useCallback(() => {
+  const reset = () => {
     setCanStart(false);
     setTimeRemaining(0);
-  }, [setCanStart, setTimeRemaining]);
+  };
 
   const expire = useCallback(() => {
     setCanStart(false);

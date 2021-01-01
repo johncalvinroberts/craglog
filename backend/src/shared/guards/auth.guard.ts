@@ -21,11 +21,15 @@ export class AuthGuard implements CanActivate {
     if (!authHeaders || !token) {
       throw new UnauthorizedException();
     }
-
-    const decoded: any = jwt.verify(
-      token,
-      this.configService.get('JWT_SECRET'),
-    );
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, this.configService.get('JWT_SECRET'));
+    } catch (error) {
+      if (error.message === 'jwt expired') {
+        throw new UnauthorizedException();
+      }
+      throw error;
+    }
 
     const user = await this.userService.findById(decoded.id);
     if (!user) {

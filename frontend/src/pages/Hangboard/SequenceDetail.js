@@ -73,7 +73,7 @@ const normalizeSequenceToStack = (sequence) => {
     }
 
     if (current.repetitions) {
-      memo.push(current); // what to do here?
+      memo.push(current); // TODO: what to do here?
     }
     // add rest to the stack too
     if (current.rest) {
@@ -136,6 +136,7 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
     isRunningRef.current = isRunning;
   }, [isRunning]);
 
+  // end the workout
   useEffect(() => {
     if (stack.length === 0) {
       setCurrentItem(undefined);
@@ -147,9 +148,10 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
 
   useEffect(() => {
     if (isDone) {
-      handleDone({ type: 'hangboard' });
+      handleDone({ type: 'workout', style: 'hangboard', tickDate: new Date() });
     }
   }, [isDone, handleDone]);
+
   return (
     <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">
       <Box flex="0 0 100%" p={2} display="flex" justifyContent="space-between">

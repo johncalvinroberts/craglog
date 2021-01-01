@@ -19,38 +19,6 @@ export default (arrName) => {
   const [, setCount] = useState(0);
 
   useEffect(() => {
-    const initialArray = defaultValues[arrName] || [];
-    const initialIndexes = [];
-    const appendValuesToSet = [];
-    for (const item of initialArray) {
-      const id = getUuidV4();
-      initialIndexes.push({ id });
-      const nameBase = `${arrName}[${id}]`;
-      for (const [key, value] of Object.entries(item)) {
-        appendValuesToSet.push({ key: `${nameBase}.${key}`, value });
-      }
-    }
-    setValuesToSet(appendValuesToSet);
-    setIndexes(initialIndexes);
-  }, [arrName, defaultValues, setValue]);
-
-  useEffect(() => {
-    if (valuesToSet.length > 0) {
-      for (const { key, value } of valuesToSet) {
-        setValue(key, value);
-      }
-      setValuesToSet([]);
-    }
-  }, [setValue, valuesToSet]);
-
-  useEffect(() => {
-    const { newId, idToDuplicate } = idsToCopy;
-    if (newId && idToDuplicate) {
-      copyValues(idsToCopy);
-    }
-  }, [copyValues, idsToCopy]);
-
-  useEffect(() => {
     const relevantErrors = errors[arrName];
     clearError(arrName);
     if (relevantErrors && relevantErrors.length > 0) {
@@ -122,6 +90,39 @@ export default (arrName) => {
     },
     [arrName, getValues, unregister],
   );
+
+  useEffect(() => {
+    const initialArray = defaultValues[arrName] || [];
+    const initialIndexes = [];
+    const appendValuesToSet = [];
+    for (const item of initialArray) {
+      const id = getUuidV4();
+      initialIndexes.push({ id });
+      const nameBase = `${arrName}[${id}]`;
+      for (const [key, value] of Object.entries(item)) {
+        appendValuesToSet.push({ key: `${nameBase}.${key}`, value });
+      }
+    }
+    setValuesToSet(appendValuesToSet);
+    setIndexes(initialIndexes);
+  }, [arrName, defaultValues, setValue]);
+
+  useEffect(() => {
+    if (valuesToSet.length > 0) {
+      for (const { key, value } of valuesToSet) {
+        setValue(key, value);
+      }
+      setValuesToSet([]);
+    }
+  }, [setValue, valuesToSet]);
+
+  useEffect(() => {
+    const { newId, idToDuplicate } = idsToCopy;
+    if (newId && idToDuplicate) {
+      copyValues(idsToCopy);
+    }
+  }, [copyValues, idsToCopy]);
+
   return { move, remove, add, indexes, duplicate };
 };
 

@@ -26,6 +26,7 @@ export enum TickTypeEnum {
   retreat,
   attempt,
   utterFailure,
+  workout,
 }
 
 export enum TickStyleEnum {

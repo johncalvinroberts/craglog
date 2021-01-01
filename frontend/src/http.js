@@ -22,6 +22,10 @@ const easyFetch = async ({ url, method, body = {} }) => {
   const res = await fetch(API_BASE_PATH + url, options);
   const value = await res.json();
   if (!res.ok) {
+    if (res.status === 401 && token) {
+      localStorage.removeItem(TOKEN_KEY);
+      token = undefined;
+    }
     throw value;
   } else {
     return value;

@@ -15,7 +15,7 @@ import { RouteSnapshot } from '../tick.entity';
 export class CreateTickDto {
   @IsEnum(TickTypeEnum)
   @ApiProperty()
-  @IsOptional()
+  @IsNotEmpty()
   @MaxLength(500)
   type: string;
 
@@ -24,6 +24,11 @@ export class CreateTickDto {
   @ApiProperty()
   @MaxLength(500)
   style: string;
+
+  @IsNotEmpty()
+  @IsDateString()
+  @ApiProperty()
+  tickDate: Date;
 
   @ValidateIf((tick) => routeStyles.includes(tick.style))
   @IsOptional()
@@ -34,11 +39,6 @@ export class CreateTickDto {
   @MaxLength(2000)
   @ApiProperty()
   notes = '';
-
-  @IsNotEmpty()
-  @IsDateString()
-  @ApiProperty()
-  tickDate: Date;
 
   @Max(100)
   @IsOptional()
