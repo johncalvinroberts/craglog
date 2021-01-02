@@ -18,6 +18,18 @@ const defaultValues = {
   physicalRating: null,
   gymName: '',
   location: '',
+  routeSnapshot: {
+    externalUrl: '',
+    area: '',
+    bolts: 0,
+    cragName: '',
+    grade: '',
+    height: '',
+    location: '',
+    name: '',
+    region: '',
+    style: '',
+  },
 };
 
 const LogCreate = () => {

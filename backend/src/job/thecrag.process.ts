@@ -105,10 +105,10 @@ async function fetchAndFormatRoute(url, job) {
   const cragName = $(breadCrumbs[breadCrumbs.length - 2])
     .text()
     .trim();
-  const region = $(breadCrumbs[breadCrumbs.length - 3])
+  const area = $(breadCrumbs[breadCrumbs.length - 3])
     .text()
     .trim();
-  const area = $(breadCrumbs[breadCrumbs.length - 4])
+  const region = $(breadCrumbs[breadCrumbs.length - 4])
     .text()
     .trim();
 

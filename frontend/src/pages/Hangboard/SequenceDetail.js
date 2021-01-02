@@ -100,6 +100,7 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
 
   const stackRef = useRef();
   const isRunningRef = useRef();
+  const currentItemRef = useRef();
   const [currentItem, setCurrentItem] = useState(stack[0]);
   const { timeRemaining, start, reset, expire } = useCountdown();
 
@@ -110,9 +111,9 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   const handleStart = async () => {
     setIsRunning(true);
     isRunningRef.current = true;
-    for (const item of stack) {
-      setCurrentItem(item);
+    for (const item of stackRef.current) {
       if (!isRunningRef.current) break;
+      setCurrentItem(item);
       await start(item.duration, item.interval);
       const [, ...nextStack] = stackRef.current;
       setStack(nextStack);
@@ -121,10 +122,14 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   };
 
   const handlePause = () => {
-    setIsRunning(false);
     const [, ...endOfNextStack] = stackRef.current;
-    const nextHeadItem = { ...currentItem, duration: timeRemaining };
+    const nextHeadItem = {
+      ...currentItemRef.current,
+      duration: timeRemaining,
+    };
     setStack([nextHeadItem, ...endOfNextStack]);
+    setCurrentItem(nextHeadItem);
+    setIsRunning(false);
     expire();
   };
 
@@ -135,6 +140,10 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   useEffect(() => {
     isRunningRef.current = isRunning;
   }, [isRunning]);
+
+  useEffect(() => {
+    currentItemRef.current = currentItem;
+  }, [currentItem]);
 
   // end the workout
   useEffect(() => {

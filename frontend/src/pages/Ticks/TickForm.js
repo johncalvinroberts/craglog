@@ -17,10 +17,11 @@ import Form, {
   TextField,
   SliderField,
 } from '../../components/Form';
+import RouteCard from '../../components/RouteCard';
 import { toggleMobileNav } from '../../states';
 import { useDispatch } from '../../components/State';
 import { UtilBar } from '../../components/DashboardHeader';
-import { camelCaseToTitleCase } from '../../utils';
+import { camelCaseToTitleCase, delay } from '../../utils';
 import http from '../../http';
 
 const validationSchema = yup.object().shape({
@@ -54,6 +55,15 @@ const validationSchema = yup.object().shape({
   location: yup.string(),
   routeSnapshot: yup.object().shape({
     externalUrl: yup.string().url().nullable(),
+    area: yup.string(),
+    bolts: yup.number().nullable(),
+    cragName: yup.string().nullable(),
+    grade: yup.string().nullable(),
+    height: yup.string().nullable(),
+    location: yup.array().of(yup.string()).nullable(),
+    name: yup.string().nullable(),
+    region: yup.string().nullable(),
+    style: yup.string().nullable(),
   }),
 });
 
@@ -84,6 +94,18 @@ const notePlaceHolder =
     Math.floor(Math.random() * Math.ceil(notesPlaceHolders.length - 1))
   ];
 
+const fieldsToManuallyRegister = [
+  'routeSnapshot.area',
+  'routeSnapshot.bolts',
+  'routeSnapshot.cragName',
+  'routeSnapshot.grade',
+  'routeSnapshot.height',
+  'routeSnapshot.location',
+  'routeSnapshot.name',
+  'routeSnapshot.region',
+  'routeSnapshot.style',
+];
+
 // TickForrm -> main component entrypoint
 const TickForm = ({ defaultValues, onSubmit }) => {
   const dispatch = useDispatch();
@@ -92,15 +114,14 @@ const TickForm = ({ defaultValues, onSubmit }) => {
 
   const formMethods = useForm({ validationSchema, defaultValues });
 
-  const { watch } = formMethods;
+  const { watch, setValue, register } = formMethods;
 
-  const { style, 'routeSnapshot.externalUrl': externalUrl } = watch([
-    'style',
-    'routeSnapshot.externalUrl',
-  ]);
+  const { style, routeSnapshot } = watch(['style', 'routeSnapshot']);
   const isOutdoor = outdoorStyleEnum.includes(style);
+  const externalUrl = routeSnapshot?.externalUrl;
 
   const formRef = useRef();
+  const importJobIdRef = useRef();
   const toast = useToast();
 
   const handleImport = async () => {
@@ -126,9 +147,30 @@ const TickForm = ({ defaultValues, onSubmit }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log({ importJobId });
-  }, [importJobId]);
+    async function poll(id) {
+      try {
+        const job = await http.get(`/jobs/${id}`);
+        if (!job.finishedOn) {
+          await delay(1000);
+          return poll(id);
+        }
+        const routeSnapshot = job?.returnvalue;
+        setValue('routeSnapshot', routeSnapshot);
+        setIsImporting(false);
+      } catch (error) {
+        toast({ description: error.message || 'Something broke' });
+      }
+    }
+    importJobIdRef.current = importJobId;
+    if (importJobId) {
+      poll(importJobId);
+    }
+  }, [importJobId, toast, setValue]);
 
+  useEffect(() => {
+    // eslint-disable-next-line
+    for (const field of fieldsToManuallyRegister) register(field);
+  }, [register]);
   return (
     <Form
       onSubmit={onSubmit}
@@ -191,6 +233,11 @@ const TickForm = ({ defaultValues, onSubmit }) => {
         {isOutdoor && (
           <Box>
             <Heading size="md">Import Route</Heading>
+            {routeSnapshot && !isImporting && routeSnapshot.name && (
+              <Box mb={2}>
+                <RouteCard route={routeSnapshot} />
+              </Box>
+            )}
             <Box my={4} d="flex">
               <TextField
                 placeholder="Enter URL"
