@@ -31,9 +31,9 @@ const TickStats = ({
   query,
 }) => {
   const toast = useToast();
-
+  const params = new URLSearchParams({ ...query });
   const { data: stats, error: statsError } = useSWR(
-    `/tick/stats?${query}`,
+    `/tick/stats?${params.toString()}`,
     http.get,
   );
 

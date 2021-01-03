@@ -208,9 +208,9 @@ const TickCard = ({ item, dictKey }) => {
               <TickStyleChip style={item.style} />
               <TickTypeChip type={item.type} />
             </Box>
-            {item.route && (
+            {item.routeSnapshot && (
               <RouteCard
-                route={item.route}
+                route={item.routeSnapshot}
                 showLink={false}
                 showStyle={false}
                 wrapperStyleProps={{
@@ -357,7 +357,12 @@ const TickDataGrid = ({ query }) => {
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.length) return null; // reached the end
     const offSet = pageIndex + 1 * 10 - 10;
-    return `/tick?take=10&skip=${offSet}&${query}`;
+    const params = new URLSearchParams({
+      take: 10,
+      skip: offSet,
+      ...query,
+    });
+    return `/tick?${params.toString()}`;
   };
 
   const { data, error, size, setSize, isValidating } = useSWRInfinite(

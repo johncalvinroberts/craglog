@@ -37,12 +37,12 @@ const getUrlParams = ({ timeParameters, timeParameterType }) => {
 
   if (!startDate && !endDate) return '';
 
-  const query = new URLSearchParams({
+  const query = {
     ...(startDate ? { startDate: startDate.toISOString() } : null),
     ...(endDate ? { endDate: endDate.toISOString() } : null),
-  });
+  };
 
-  return query.toString();
+  return query;
 };
 
 const TicksList = () => {

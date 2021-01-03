@@ -16,8 +16,18 @@ const RouteCard = ({
       py={2}
       {...wrapperStyleProps}
     >
-      <Box d="flex" width="100%" alignItems="baseline" {...innerStyleProps}>
-        <Box d="flex" alignItems="baseline">
+      <Box
+        d="flex"
+        width="100%"
+        alignItems="baseline"
+        {...innerStyleProps}
+        flexWrap="wrap"
+      >
+        <Box
+          d={['block', 'flex']}
+          alignItems="baseline"
+          flex={['0 0 100%', 'initial']}
+        >
           <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium">
             {route.name}
           </Text>
@@ -30,7 +40,7 @@ const RouteCard = ({
             </Text>
           )}
         </Box>
-        <Text mx={2} fontSize="xs" flex="1">
+        <Text mx={[0, 2]} fontSize="xs" flex="1" lineHeight="normal">
           <span>
             {route.region} <Icon name="chevron-right" />{' '}
           </span>

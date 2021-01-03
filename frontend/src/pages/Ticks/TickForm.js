@@ -36,14 +36,6 @@ const validationSchema = yup.object().shape({
       then: yup.string().required(),
     }),
   style: yup.string().required().oneOf(tickStyleEnum, 'Please choose a style'),
-  routeId: yup.string().when('style', {
-    is: (val) => outdoorStyleEnum.includes(val),
-    then: yup
-      .string()
-      .required('Please choose a route')
-      .typeError('Please choose a route'),
-    otherwise: yup.string().nullable(),
-  }),
   notes: yup.string().max(2000),
   tickDate: yup
     .date('Please choose a date')
@@ -151,7 +143,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       try {
         const job = await http.get(`/jobs/${id}`);
         if (!job.finishedOn) {
-          await delay(1000);
+          await delay(1500);
           return poll(id);
         }
         const routeSnapshot = job?.returnvalue;
