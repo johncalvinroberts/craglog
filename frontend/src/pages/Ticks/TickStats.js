@@ -13,6 +13,7 @@ import {
   Input,
 } from '@chakra-ui/core';
 import useSWR from 'swr';
+import PseudoButton from '../../components/PseudoButton';
 import { getErrorMessage } from '../../utils';
 import http from '../../http';
 
@@ -28,10 +29,13 @@ const TickStats = ({
   handleChangeTimeParameter,
   timeParameterType,
   timeParameters,
+  style,
+  setStyle,
   query,
 }) => {
   const toast = useToast();
-  const params = new URLSearchParams({ ...query });
+  const { style: _, ...restQuery } = query;
+  const params = new URLSearchParams({ ...restQuery });
   const { data: stats, error: statsError } = useSWR(
     `/tick/stats?${params.toString()}`,
     http.get,
@@ -46,6 +50,14 @@ const TickStats = ({
       });
     }
   }, [statsError, toast]);
+
+  const handleChooseStyle = (key) => {
+    if (key === 'total') {
+      setStyle('');
+    } else {
+      setStyle(key);
+    }
+  };
 
   return (
     <>
@@ -63,7 +75,13 @@ const TickStats = ({
         <StatGroup mb={4} justifyContent={['flex-start', 'space-around']}>
           {stats &&
             Object.keys(stats).map((key) => (
-              <Stat flex={['0 0 25%', '1']} key={key}>
+              <Stat
+                flex={['0 0 25%', '1']}
+                key={key}
+                as={PseudoButton}
+                backgroundColor={key === style ? 'gray.500' : null}
+                onClick={() => handleChooseStyle(key)}
+              >
                 <StatNumber as="div">{stats[key]}</StatNumber>
                 <StatHelpText textTransform="capitalize">{key}</StatHelpText>
               </Stat>

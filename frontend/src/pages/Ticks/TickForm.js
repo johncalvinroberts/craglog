@@ -110,7 +110,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
 
   const { style, routeSnapshot } = watch(['style', 'routeSnapshot']);
   const isOutdoor = outdoorStyleEnum.includes(style);
-  const externalUrl = routeSnapshot?.externalUrl;
+  const { externalUrl } = routeSnapshot;
 
   const formRef = useRef();
   const importJobIdRef = useRef();
@@ -146,7 +146,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           await delay(1500);
           return poll(id);
         }
-        const routeSnapshot = job?.returnvalue;
+        const routeSnapshot = job && job.returnvalue;
         setValue('routeSnapshot', routeSnapshot);
         setIsImporting(false);
       } catch (error) {

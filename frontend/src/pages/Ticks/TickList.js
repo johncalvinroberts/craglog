@@ -15,7 +15,7 @@ const defaultStartDate = format(
   DATE_INPUT_FORMAT,
 );
 
-const getUrlParams = ({ timeParameters, timeParameterType }) => {
+const getUrlParams = ({ timeParameters, timeParameterType, style }) => {
   let startDate;
   let endDate;
   if (timeParameterType === 'month') {
@@ -35,11 +35,12 @@ const getUrlParams = ({ timeParameters, timeParameterType }) => {
       : null;
   }
 
-  if (!startDate && !endDate) return '';
+  if (!startDate && !endDate && !style) return '';
 
   const query = {
     ...(startDate ? { startDate: startDate.toISOString() } : null),
     ...(endDate ? { endDate: endDate.toISOString() } : null),
+    ...(style ? { style } : null),
   };
 
   return query;
@@ -54,9 +55,11 @@ const TicksList = () => {
     endDate: defaultEndDate,
   });
 
+  const [style, setStyle] = useState('');
+
   const query = useMemo(
-    () => getUrlParams({ timeParameters, timeParameterType }),
-    [timeParameters, timeParameterType],
+    () => getUrlParams({ timeParameters, timeParameterType, style }),
+    [timeParameters, timeParameterType, style],
   );
 
   const handleChangeTimeParameterType = useCallback((event) => {
@@ -77,6 +80,8 @@ const TicksList = () => {
         timeParameters={timeParameters}
         handleChangeTimeParameterType={handleChangeTimeParameterType}
         timeParameterType={timeParameterType}
+        setStyle={setStyle}
+        style={style}
         query={query}
       />
       <TickDataGrid query={query} />

@@ -17,7 +17,7 @@ export class TickService {
   ) {}
 
   findAll(query, userId) {
-    const { startDate, endDate, orderBy, sort } = query;
+    const { startDate, endDate, orderBy, sort, style } = query;
 
     const order = { [orderBy]: sort };
 
@@ -25,6 +25,7 @@ export class TickService {
       userId,
       ...(startDate ? { tickDate: MoreThan(startDate) } : null),
       ...(endDate ? { tickDate: LessThan(endDate) } : null),
+      ...(style ? { style } : null),
     };
 
     return this.tickRepository.find({

@@ -12,7 +12,6 @@ export class TickQueryDto extends PaginationDto {
   @ApiProperty()
   @IsOptional()
   @IsEnum(TickStyleEnum)
-  @Exclude()
   style: string;
 
   @ApiProperty()
