@@ -106,7 +106,7 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
 
   const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
   const isDone = !isRunning && !currentItem;
-  const totalLength = data.sequence?.length;
+  const totalLength = data.sequence && data.sequence.length;
 
   const handleStart = async () => {
     setIsRunning(true);
