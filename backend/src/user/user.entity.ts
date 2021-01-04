@@ -42,6 +42,12 @@ export class UserEntity {
   @Column('varchar', { array: true })
   roles: string[] = ['user'];
 
+  @Column('varchar', { length: 250, nullable: true })
+  resetToken: string;
+
+  @Column('int', { nullable: true })
+  resetTokenExpiry: number;
+
   @OneToMany(() => TickEntity, (tick) => tick.user)
   ticks: TickEntity[];
 

@@ -1,10 +1,8 @@
-import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult, MoreThan } from 'typeorm';
+import { randomBytes as randomBytesCallback } from 'crypto';
+import { promisify } from 'util';
 import { UserEntity } from './user.entity';
 import {
   LoginUserDto,
@@ -12,11 +10,22 @@ import {
   CreateUserDto,
   AuthenticateUserRo,
   FindUserDto,
+  ForgottenPasswordDto,
+  ResetPasswordDto,
 } from './dto';
 import * as jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { PaginationDto } from '../shared/pagination.dto';
+import {
+  UserNotFoundException,
+  EmailAlreadyUsedException,
+  PasswordResetTokenInvalidException,
+} from '../shared/exceptions';
+
+const randomBytes = promisify(randomBytesCallback);
+
+// TODO: seperate the user vs. auth stuff
 
 @Injectable()
 export class UserService {
@@ -28,7 +37,7 @@ export class UserService {
 
   async findAll(query: PaginationDto): Promise<FindUserDto[]> {
     const res = await this.userRepository.find(query);
-    return res.map((item) => this.buildUserRO(item));
+    return res.map((item) => this.buildUserResponse(item));
   }
 
   findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
@@ -53,12 +62,10 @@ export class UserService {
 
     try {
       const savedUser = await this.userRepository.save(newUser);
-      return this.buildAuthRO(savedUser);
+      return this.buildAuthResponse(savedUser);
     } catch (error) {
       if (parseInt(error.code) === 23505) {
-        throw new ConflictException({
-          message: 'Username or email is taken',
-        });
+        throw EmailAlreadyUsedException();
       } else {
         throw error;
       }
@@ -68,7 +75,7 @@ export class UserService {
   async update(user: UserEntity, dto: UpdateUserDto): Promise<FindUserDto> {
     const update = Object.assign(user, dto);
     const updated = await this.userRepository.save(update);
-    return this.buildUserRO(updated);
+    return this.buildUserResponse(updated);
   }
 
   delete(targetUserId: number, userId: number): Promise<DeleteResult> {
@@ -82,16 +89,15 @@ export class UserService {
     const user = await this.userRepository.findOne(id);
 
     if (!user) {
-      const errors = { User: ' not found' };
-      throw new UnauthorizedException({ errors });
+      throw UserNotFoundException();
     }
 
-    return this.buildUserRO(user);
+    return this.buildUserResponse(user);
   }
 
   async findByEmail(email: string): Promise<FindUserDto> {
     const user = await this.userRepository.findOne({ email: email });
-    return this.buildUserRO(user);
+    return this.buildUserResponse(user);
   }
 
   public generateJWT(user) {
@@ -111,7 +117,7 @@ export class UserService {
     );
   }
 
-  buildAuthRO(user: UserEntity): AuthenticateUserRo {
+  buildAuthResponse(user: UserEntity): AuthenticateUserRo {
     return {
       id: user.id,
       username: user.username,
@@ -123,7 +129,7 @@ export class UserService {
     };
   }
 
-  buildUserRO(user: UserEntity): FindUserDto {
+  buildUserResponse(user: UserEntity): FindUserDto {
     return {
       id: user.id,
       username: user.username,
@@ -154,5 +160,41 @@ export class UserService {
       monthPromise,
     ]);
     return { total, week, month };
+  }
+
+  async forgottenPassword(
+    payload: ForgottenPasswordDto,
+  ): Promise<{ message: string }> {
+    const { email } = payload;
+    const user = await this.userRepository.findOne({ email: email });
+    if (!user) {
+      throw UserNotFoundException();
+    }
+    const resetToken = (await randomBytes(20)).toString('hex');
+    const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = resetTokenExpiry;
+    await this.userRepository.save(user);
+    // TODO: mail the link
+    // reference: https://github.com/wesbos/Advanced-React/blob/fc2b4ef305ccafc6a5cc7aa15446b7f10650fd0e/finished-application/backend/src/resolvers/Mutation.js#L133-L141
+    return { message: 'Thanks!' };
+  }
+
+  async resetPassword(payload: ResetPasswordDto): Promise<AuthenticateUserRo> {
+    const { resetToken, password } = payload;
+    const user = await this.userRepository.findOne({
+      where: {
+        resetToken,
+        resetTokenExpiry: MoreThan(Date.now() - 3600000),
+      },
+    });
+    if (!user) {
+      throw PasswordResetTokenInvalidException();
+    }
+    user.resetTokenExpiry = null;
+    user.resetToken = null;
+    user.password = password; // this will get encrypted by the user model/entity
+    await this.userRepository.save(user);
+    return this.buildAuthResponse(user);
   }
 }

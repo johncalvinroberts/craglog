@@ -18,6 +18,8 @@ import {
   CreateUserDto,
   FindUserDto,
   AuthenticateUserRo,
+  ForgottenPasswordDto,
+  ResetPasswordDto,
 } from './dto';
 import { User } from '../shared/decorators/user.decorator';
 import { RolesGuard } from '../shared/guards/roles.guard';
@@ -68,7 +70,17 @@ export class UserController {
     const errors = { User: ' not found' };
     if (!maybeUser) throw new UnauthorizedException({ errors });
 
-    return this.userService.buildAuthRO(maybeUser);
+    return this.userService.buildAuthResponse(maybeUser);
+  }
+
+  @Post('forgotten-password')
+  forgottenPassword(@Body() body: ForgottenPasswordDto) {
+    return this.userService.forgottenPassword(body);
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() body: ResetPasswordDto) {
+    return this.userService.resetPassword(body);
   }
 
   @Get('stats')
