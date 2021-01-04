@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link as RouterLink } from 'react-router-dom';
 import {
   useToast,
   Menu,
@@ -11,6 +11,7 @@ import {
   useColorMode,
   Box,
 } from '@chakra-ui/core';
+
 import { performLogout } from '../states';
 import { useDispatch } from './State';
 
@@ -58,6 +59,10 @@ const UtilMenu = () => {
               <Box flex="1">
                 Switch to {colorMode === 'light' ? 'Dark' : 'Light'} Mode
               </Box>
+            </MenuItem>
+            <MenuItem as={RouterLink} to="/app/account">
+              <Icon color="current" name="at-sign" mr="2" />
+              Account
             </MenuItem>
             <MenuItem onClick={handleLogout} aria-label="Log out of craglog">
               <Icon color="current" name="arrow-back" mr="2" />

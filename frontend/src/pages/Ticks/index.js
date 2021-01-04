@@ -9,6 +9,7 @@ import TickList from './TickList';
 const Hangboard = lazy(() => import('../Hangboard'));
 const TickCreate = lazy(() => import('./TickCreate'));
 const TickEdit = lazy(() => import('./TickEdit'));
+const Account = lazy(() => import('../Account'));
 
 const Home = ({ match }) => {
   return (
@@ -28,6 +29,7 @@ const Home = ({ match }) => {
               component={TickEdit}
             />
             <Route path={`${match.path}/hangboard`} component={Hangboard} />
+            <Route path={`${match.path}/account`} component={Account} />
             <Route component={NotFound} />
           </Switch>
         </DashboardWrapper>

@@ -17,6 +17,8 @@ const DeleteModal = ({
   onClose,
   handleDelete,
   children,
+  deleteText = 'Delete',
+  cancelText = 'Cancel',
 }) => {
   return (
     <SlideIn in={isOpen}>
@@ -36,7 +38,7 @@ const DeleteModal = ({
                   onClick={handleDelete}
                   mr={2}
                 >
-                  Delete
+                  {deleteText}
                 </Button>
                 <Button
                   aria-label="confirm delete"
@@ -44,7 +46,7 @@ const DeleteModal = ({
                   size="sm"
                   onClick={onClose}
                 >
-                  Cancel
+                  {cancelText}
                 </Button>
               </Box>
             </ModalBody>
