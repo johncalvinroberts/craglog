@@ -16,6 +16,7 @@ const Register = lazy(() => import('../pages/Register'));
 const Jobs = lazy(() => import('../pages/Jobs'));
 const Users = lazy(() => import('../pages/Users'));
 const Ticks = lazy(() => import('../pages/Ticks'));
+const ForgotPassword = lazy(() => import('../pages/ForgotPassword'));
 
 const AdminRoutes = () => {
   return (
@@ -55,6 +56,11 @@ const App = () => {
                     <Route path="/" exact component={Landing} />
                     <Route path="/login" exact component={LogIn} />
                     <Route path="/register" exact component={Register} />
+                    <Route
+                      path="/forgot-password"
+                      exact
+                      component={ForgotPassword}
+                    />
                     <ProtectedRoute path="/app" component={Ticks} />
                     <ProtectedRoute
                       path="/admin"

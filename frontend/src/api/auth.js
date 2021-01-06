@@ -7,3 +7,6 @@ export const postRegistration = (payload) => {
 export const postLogin = async (payload) => {
   return http.post('/user/login', payload);
 };
+
+export const requestPasswordReset = (payload) =>
+  http.post(`/user/forgot-password`, payload);

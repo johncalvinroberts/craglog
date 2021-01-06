@@ -135,7 +135,7 @@ const LogIn = () => {
         >
           Not registered yet? Sign up here.
         </Button>
-        <Button onClick={() => alert('todo')} variant="link" fontSize="sm">
+        <Button as={Link} to="/forgot-password" variant="link" fontSize="sm">
           Forgot your password?
         </Button>
       </Box>

@@ -105,7 +105,8 @@ const MobileAdminMenu = () => {
 const MobileNav = () => {
   const { user } = useAuthState();
   const { showMobileNav } = useUIState();
-  const isAdmin = user.roles.includes('admin');
+  const isAdmin = user && user.roles && user.roles.includes('admin');
+
   return (
     <>
       {showMobileNav && (
