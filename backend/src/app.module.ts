@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { JobModule } from './job/job.module';
 import { TickModule } from './tick/tick.module';
 import { HangboardSequenceModule } from './hangboard-sequence/hangboard-sequence.module';
+import { AuthService } from './auth/auth.service';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { HangboardSequenceModule } from './hangboard-sequence/hangboard-sequence
     TickModule,
     HangboardSequenceModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, AuthController],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}
