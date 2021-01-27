@@ -13,7 +13,7 @@ import {
   camelCaseToTitleCase,
   calculateSequenceTimeInWords,
 } from '../../utils';
-import { useTitle, useCountdown } from '../../hooks';
+import { useTitle, useCountdown, useScreenLock } from '../../hooks';
 
 const REST_MS_INTERVAL = 1000;
 const EXERCISE_MS_INTERVAL = 100;
@@ -101,8 +101,10 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   const stackRef = useRef();
   const isRunningRef = useRef();
   const currentItemRef = useRef();
+
   const [currentItem, setCurrentItem] = useState(stack[0]);
   const { timeRemaining, start, reset, expire } = useCountdown();
+  useScreenLock();
 
   const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
   const isDone = !isRunning && !currentItem;

@@ -12,3 +12,4 @@ export { default as useHangboardColors } from './useHangboardColors';
 export { default as useArrayFieldUtils } from './useArrayFieldUtils';
 export { default as useHover } from './useHover';
 export { default as useCountdown } from './useCountdown';
+export { default as useScreenLock } from './useScreenLock';
