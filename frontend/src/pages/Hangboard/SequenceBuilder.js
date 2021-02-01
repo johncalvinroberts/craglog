@@ -125,7 +125,7 @@ const SequenceBuilder = () => {
   const { watch, setValue, errors } = useFormContext();
 
   const boardName = watch('boardName');
-
+  // eslint-disable-next-line
   const currentSequenceActiveHolds =
     watch(`sequence[${activeId}].activeHolds`) || [];
 

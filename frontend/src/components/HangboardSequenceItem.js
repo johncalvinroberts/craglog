@@ -1,11 +1,13 @@
 import React from 'react';
 import { Box, Text, useColorMode } from '@chakra-ui/core';
 import { camelCaseToTitleCase } from '../utils';
+import { repetitionExercises } from '../constants';
 
 const bg = { light: 'white', dark: 'gray.800' };
 const HangboardSequenceItem = ({ isActive, item, children, ...rest }) => {
   const { colorMode } = useColorMode();
   const showRest = item.rest && parseInt(item.rest, 10) > 0;
+  const isReps = repetitionExercises.includes(item.exercise);
 
   const exerciseName = item.exercise ? (
     camelCaseToTitleCase(item.exercise)
@@ -31,9 +33,7 @@ const HangboardSequenceItem = ({ isActive, item, children, ...rest }) => {
           height="auto"
           mr={1}
         >
-          {item.repetitions
-            ? `${item.repetitions} reps`
-            : `${item.duration || '0'}s`}
+          {isReps ? `${item.repetitions} reps` : `${item.duration || '0'}s`}
         </Text>
         {showRest && (
           <Text

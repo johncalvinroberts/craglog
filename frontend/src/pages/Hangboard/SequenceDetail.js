@@ -73,7 +73,14 @@ const normalizeSequenceToStack = (sequence) => {
     }
 
     if (current.repetitions) {
-      memo.push(current); // TODO: what to do here?
+      memo.push({
+        ...current,
+        duration: current.repetitions * 1000,
+        isRepetitions: true,
+        interval: REST_MS_INTERVAL,
+        id,
+        stepIndex,
+      });
     }
     // add rest to the stack too
     if (current.rest) {
@@ -162,6 +169,8 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
       handleDone({ type: 'workout', style: 'hangboard', tickDate: new Date() });
     }
   }, [isDone, handleDone]);
+
+  console.log({ currentItem });
 
   return (
     <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">

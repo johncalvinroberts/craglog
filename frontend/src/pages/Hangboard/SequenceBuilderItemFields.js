@@ -41,8 +41,7 @@ const SequenceBuilderItemFields = ({ id, ...rest }) => {
           required
         />
       )}
-
-      {!isReps && (
+      <div style={{ display: !isReps ? 'block' : 'none' }}>
         <TextField
           type="number"
           name={`${nameBase}.duration`}
@@ -55,8 +54,8 @@ const SequenceBuilderItemFields = ({ id, ...rest }) => {
           }
           rounded="0.25rem 0 0 0.25rem"
         />
-      )}
-      {isReps && (
+      </div>
+      <div style={{ display: isReps ? 'block' : 'none' }}>
         <TextField
           type="number"
           name={`${nameBase}.repetitions`}
@@ -67,7 +66,7 @@ const SequenceBuilderItemFields = ({ id, ...rest }) => {
           adornmentRight={<InputRightAddon fontSize="xs">reps</InputRightAddon>}
           rounded="0.25rem 0 0 0.25rem"
         />
-      )}
+      </div>
       <TextField
         type="number"
         name={`${nameBase}.rest`}

@@ -35,6 +35,7 @@ const SequenceBuilderMobileItem = ({
     rest,
   };
 
+  // eslint-disable-next-line
   const activeHolds = watch(`${nameBase}.activeHolds`) || [];
 
   const boardName = watch('boardName');
