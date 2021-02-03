@@ -75,7 +75,7 @@ const normalizeSequenceToStack = (sequence) => {
     if (current.repetitions) {
       memo.push({
         ...current,
-        duration: current.repetitions * 1000,
+        duration: current.repetitions * 3000, // 3 seconds per rep
         isRepetitions: true,
         interval: REST_MS_INTERVAL,
         id,
@@ -110,10 +110,11 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   const currentItemRef = useRef();
 
   const [currentItem, setCurrentItem] = useState(stack[0]);
+  const [repsRemaining, setRepsRemaining] = useState(0);
   const { timeRemaining, start, reset, expire } = useCountdown();
   useScreenLock();
 
-  const isRest = currentItem && currentItem.interval !== EXERCISE_MS_INTERVAL;
+  const isRest = currentItem && currentItem.isRest;
   const isDone = !isRunning && !currentItem;
   const totalLength = data.sequence && data.sequence.length;
 
@@ -153,6 +154,15 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
   useEffect(() => {
     currentItemRef.current = currentItem;
   }, [currentItem]);
+
+  useEffect(() => {
+    if (currentItemRef.current && currentItemRef.current.isRepetitions) {
+      console.log({ timeRemaining });
+      setRepsRemaining(Math.floor(timeRemaining / 3000));
+    } else {
+      setRepsRemaining(0);
+    }
+  }, [currentItem, timeRemaining]);
 
   // end the workout
   useEffect(() => {
@@ -199,15 +209,20 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
         </Box>
         {isRunning && (
           <Heading fontSize={['6rem', '14rem']} textAlign="center">
-            {formatMs(timeRemaining, {
-              milliseconds: !isRest,
-            })}
-            <Box ml={1} fontSize="14px" display="inline-block">
-              {INTERVAL_LABELS[currentItem.interval]}
-            </Box>
+            {!currentItem.isRepetitions && (
+              <>
+                {formatMs(timeRemaining, {
+                  milliseconds: !isRest,
+                })}
+                <Box ml={1} fontSize="14px" display="inline-block">
+                  {INTERVAL_LABELS[currentItem.interval]}
+                </Box>
+              </>
+            )}
+            {currentItem.isRepetitions && <>{repsRemaining}</>}
           </Heading>
         )}
-        {!isRunning && stack.length > 0 && (
+        {!isRunning && stack.length > 0 && !currentItem.isRepetitions && (
           <Heading fontSize={['6rem', '14rem']} textAlign="center">
             {formatMs(currentItem.duration, {
               milliseconds: !isRest,
