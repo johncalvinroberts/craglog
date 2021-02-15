@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { PseudoBox, Text, Box } from '@chakra-ui/core';
+import { Text, Box } from '@chakra-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import { boards } from '../constants';
 import { calculateSequenceTimeInWords } from '../utils';
@@ -19,7 +19,7 @@ const SequenceCard = ({ sequence, children, ...props }) => {
     sequence.boardName,
   ]);
   return (
-    <PseudoBox
+    <Box
       p={2}
       mb={2}
       borderWidth="1px"
@@ -72,7 +72,7 @@ const SequenceCard = ({ sequence, children, ...props }) => {
         </Box>
       </Box>
       {children}
-    </PseudoBox>
+    </Box>
   );
 };
 

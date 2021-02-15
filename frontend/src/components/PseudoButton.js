@@ -1,5 +1,5 @@
 import React from 'react';
-import { PseudoBox } from '@chakra-ui/core';
+import { Box as PseudoBox } from '@chakra-ui/core';
 
 const PseudoButton = ({ children, ...props }) => {
   return (

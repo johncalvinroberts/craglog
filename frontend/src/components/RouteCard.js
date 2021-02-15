@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, PseudoBox, Text, Icon, Tooltip } from '@chakra-ui/core';
+import { Box, Text, Icon, Tooltip } from '@chakra-ui/core';
 
 const RouteCard = ({
   route,
@@ -11,7 +11,6 @@ const RouteCard = ({
   return (
     <Box
       borderBottom="1px"
-      as={PseudoBox}
       borderColor="gray.200"
       py={2}
       {...wrapperStyleProps}

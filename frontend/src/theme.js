@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme } from '@chakra-ui/core';
+import theme from '@chakra-ui/theme';
 
 const customIcons = {
   logo: {
@@ -95,6 +95,9 @@ const customTheme = {
     ...theme.icons,
     ...customIcons,
   },
+  // 2. Add your color mode config
+  initialColorMode: 'light',
+  useSystemColorMode: true,
 };
 
 export default customTheme;

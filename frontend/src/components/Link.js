@@ -1,5 +1,5 @@
 import React, { cloneElement, forwardRef } from 'react';
-import { PseudoBox, useColorMode, Text } from '@chakra-ui/core';
+import { Box as PseudoBox, useColorMode, Text } from '@chakra-ui/core';
 import { useLocation } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 

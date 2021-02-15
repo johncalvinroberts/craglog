@@ -5,7 +5,6 @@ import {
   Spinner,
   Icon,
   Button,
-  PseudoBox,
   Text,
   Menu,
   MenuList,
@@ -79,7 +78,7 @@ const JobItem = ({ item, revalidate }) => {
     // swallow error
   }
   return (
-    <Box borderBottom="1px" as={PseudoBox} borderColor="gray.200" py={2}>
+    <Box borderBottom="1px" borderColor="gray.200" py={2}>
       <Box d="flex" width="100%">
         <Box flex="1">
           <Box d="flex" alignItems="flex-start" width="100%">
