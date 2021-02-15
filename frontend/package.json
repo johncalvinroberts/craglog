@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel serve src/index.html",
-    "build": "parcel build --no-cache --no-content-hash src/index.html",
+    "start": "snowpack dev",
+    "build": "snowpack build",
     "postbuild": "react-snap",
     "clean": "rimraf dist && rimraf .cache",
     "lint": "eslint . --ignore-path .gitignore"
@@ -17,6 +17,11 @@
     "@chakra-ui/core": "0.8.0",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
+    "@snowpack/plugin-babel": "^2.1.6",
+    "@snowpack/plugin-dotenv": "^2.0.5",
+    "@snowpack/plugin-react-refresh": "^2.4.0",
+    "@snowpack/plugin-webpack": "^2.3.0",
+    "add": "^2.0.6",
     "date-fns": "^2.16.1",
     "emotion-theming": "^10.0.27",
     "flattenjs": "^2.0.0",
@@ -30,8 +35,10 @@
     "react-router-dom": "^5.2.0",
     "react-snap": "^1.23.0",
     "react-speech-kit": "^3.0.1",
+    "snowpack": "^3.0.11",
     "swr": "^0.3.6",
     "use-deep-compare-effect": "^1.4.0",
+    "yarn": "^1.22.10",
     "yup": "^0.29.3"
   },
   "devDependencies": {
