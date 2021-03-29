@@ -10,3 +10,6 @@ export const postLogin = async (payload) => {
 
 export const requestPasswordReset = (payload) =>
   http.post(`/user/forgot-password`, payload);
+
+export const submitPasswordReset = (payload) =>
+  http.post(`/user/reset-password`, payload);

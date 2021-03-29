@@ -9,6 +9,7 @@ import { TickModule } from './tick/tick.module';
 import { HangboardSequenceModule } from './hangboard-sequence/hangboard-sequence.module';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthController } from './auth/auth.controller';
     JobModule,
     TickModule,
     HangboardSequenceModule,
+    MailModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],

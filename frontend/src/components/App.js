@@ -17,6 +17,7 @@ const Jobs = lazy(() => import('../pages/Jobs'));
 const Users = lazy(() => import('../pages/Users'));
 const Ticks = lazy(() => import('../pages/Ticks'));
 const ForgotPassword = lazy(() => import('../pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('../pages/ResetPassword'));
 
 const AdminRoutes = () => {
   return (
@@ -61,6 +62,7 @@ const App = () => {
                       exact
                       component={ForgotPassword}
                     />
+                    <Route path="/reset" exact component={ResetPassword} />
                     <ProtectedRoute path="/app" component={Ticks} />
                     <ProtectedRoute
                       path="/admin"

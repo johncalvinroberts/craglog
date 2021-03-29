@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult, MoreThan } from 'typeorm';
 import { randomBytes as randomBytesCallback } from 'crypto';
 import { promisify } from 'util';
+import * as jwt from 'jsonwebtoken';
+import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
 import { UserEntity } from './user.entity';
 import {
   LoginUserDto,
@@ -13,9 +16,7 @@ import {
   ForgottenPasswordDto,
   ResetPasswordDto,
 } from './dto';
-import * as jwt from 'jsonwebtoken';
-import * as crypto from 'crypto';
-import { ConfigService } from '@nestjs/config';
+import { MailService } from '../mail/mail.service';
 import { PaginationDto } from '../shared/pagination.dto';
 import {
   UserNotFoundException,
@@ -33,6 +34,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
 
   async findAll(query: PaginationDto): Promise<FindUserDto[]> {
@@ -162,22 +164,30 @@ export class UserService {
     return { total, week, month };
   }
 
-  async forgottenPassword(
+  async sendForgottenPasswordEmail(
     payload: ForgottenPasswordDto,
-  ): Promise<{ message: string }> {
+  ): Promise<{ success: boolean }> {
     const { email } = payload;
     const user = await this.userRepository.findOne({ email: email });
     if (!user) {
-      throw UserNotFoundException();
+      // bail here if no user, don't expose to client if not found
+      return { success: true };
     }
     const resetToken = (await randomBytes(20)).toString('hex');
     const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
     user.resetToken = resetToken;
     user.resetTokenExpiry = resetTokenExpiry;
     await this.userRepository.save(user);
-    // TODO: mail the link
     // reference: https://github.com/wesbos/Advanced-React/blob/fc2b4ef305ccafc6a5cc7aa15446b7f10650fd0e/finished-application/backend/src/resolvers/Mutation.js#L133-L141
-    return { message: 'Thanks!' };
+    const frontendUrl = this.configService.get('FRONTEND_URL');
+    await this.mailService.sendANiceEmail({
+      subject: 'Your password reset',
+      to: user.email,
+      text: `Your Password Reset Token is here!
+      \n\n
+      <a href="${frontendUrl}/reset?resetToken=${resetToken}&email=${user.email}">Click Here to Reset</a>`,
+    });
+    return { success: true };
   }
 
   async resetPassword(payload: ResetPasswordDto): Promise<AuthenticateUserRo> {

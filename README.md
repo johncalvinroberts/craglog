@@ -30,18 +30,24 @@ This app is using a monorepo -- both frontend, backend, and deployment related c
 
 #### backend
 ```
-MONGODB_URL
-REDIS_URL
-JWT_SECRET
-DEBUG #"scraper:*,app:*"
-API_URL
-MAX_PAGE #6285
-LIST_SCRAPE_CONCURRENCY #2
-ROUTE_SCRAPE_CONCURRENCY #10
-ADMIN_USER
-ADMIN_PASS
-ADMIN_EMAIL
-WORKER_ACCESS_TOKEN
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+POSTGRES_USER=xxxx
+POSTGRES_PASSWORD=xxx
+POSTGRES_DB=xxx
+JWT_SECRET=xxx
+ADMIN_PASS=xxxx
+ADMIN_EMAIL=xxxxx@gmail.com
+ADMIN_USER=xxxx
+USER_ONE_PASS=xxx
+USER_ONE_EMAIL=xxx@x.com
+USER_ONE_USER=xxxxxx
+FRONTEND_URL=localhost:1234
+MAIL_HOST
+MAIL_PORT
+MAIL_USER
+MAIL_PASS
+
 ```
 
 #### frontend

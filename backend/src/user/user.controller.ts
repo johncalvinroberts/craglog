@@ -73,9 +73,9 @@ export class UserController {
     return this.userService.buildAuthResponse(maybeUser);
   }
 
-  @Post('forgotten-password')
+  @Post('forgot-password')
   forgottenPassword(@Body() body: ForgottenPasswordDto) {
-    return this.userService.forgottenPassword(body);
+    return this.userService.sendForgottenPasswordEmail(body);
   }
 
   @Post('reset-password')

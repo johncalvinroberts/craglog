@@ -1,33 +1,41 @@
 import React from 'react';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
+import { Link, useHistory } from 'react-router-dom';
 import { Box, Heading, IconButton, useToast, Button } from '@chakra-ui/core';
-import { Link } from 'react-router-dom';
+
 import LoginLayout from '../components/LogInLayout';
 import Form, { TextField } from '../components/Form';
 import { useTitle } from '../hooks';
-import { requestPasswordReset } from '../api';
+import { submitPasswordReset } from '../api';
 
 const validationSchema = yup.object().shape({
-  email: yup.string().email().required().min(5).max(250),
+  password: yup.string().required(),
 });
 
 const defaultValues = {
-  email: '',
+  password: '',
 };
 
+// format should be reset?resetToken=token&email=someemail
 const ForgotPassword = () => {
-  useTitle('Forgot Password');
+  useTitle('Reset Password');
   const toast = useToast();
+  const history = useHistory();
+  const params = new URLSearchParams(window.location.search);
   const formMethods = useForm({ defaultValues, validationSchema });
 
   const onSubmit = async (values) => {
     try {
-      await requestPasswordReset(values);
-      toast({
-        description:
-          'We sent you an email. Please check it and follow the instructions to reset your password.',
+      await submitPasswordReset({
+        ...values,
+        resetToken: params.resetToken,
+        email: params.email,
       });
+      toast({
+        description: 'Your password has been successfully reset',
+      });
+      history.push('/login');
     } catch (error) {
       toast({
         description: error.message || 'You entered something wrong',
@@ -55,9 +63,8 @@ const ForgotPassword = () => {
             rounded="full"
             icon="logo"
           />
-          <Heading>Forgot your password?</Heading>
+          <Heading>Reset Your Password</Heading>
         </Box>
-        <Box my={4}>We will send you an email with instructions.</Box>
       </Box>
       <Box w="100%" borderWidth="1px" rounded="sm" overflow="hidden" p="4">
         <Form
@@ -65,7 +72,7 @@ const ForgotPassword = () => {
           methods={formMethods}
           defaultValues={defaultValues}
         >
-          <TextField label="Email" name="email" input />
+          <TextField label="New Password" name="password" input />
           <Box pt={3} pb={2}>
             <Button
               type="submit"

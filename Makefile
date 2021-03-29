@@ -1,12 +1,12 @@
 COMPOSE_FILE = ./docker/docker-compose.yml
 
-docker-up:
+up:
 	docker-compose -f ${COMPOSE_FILE} up -d
-.PHONY: docker-up  
-docker-down:
+.PHONY: up  
+down:
 	docker-compose -f ${COMPOSE_FILE} down
-.PHONY: docker-down
-restart-docker: docker-down docker-up
+.PHONY: down
+restart-docker: down up
 bootstrap-dev:
 	docker-compose -f ${COMPOSE_FILE} up -d mongo redis
 start-backend:

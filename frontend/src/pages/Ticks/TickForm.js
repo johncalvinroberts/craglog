@@ -225,6 +225,41 @@ const TickForm = ({ defaultValues, onSubmit }) => {
         {isOutdoor && (
           <Box>
             <Heading size="md">Import Route</Heading>
+            <Text size="xs" mb={4} as="div" width="auto" height="auto">
+              Import a route from an external database, like{' '}
+              <Text
+                href="https://thecrag.com/route"
+                target="_blank"
+                as="a"
+                fontSize="s"
+                color="teal.400"
+                rel="noopener noreferrer"
+              >
+                The Crag
+              </Text>
+              ,{' '}
+              <Text
+                href="https://www.mountainproject.com/"
+                target="_blank"
+                as="a"
+                fontSize="s"
+                color="teal.400"
+                rel="noopener noreferrer"
+              >
+                Mountain Project
+              </Text>
+              , or
+              <Text
+                href="https://27crags.com/"
+                target="_blank"
+                as="a"
+                fontSize="s"
+                color="teal.400"
+                rel="noopener noreferrer"
+              >
+                27Crags
+              </Text>
+            </Text>
             {routeSnapshot && !isImporting && routeSnapshot.name && (
               <Box mb={2}>
                 <RouteCard route={routeSnapshot} />
