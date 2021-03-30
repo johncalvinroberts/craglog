@@ -8,6 +8,7 @@ export { default as SliderField } from './SliderField';
 export { default as TextField } from './TextField';
 export { default as TextAreaField } from './TextAreaField';
 export { default as FormField } from './FormField';
+export { default as PasswordField } from './PasswordField';
 
 const Form = forwardRef((props, ref) => {
   const {

@@ -1,20 +1,12 @@
 import React, { useEffect } from 'react';
-import {
-  Box,
-  Heading,
-  Button,
-  InputRightElement,
-  IconButton,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/core';
+import { Box, Heading, Button, IconButton, useToast } from '@chakra-ui/core';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { useHistory, Link } from 'react-router-dom';
 import LoginLayout from '../components/LogInLayout';
 import { performLogin } from '../states';
 import { useDispatch } from '../components/State';
-import Form, { TextField } from '../components/Form';
+import Form, { TextField, PasswordField } from '../components/Form';
 import { useTitle, useAuthState } from '../hooks';
 
 const validationSchema = yup.object().shape({
@@ -29,7 +21,6 @@ const defaultValues = {
 
 const LogIn = () => {
   useTitle('Login');
-  const { isOpen, onToggle } = useDisclosure();
   const history = useHistory();
   const toast = useToast();
   const dispatch = useDispatch();
@@ -94,22 +85,7 @@ const LogIn = () => {
           defaultValues={defaultValues}
         >
           <TextField label="Email" name="email" input required />
-          <TextField
-            label="Password"
-            name="password"
-            type={isOpen ? 'text' : 'password'}
-            required
-            adornmentRight={
-              <InputRightElement>
-                <IconButton
-                  h="1.75rem"
-                  size="sm"
-                  onClick={onToggle}
-                  icon={isOpen ? 'view-off' : 'view'}
-                />
-              </InputRightElement>
-            }
-          />
+          <PasswordField label="Password" name="password" required />
           <Box pt={3} pb={2}>
             <Button
               type="submit"

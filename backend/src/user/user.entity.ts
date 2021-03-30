@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   Index,
   OneToMany,
+  BeforeUpdate,
 } from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import * as crypto from 'crypto';
@@ -45,7 +46,7 @@ export class UserEntity {
   @Column('varchar', { length: 250, nullable: true })
   resetToken: string;
 
-  @Column('int', { nullable: true })
+  @Column('bigint', { nullable: true })
   resetTokenExpiry: number;
 
   @OneToMany(() => TickEntity, (tick) => tick.user)
@@ -61,6 +62,7 @@ export class UserEntity {
   updatedAt: Date;
 
   @BeforeInsert()
+  @BeforeUpdate()
   setDefaults(): void {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }

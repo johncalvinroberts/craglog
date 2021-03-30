@@ -5,7 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Box, Heading, IconButton, useToast, Button } from '@chakra-ui/core';
 
 import LoginLayout from '../components/LogInLayout';
-import Form, { TextField } from '../components/Form';
+import Form, { PasswordField } from '../components/Form';
 import { useTitle } from '../hooks';
 import { submitPasswordReset } from '../api';
 
@@ -22,15 +22,14 @@ const ForgotPassword = () => {
   useTitle('Reset Password');
   const toast = useToast();
   const history = useHistory();
-  const params = new URLSearchParams(window.location.search);
   const formMethods = useForm({ defaultValues, validationSchema });
 
   const onSubmit = async (values) => {
+    const params = new URLSearchParams(window.location.search);
     try {
       await submitPasswordReset({
         ...values,
-        resetToken: params.resetToken,
-        email: params.email,
+        resetToken: params.get('resetToken'),
       });
       toast({
         description: 'Your password has been successfully reset',
@@ -72,7 +71,7 @@ const ForgotPassword = () => {
           methods={formMethods}
           defaultValues={defaultValues}
         >
-          <TextField label="New Password" name="password" input />
+          <PasswordField label="Password" name="password" required />
           <Box pt={3} pb={2}>
             <Button
               type="submit"

@@ -67,9 +67,9 @@ export class UserController {
   async login(@Body() loginUserDto: LoginUserDto): Promise<AuthenticateUserRo> {
     const maybeUser = await this.userService.findOne(loginUserDto);
 
-    const errors = { User: ' not found' };
-    if (!maybeUser) throw new UnauthorizedException({ errors });
-
+    if (!maybeUser)
+      throw new UnauthorizedException({ errors: 'User not found' });
+    console.log({ maybeUser });
     return this.userService.buildAuthResponse(maybeUser);
   }
 

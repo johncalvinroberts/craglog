@@ -163,6 +163,16 @@ const TickForm = ({ defaultValues, onSubmit }) => {
     // eslint-disable-next-line
     for (const field of fieldsToManuallyRegister) register(field);
   }, [register]);
+
+  useEffect(() => {
+    if (style === 'gym') {
+      register({ name: 'type' });
+      setValue('type', 'workout');
+    }
+  }, [style, setValue, register]);
+  const { errors } = formMethods;
+  console.log({ errors });
+
   return (
     <Form
       onSubmit={onSubmit}
@@ -216,7 +226,11 @@ const TickForm = ({ defaultValues, onSubmit }) => {
             />
           </>
         )}
-        {style === 'gym' && <TextField name="gymName" label="Gym Name" />}
+        {style === 'gym' && (
+          <>
+            <TextField name="gymName" label="Gym Name" />
+          </>
+        )}
         <SliderField
           name="physicalRating"
           label="Physical Rating"

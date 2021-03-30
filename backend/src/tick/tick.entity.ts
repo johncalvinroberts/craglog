@@ -24,7 +24,7 @@ export enum TickTypeEnum {
   dab,
   repeatSend,
   retreat,
-  attempt,
+  att,
   utterFailure,
   workout,
 }

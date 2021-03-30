@@ -29,6 +29,7 @@ export const tickTypeEnum = [
   'retreat',
   'attempt',
   'utterFailure',
+  'workout',
 ];
 
 export const sportAndTradTickTypeEnum = [

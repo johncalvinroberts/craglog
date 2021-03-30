@@ -198,6 +198,7 @@ export class UserService {
         resetTokenExpiry: MoreThan(Date.now() - 3600000),
       },
     });
+
     if (!user) {
       throw PasswordResetTokenInvalidException();
     }
