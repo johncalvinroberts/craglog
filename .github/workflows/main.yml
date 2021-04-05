@@ -54,15 +54,10 @@ jobs:
 
       - name: Build and push backend docker image
         uses: docker/build-push-action@v2
-        #  ['builder', 
-        # 'context', 'file', 
-        #'build-args', 'labels', 'tags', 'pull', 'target', 
-        #'allow', 'no-cache', 'platforms', 'load', 'push', 'outputs', 
-        #@'cache-from', 'cache-to', 'secrets', 'secret-files', 'ssh', 'github-token']
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/johncalvinroberts/craglog-api:latest,ghcr.io/johncalvinroberts/craglog-api:${{ steps.determine_tag.outputs.ref }}
+          tags: ghcr.io/johncalvinroberts/craglog:latest,ghcr.io/johncalvinroberts/craglog:${{ steps.determine_tag.outputs.ref }}
 
       - name: Build frontend
         shell: bash
