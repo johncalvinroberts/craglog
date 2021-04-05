@@ -1,0 +1,67 @@
+name: BUILD AND DEPLOY CRAGLOG
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:        
+      - '*'
+
+
+jobs:
+  build:
+    name: Build Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+
+      - name: Use Node 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install frontend deps (with cache)
+        uses: bahmutov/npm-install@v1.7.1
+        with:
+          install-command: yarn
+          working-directory: ./frontend
+
+      - name: Install backebd deps (with cache)
+        uses: bahmutov/npm-install@v1.7.1
+        with:
+          install-command: yarn
+          working-directory: ./backend
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend docker image
+        uses: docker/build-push-action@v2
+        #  ['builder', 
+        # 'context', 'file', 
+        #'build-args', 'labels', 'tags', 'pull', 'target', 
+        #'allow', 'no-cache', 'platforms', 'load', 'push', 'outputs', 
+        #@'cache-from', 'cache-to', 'secrets', 'secret-files', 'ssh', 'github-token']
+        with:
+          context: ./backend
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}          
+
+      - name: Build frontend
+        shell: bash
+        run: sh ./scripts/build.sh
+        env:
+          NODE_ENV: production 
