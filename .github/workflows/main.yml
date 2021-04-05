@@ -29,7 +29,7 @@ jobs:
           install-command: yarn
           working-directory: ./frontend
 
-      - name: Install backebd deps (with cache)
+      - name: Install backend deps (with cache)
         uses: bahmutov/npm-install@v1.7.1
         with:
           install-command: yarn
@@ -39,8 +39,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      -
-        name: Login to GitHub Container Registry
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -56,9 +55,8 @@ jobs:
         #@'cache-from', 'cache-to', 'secrets', 'secret-files', 'ssh', 'github-token']
         with:
           context: ./backend
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}          
+          push: true
+          tags: johncalvinroberts/craglog:latest
 
       - name: Build frontend
         shell: bash
