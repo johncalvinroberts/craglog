@@ -29,12 +29,6 @@ jobs:
           ref="${GITHUB_REF##*/}"
           echo "::set-output name=ref::$(echo $ref)"
 
-      - name: Install frontend deps (with cache)
-        uses: bahmutov/npm-install@v1.7.1
-        with:
-          install-command: yarn
-          working-directory: ./frontend
-
       - name: Install backend deps (with cache)
         uses: bahmutov/npm-install@v1.7.1
         with:
@@ -59,8 +53,15 @@ jobs:
           push: true
           tags: ghcr.io/johncalvinroberts/craglog:latest,ghcr.io/johncalvinroberts/craglog:${{ steps.determine_tag.outputs.ref }}
 
+      - name: Install frontend deps (with cache)
+        uses: bahmutov/npm-install@v1.7.1
+        with:
+          install-command: yarn
+          working-directory: ./frontend
+
       - name: Build frontend
-        shell: bash
-        run: sh ./scripts/build.sh
+        working-directory: ./frontend
+        run: yarn build
         env:
           NODE_ENV: production 
+
