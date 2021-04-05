@@ -23,6 +23,12 @@ jobs:
         with:
           node-version: 14
 
+      - name: Determine Docker image tag 
+        id: determine_tag
+        run: |
+          ref="${GITHUB_REF##*/}"
+          echo "::set-output name=ref::$(echo $ref)"
+
       - name: Install frontend deps (with cache)
         uses: bahmutov/npm-install@v1.7.1
         with:
@@ -56,7 +62,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/johncalvinroberts/craglog:latest
+          tags: ghcr.io/johncalvinroberts/craglog-api:latest,ghcr.io/johncalvinroberts/craglog-api:${{ steps.determine_tag.outputs.ref }}
 
       - name: Build frontend
         shell: bash
