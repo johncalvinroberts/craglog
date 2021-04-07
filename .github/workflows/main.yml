@@ -25,9 +25,10 @@ jobs:
 
       - name: Determine Docker image tag 
         id: determine_tag
+        shell: bash
         run: |
-          ref="${GITHUB_REF##*/}"
-          echo "::set-output name=ref::$(echo $ref)"
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
       - name: Install backend deps (with cache)
         uses: bahmutov/npm-install@v1.7.1
@@ -51,7 +52,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/johncalvinroberts/craglog:latest,ghcr.io/johncalvinroberts/craglog:${{ steps.determine_tag.outputs.ref }}
+          tags: ghcr.io/johncalvinroberts/craglog:latest,ghcr.io/johncalvinroberts/craglog:${{ steps.determine_tag.outputs.sha_short }}
 
       - name: Install frontend deps (with cache)
         uses: bahmutov/npm-install@v1.7.1
