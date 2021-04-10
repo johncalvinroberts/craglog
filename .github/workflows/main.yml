@@ -66,7 +66,7 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: copy files via ssh password
+      - name: Copy files via SSH
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
@@ -74,11 +74,12 @@ jobs:
           port: 20022
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           overwrite: true
-          source: "scripts/deploy.sh,scripts/run.sh,frontend/dist,Caddyfile"
+          rm: true
+          source: "deploy,frontend/dist"
           target: "deploy"
           strip_components: 1
 
-      - name: copy files via ssh password
+      - name: SSH into server and run deploy script
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
@@ -86,4 +87,6 @@ jobs:
           port: 20022
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
+            cd deploy
+            ls -al
             sh ./deploy.sh

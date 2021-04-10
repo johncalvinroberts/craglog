@@ -1,3 +1,4 @@
+set -ev
 echo "Deploying craglog"
 
 curl -X POST "http://localhost:2019/load" \
