@@ -1,7 +1,8 @@
-craglog.cc {
-  try_files {path} /index.html
-  redir https://www.craglog.cc{uri}
+www.example.com {
+  redir https://craglog.cc{uri}
 }
+
+craglog.cc
 root * /home/deploy/deploy/dist
 file_server
 reverse_proxy /api/* localhost:3000 localhost:3001
