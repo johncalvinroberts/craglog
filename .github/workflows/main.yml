@@ -78,3 +78,12 @@ jobs:
           target: "deploy"
           strip_components: 1
 
+      - name: copy files via ssh password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_SSH_HOST }}
+          username: ${{ secrets.DEPLOY_SSH_USERNAME }}
+          port: 20022
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            sh ./deploy.sh

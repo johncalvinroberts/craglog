@@ -1,5 +1,8 @@
-example.com
+craglog.cc {
+  redir https://www.craglog.cc{uri}
+}
 
-root * /var/www/wordpress
-php_fastcgi unix//run/php/php-version-fpm.sock
+root * /home/deploy/deploy/dist
 file_server
+
+reverse_proxy /api/* localhost:3000 localhost:3001
