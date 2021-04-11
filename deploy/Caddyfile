@@ -1,4 +1,4 @@
-www.example.com {
+www.craglog.cc {
   redir https://craglog.cc{uri}
 }
 
