@@ -103,6 +103,7 @@ jobs:
           port: 20022
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            export CR_PAT={{secrets.GHCR_PAT}}
             cd deploy
-            sh ./deploy.sh -t {{steps.determine_tag.outputs.sha_short}}
+            sh ./deploy.sh /
+            -t {{steps.determine_tag.outputs.sha_short}}
+            -p {{secrets.GHCR_PAT}}

@@ -1,11 +1,12 @@
-set -e
+set -ev
 echo "Deploying craglog"
 
 # parse command line args
-while getopts t:a:f: flag
+while getopts t:p:f: flag
 do
     case "${flag}" in
         t) DOCKER_TAG=${OPTARG};;
+        p) CR_PAT=${OPTARG};;
     esac
 done
 
