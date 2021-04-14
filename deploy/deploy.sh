@@ -15,6 +15,7 @@ DOCKER_IMAGE="ghcr.io/johncalvinroberts/craglog:$DOCKER_TAG"
 # set gh container registry personal access token and login
 echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
+# TODO logs?
 docker pull $DOCKER_IMAGE
 docker run $DOCKER_IMAGE -p 3001:3000
 docker run $DOCKER_IMAGE -p 3000:3000
