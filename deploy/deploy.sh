@@ -17,8 +17,8 @@ echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
 # TODO logs?
 docker pull $DOCKER_IMAGE
-docker run $DOCKER_IMAGE -p 3001:3000
-docker run $DOCKER_IMAGE -p 3000:3000
+docker run -p 3001:3000 -d --name "craglog-backend-1" $DOCKER_IMAGE
+docker run -p 3000:3000 -d --name "craglog-backend-2" $DOCKER_IMAGE
 
 # reload caddy
 curl -X POST "http://localhost:2019/load" \
