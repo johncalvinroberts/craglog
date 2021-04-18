@@ -1,4 +1,4 @@
-set -ev
+set -e
 echo "Deploying craglog"
 
 # parse command line args
@@ -11,6 +11,8 @@ do
 done
 
 DOCKER_IMAGE="ghcr.io/johncalvinroberts/craglog:$DOCKER_TAG"
+echo "DOCKER_IMAGE: $DOCKER_IMAGE"
+echo "Pulling docker image."
 CONTAINER_1_NAME="craglog-backend-1"
 CONTAINER_2_NAME="craglog-backend-1"
 
@@ -20,6 +22,7 @@ CONTAINER_2_NAME="craglog-backend-1"
 
 # TODO logs?
 docker pull $DOCKER_IMAGE
+echo "Stopping and starting new containers"
 docker container stop $CONTAINER_1_NAME
 docker container rm $CONTAINER_1_NAME
 docker run -p 3001:3000 -d --name $CONTAINER_1_NAME $DOCKER_IMAGE
@@ -28,6 +31,7 @@ docker container rm $CONTAINER_2_NAME
 docker run -p 3000:3000 -d --name $CONTAINER_2_NAME $DOCKER_IMAGE
 
 # reload caddy
+echo "Reloading Caddy."
 curl -X POST "http://localhost:2019/load" \
   -H "Content-Type: text/caddyfile" \
   --data-binary @Caddyfile
