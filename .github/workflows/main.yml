@@ -97,13 +97,17 @@ jobs:
 
       - name: SSH into server and run deploy script
         uses: appleboy/ssh-action@master
+        env:
+          TAG: ${{ steps.determine_tag.outputs.sha_short }}
+          GCHR_PAT: ${{ secrets.GCHR_PAT }}
         with:
           host: ${{ secrets.DEPLOY_SSH_HOST }}
           username: ${{ secrets.DEPLOY_SSH_USERNAME }}
           port: 20022
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: TAG,GCHR_PAT
           script: |
             cd deploy
-            sh ./deploy.sh /
-            -t {{steps.determine_tag.outputs.sha_short}}
-            -p {{secrets.GHCR_PAT}}
+            sh ./deploy.sh / 
+            -t $TAG /
+            -p $GCHR_PAT
