@@ -107,5 +107,6 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           envs: DOCKER_TAG,GCHR_PAT
           script: |
+            source /etc/profile
             cd deploy
             sh ./deploy.sh
