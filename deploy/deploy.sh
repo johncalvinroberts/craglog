@@ -18,7 +18,7 @@ CONTAINER_2_NAME="craglog-backend-1"
 
 # set gh container registry personal access token and login
 # uncomment next line if docker login expires
-# echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
 # TODO logs?
 docker pull $DOCKER_IMAGE
