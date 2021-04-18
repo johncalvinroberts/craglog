@@ -14,7 +14,7 @@ DOCKER_IMAGE="ghcr.io/johncalvinroberts/craglog:$DOCKER_TAG"
 echo "DOCKER_IMAGE: $DOCKER_IMAGE"
 echo "Pulling docker image."
 CONTAINER_1_NAME="craglog-backend-1"
-CONTAINER_2_NAME="craglog-backend-1"
+CONTAINER_2_NAME="craglog-backend-2"
 
 # set gh container registry personal access token and login
 # uncomment next line if docker login expires
