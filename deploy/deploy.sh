@@ -2,13 +2,13 @@ set -e
 echo "Deploying craglog"
 
 # parse command line args
-# while getopts t:p:f: flag
-# do
-#     case "${flag}" in
-#         t) DOCKER_TAG=${OPTARG};;
-#         p) CR_PAT=${OPTARG};;
-#     esac
-# done
+while getopts t:p:f: flag
+do
+    case "${flag}" in
+        t) DOCKER_TAG=${OPTARG};;
+        p) CR_PAT=${OPTARG};;
+    esac
+done
 
 DOCKER_IMAGE="ghcr.io/johncalvinroberts/craglog:$DOCKER_TAG"
 echo "DOCKER_IMAGE: $DOCKER_IMAGE"

@@ -109,4 +109,4 @@ jobs:
           script: |
             source /etc/profile
             cd deploy
-            sh ./deploy.sh
+            sh ./deploy.sh -t $DOCKER_TAG -p $GHCR_PAT
