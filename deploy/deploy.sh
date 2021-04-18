@@ -11,15 +11,21 @@ do
 done
 
 DOCKER_IMAGE="ghcr.io/johncalvinroberts/craglog:$DOCKER_TAG"
-
+CONTAINER_1_NAME="craglog-backend-1"
+CONTAINER_2_NAME="craglog-backend-1"
 
 # set gh container registry personal access token and login
-echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+# uncomment next line if docker login expires
+# echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
 # TODO logs?
 docker pull $DOCKER_IMAGE
-docker run -p 3001:3000 -d --name "craglog-backend-1" $DOCKER_IMAGE
-docker run -p 3000:3000 -d --name "craglog-backend-2" $DOCKER_IMAGE
+docker container stop CONTAINER_1_NAME
+docker container rm CONTAINER_1_NAME
+docker run -p 3001:3000 -d --name $CONTAINER_1_NAME $DOCKER_IMAGE
+docker container stop $CONTAINER_2_NAME
+docker container rm $CONTAINER_2_NAME
+docker run -p 3000:3000 -d --name $CONTAINER_2_NAME $DOCKER_IMAGE
 
 # reload caddy
 curl -X POST "http://localhost:2019/load" \
