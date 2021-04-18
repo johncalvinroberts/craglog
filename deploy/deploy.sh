@@ -20,8 +20,8 @@ CONTAINER_2_NAME="craglog-backend-1"
 
 # TODO logs?
 docker pull $DOCKER_IMAGE
-docker container stop CONTAINER_1_NAME
-docker container rm CONTAINER_1_NAME
+docker container stop $CONTAINER_1_NAME
+docker container rm $CONTAINER_1_NAME
 docker run -p 3001:3000 -d --name $CONTAINER_1_NAME $DOCKER_IMAGE
 docker container stop $CONTAINER_2_NAME
 docker container rm $CONTAINER_2_NAME
@@ -31,3 +31,5 @@ docker run -p 3000:3000 -d --name $CONTAINER_2_NAME $DOCKER_IMAGE
 curl -X POST "http://localhost:2019/load" \
   -H "Content-Type: text/caddyfile" \
   --data-binary @Caddyfile
+
+echo "Done deploying."
