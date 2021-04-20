@@ -60,9 +60,9 @@ jobs:
             "POSTGRES_USER=${{secrets.BACKEND_POSTGRES_USER}}"
             "POSTGRES_PASSWORD=${{secrets.BACKEND_POSTGRES_PASSWORD}}"
             POSTGRES_DB=craglog
-            "JWT_SECRET=${{secrets.BACKEND_JWT_SECRET}}""
+            "JWT_SECRET=${{secrets.BACKEND_JWT_SECRET}}"
             FRONTEND_URL=https://craglog.cc
-            "MAIL_HOST=${{secrets.BACKEND_MAIL_HOST}}""
+            "MAIL_HOST=${{secrets.BACKEND_MAIL_HOST}}"
             "MAIL_PORT=${{secrets.BACKEND_MAIL_PORT}}"
             "MAIL_USER=${{secrets.BACKEND_MAIL_USER}}"
             "MAIL_PASS=${{secrets.BACKEND_MAIL_PASSWORD}}"
