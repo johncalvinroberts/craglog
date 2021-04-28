@@ -55,7 +55,7 @@ jobs:
           push: true
           tags: ghcr.io/johncalvinroberts/craglog:latest,ghcr.io/johncalvinroberts/craglog:${{ steps.determine_tag.outputs.sha_short }}
           build-args: |
-            DATABASE_HOST=127.0.0.1
+            DATABASE_HOST=172.17.0.1
             DATABASE_PORT=5432
             "POSTGRES_USER=${{secrets.BACKEND_POSTGRES_USER}}"
             "POSTGRES_PASSWORD=${{secrets.BACKEND_POSTGRES_PASSWORD}}"
