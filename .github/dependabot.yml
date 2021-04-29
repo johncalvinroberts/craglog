@@ -1,0 +1,133 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/frontend"
+  schedule:
+    interval: daily
+    time: "21:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: react-hook-form
+    versions:
+    - 6.14.2
+    - 6.15.1
+    - 6.15.2
+    - 6.15.3
+    - 6.15.4
+    - 6.15.5
+    - 7.0.0
+    - 7.0.1
+    - 7.0.3
+    - 7.0.4
+    - 7.0.5
+    - 7.0.7
+    - 7.1.0
+    - 7.2.2
+    - 7.2.3
+    - 7.3.4
+  - dependency-name: acorn
+    versions:
+    - 8.0.5
+    - 8.1.0
+    - 8.1.1
+    - 8.2.1
+  - dependency-name: "@babel/core"
+    versions:
+    - 7.12.10
+    - 7.12.13
+    - 7.12.16
+    - 7.12.17
+    - 7.13.1
+    - 7.13.10
+    - 7.13.13
+    - 7.13.14
+    - 7.13.15
+    - 7.13.16
+    - 7.13.8
+  - dependency-name: swr
+    versions:
+    - 0.4.1
+    - 0.4.2
+    - 0.5.0
+    - 0.5.1
+    - 0.5.2
+    - 0.5.3
+    - 0.5.4
+  - dependency-name: "@babel/plugin-proposal-class-properties"
+    versions:
+    - 7.12.13
+  - dependency-name: "@babel/preset-react"
+    versions:
+    - 7.12.10
+    - 7.12.13
+  - dependency-name: yup
+    versions:
+    - 0.32.8
+- package-ecosystem: npm
+  directory: "/backend"
+  schedule:
+    interval: daily
+    time: "21:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@typescript-eslint/parser"
+    versions:
+    - 4.14.1
+    - 4.14.2
+    - 4.15.0
+    - 4.15.1
+    - 4.15.2
+    - 4.16.1
+    - 4.17.0
+    - 4.18.0
+    - 4.19.0
+    - 4.20.0
+    - 4.21.0
+  - dependency-name: y18n
+    versions:
+    - 4.0.1
+  - dependency-name: pg
+    versions:
+    - 8.5.1
+  - dependency-name: "@types/jest"
+    versions:
+    - 26.0.20
+    - 26.0.21
+    - 26.0.22
+  - dependency-name: ts-jest
+    versions:
+    - 26.4.4
+    - 26.5.0
+    - 26.5.1
+    - 26.5.2
+    - 26.5.3
+    - 26.5.4
+  - dependency-name: "@nestjs/schematics"
+    versions:
+    - 7.2.7
+    - 7.2.8
+    - 7.2.9
+    - 7.3.0
+  - dependency-name: "@nestjs/common"
+    versions:
+    - 7.6.11
+    - 7.6.12
+    - 7.6.13
+    - 7.6.14
+    - 7.6.7
+    - 7.6.8
+    - 7.6.9
+  - dependency-name: "@nestjs/swagger"
+    versions:
+    - 4.7.12
+    - 4.7.13
+    - 4.7.15
+    - 4.7.16
+  - dependency-name: "@nestjs/cli"
+    versions:
+    - 7.5.4
+    - 7.5.5
+    - 7.5.6
+  - dependency-name: "@types/express-serve-static-core"
+    versions:
+    - 4.17.18
