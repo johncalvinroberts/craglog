@@ -18,5 +18,7 @@ dev-jobs:
 dev-all: dev-jobs dev-backend
 dev-frontend:
 	cd frontend && yarn start
+build-frontend:
+	cd frontend && yarn && yarn build
 seed:
 	cd backend && yarn seed
