@@ -21,7 +21,7 @@ import { useTitle, useAuthState } from '../hooks';
 const validationSchema = yup.object().shape({
   username: yup.string().required().min(6).max(250),
   email: yup.string().email().required().min(5).max(250),
-  password: yup.string().required().min(8).max(20),
+  password: yup.string().required().min(8).max(250),
 });
 
 const defaultValues = {
