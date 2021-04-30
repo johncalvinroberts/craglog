@@ -4,7 +4,16 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const frontendUrl = process.env.FRONTEND_URL;
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: [
+        frontendUrl,
+        `http://${frontendUrl}`,
+        `http://www.${frontendUrl}`,
+      ],
+    },
+  });
   app.setGlobalPrefix('api');
 
   // only same origin requests in production

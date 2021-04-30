@@ -69,7 +69,6 @@ export class UserController {
 
     if (!maybeUser)
       throw new UnauthorizedException({ errors: 'User not found' });
-    console.log({ maybeUser });
     return this.userService.buildAuthResponse(maybeUser);
   }
 
