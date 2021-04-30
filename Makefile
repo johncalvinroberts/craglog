@@ -1,4 +1,4 @@
-COMPOSE_FILE = ./docker/docker-compose.yml
+COMPOSE_FILE = ./docker-compose.yml
 
 up:
 	docker-compose -f ${COMPOSE_FILE} up -d
