@@ -5,21 +5,17 @@ import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
   const frontendUrl = process.env.FRONTEND_URL;
+  console.log({ frontendUrl });
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: [
-        frontendUrl,
-        `http://${frontendUrl}`,
-        `http://www.${frontendUrl}`,
-      ],
+      credentials: true,
+      maxAge: 3600,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      origin: [frontendUrl],
     },
   });
   app.setGlobalPrefix('api');
 
-  // only same origin requests in production
-  if (process.env.NODE_ENV !== 'production') {
-    app.enableCors();
-  }
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
