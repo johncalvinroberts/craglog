@@ -18,7 +18,7 @@ import {
   ApiProperty,
 } from '@nestjs/swagger';
 import { InjectQueue } from '@nestjs/bull';
-import { Queue, Job } from 'bull';
+import { Queue, Job, JobStatus } from 'bull';
 import { RolesGuard } from '../shared/guards';
 import { Roles } from '../shared/decorators';
 import { PaginationDto } from '../shared/pagination.dto';
@@ -54,7 +54,7 @@ class JobQueryDto extends PaginationDto {
 
   @IsEnum(StatusEnum)
   @IsOptional()
-  status: string;
+  status: JobStatus;
 }
 
 class CreateJobDto {
@@ -100,7 +100,7 @@ export class JobController {
 
   @Post()
   @ApiBody({ type: CreateJobDto })
-  async create(@Body() payload: CreateJobDto): Job {
+  async create(@Body() payload: CreateJobDto): Promise<Job> {
     const { url } = payload;
     let { hostname } = new URL(url);
     if (hostname.startsWith('www.')) {

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bull';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
@@ -20,6 +21,18 @@ import { MailModule } from './mail/mail.module';
     TickModule,
     HangboardSequenceModule,
     MailModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          redis: {
+            port: configService.get('REDIS_PORT'),
+            host: configService.get('REDIS_HOST'),
+          },
+        };
+      },
+    }),
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],

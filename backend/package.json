@@ -30,6 +30,7 @@
     "@nestjs/platform-express": "^7.4.2",
     "@nestjs/swagger": "^4.2.3",
     "@nestjs/typeorm": "^7.1.4",
+    "@types/bull": "^3.15.1",
     "@types/cheerio": "^0.22.22",
     "@types/express-serve-static-core": "^4.17.9",
     "@types/geojson": "^7946.0.7",
