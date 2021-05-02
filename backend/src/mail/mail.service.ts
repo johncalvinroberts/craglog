@@ -1,20 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Transporter, createTransport } from 'nodemailer';
+import { MailService as SendGrid } from '@sendgrid/mail';
 
 @Injectable()
 export class MailService {
-  private transport: Transporter;
+  private sgMail: SendGrid;
 
   constructor(private readonly configService: ConfigService) {
-    this.transport = createTransport({
-      host: this.configService.get('MAIL_HOST'),
-      port: this.configService.get('MAIL_PORT'),
-      auth: {
-        user: this.configService.get('MAIL_USER'),
-        pass: this.configService.get('MAIL_PASS'),
-      },
-    });
+    this.sgMail = new SendGrid();
+    this.sgMail.setApiKey(this.configService.get('SENDGRID_API_KEY'));
   }
 
   private makeANiceEmail(text: string) {
@@ -42,13 +36,14 @@ export class MailService {
     to: string;
     subject: string;
   }) {
-    await this.transport.sendMail({
-      from: 'no-reply@craglog.com',
+    await this.sgMail.send({
+      from: 'emails@craglog.cc',
       to,
       subject,
       html: this.makeANiceEmail(text),
+      text,
     });
-    // 4. Return the message
-    return { message: 'Thanks!' };
+    // return a message
+    return { message: 'Success' };
   }
 }
