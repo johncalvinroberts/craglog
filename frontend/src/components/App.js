@@ -9,6 +9,7 @@ import theme from '../theme';
 import ProtectedRoute from './ProtectedRoute';
 import NotFound from '../pages/NotFound';
 import Landing from '../pages/index';
+import ClimbingGradeConverter from '../pages/ClimbingGradeConverter';
 import ErrorBoundary from './ErrorBoundary';
 
 const LogIn = lazy(() => import('../pages/LogIn'));
@@ -63,6 +64,11 @@ const App = () => {
                       component={ForgotPassword}
                     />
                     <Route path="/reset" exact component={ResetPassword} />
+                    <Route
+                      path="/climbing-grade-converter"
+                      component={ClimbingGradeConverter}
+                      exact
+                    />
                     <ProtectedRoute path="/app" component={Ticks} />
                     <ProtectedRoute
                       path="/admin"
