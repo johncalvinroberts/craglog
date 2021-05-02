@@ -7,4 +7,5 @@ export class FindUserDto {
   readonly id: number;
   readonly updatedAt: Date;
   readonly createdAt: Date;
+  readonly password?: string;
 }

@@ -20,6 +20,7 @@ import {
   AuthenticateUserRo,
   ForgottenPasswordDto,
   ResetPasswordDto,
+  ChangePasswordDto,
 } from './dto';
 import { User } from '../shared/decorators/user.decorator';
 import { RolesGuard } from '../shared/guards/roles.guard';
@@ -51,7 +52,7 @@ export class UserController {
     return this.userService.create(payload);
   }
 
-  @Patch()
+  @Patch('me')
   @UseGuards(AuthGuard)
   update(@User() user, @Body() payload: UpdateUserDto): Promise<FindUserDto> {
     return this.userService.update(user, payload);
@@ -80,6 +81,12 @@ export class UserController {
   @Post('reset-password')
   resetPassword(@Body() body: ResetPasswordDto) {
     return this.userService.resetPassword(body);
+  }
+
+  @Post('change-password')
+  @UseGuards(AuthGuard)
+  changePassword(@Body() body: ChangePasswordDto, @User() user) {
+    return this.userService.changePassword(body, user);
   }
 
   @Get('stats')

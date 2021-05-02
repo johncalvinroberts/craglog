@@ -15,6 +15,7 @@ import {
   FindUserDto,
   ForgottenPasswordDto,
   ResetPasswordDto,
+  ChangePasswordDto,
 } from './dto';
 import { MailService } from '../mail/mail.service';
 import { PaginationDto } from '../shared/pagination.dto';
@@ -22,7 +23,9 @@ import {
   UserNotFoundException,
   EmailAlreadyUsedException,
   PasswordResetTokenInvalidException,
+  PasswordMismatchException,
 } from '../shared/exceptions';
+import { throws } from 'assert';
 
 const randomBytes = promisify(randomBytesCallback);
 
@@ -75,8 +78,8 @@ export class UserService {
     }
   }
 
-  async update(user: UserEntity, dto: UpdateUserDto): Promise<FindUserDto> {
-    const update = Object.assign(user, dto);
+  async update(user: UserEntity, payload: UpdateUserDto): Promise<FindUserDto> {
+    const update = { ...user, ...payload };
     const updated = await this.userRepository.save(update);
     return this.buildUserResponse(updated);
   }
@@ -224,5 +227,22 @@ export class UserService {
         If you have any questions, feedback, or just want to get in contact, just respond to this email, or send an email to <a href="mailto:emails@craglog.cc">emails@craglog.cc</a>
       </p>`,
     });
+  }
+
+  async changePassword(
+    body: ChangePasswordDto,
+    user: FindUserDto,
+  ): Promise<{ success: boolean }> {
+    const previousUser = await this.userRepository.findOneOrFail(user.id);
+    const previousPasswordDigest = previousUser.password;
+    const previousPasswordDigestGivenByUser = crypto
+      .createHmac('sha256', body.oldPassword)
+      .digest('hex');
+    if (previousPasswordDigest !== previousPasswordDigestGivenByUser) {
+      throw PasswordMismatchException();
+    }
+    previousUser.password = body.newPassword;
+    await this.userRepository.save(previousUser);
+    return { success: true };
   }
 }

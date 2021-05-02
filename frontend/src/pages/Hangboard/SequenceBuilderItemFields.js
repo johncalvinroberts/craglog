@@ -41,7 +41,13 @@ const SequenceBuilderItemFields = ({ id, ...rest }) => {
           required
         />
       )}
-      <div style={{ display: !isReps ? 'block' : 'none' }}>
+      <div
+        style={{
+          display: !isReps ? 'block' : 'none',
+          width: '100%',
+          maxWidth: '310px',
+        }}
+      >
         <TextField
           type="number"
           name={`${nameBase}.duration`}
@@ -55,7 +61,13 @@ const SequenceBuilderItemFields = ({ id, ...rest }) => {
           rounded="0.25rem 0 0 0.25rem"
         />
       </div>
-      <div style={{ display: isReps ? 'block' : 'none' }}>
+      <div
+        style={{
+          display: isReps ? 'block' : 'none',
+          width: '100%',
+          maxWidth: '310px',
+        }}
+      >
         <TextField
           type="number"
           name={`${nameBase}.repetitions`}

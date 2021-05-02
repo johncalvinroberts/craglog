@@ -19,3 +19,6 @@ export const PasswordResetTokenInvalidException = () =>
 
 export const LoginCredentialsException = () =>
   new UnauthorizedException('Login credentials are wrong.');
+
+export const PasswordMismatchException = () =>
+  new UnauthorizedException('Old Password is incorrect');
