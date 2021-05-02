@@ -12,6 +12,7 @@ export class MailService {
   }
 
   private makeANiceEmail(text: string): string {
+    const frontendUrl = this.configService.get('FRONTEND_URL');
     return `
   <div className="email" style="
     border: 1px solid black;
@@ -22,7 +23,9 @@ export class MailService {
   ">
     <h2>Hello There!</h2>
     <p>${text}</p>
-    <p>🏔, Craglog</p>
+    <p>Craglog 🏔</p>
+    <hr/>
+    <a href=${frontendUrl} style="font-size: 10px;">craglog.cc</a>
   </div>
 `;
   }

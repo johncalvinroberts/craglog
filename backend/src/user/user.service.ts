@@ -216,9 +216,13 @@ export class UserService {
       to: email,
       text: `Hi, ${username}!
       \n\n
-      We just wanted to send a welcome email to say thanks for trying out Craglog.
+      <p>
+        We just wanted to send a welcome email to say thanks for trying out Craglog.
+      </p
       \n\n
-      If you have any questions, feedback, or just want to get in contact, just respond to this email, or send an email to emails@craglog.cc`,
+      <p>
+        If you have any questions, feedback, or just want to get in contact, just respond to this email, or send an email to <a href="mailto:emails@craglog.cc">emails@craglog.cc</a>
+      </p>`,
     });
   }
 }
