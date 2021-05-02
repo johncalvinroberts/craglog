@@ -170,8 +170,6 @@ const TickForm = ({ defaultValues, onSubmit }) => {
       setValue('type', 'workout');
     }
   }, [style, setValue, register]);
-  const { errors } = formMethods;
-  console.log({ errors });
 
   return (
     <Form
@@ -237,7 +235,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           helperText="Rate how you felt on this climb. How difficult was this climb for you?"
         />
         {isOutdoor && (
-          <Box>
+          <Box mt={10}>
             <Heading size="md">Import Route</Heading>
             <Text size="xs" mb={4} as="div" width="auto" height="auto">
               Import a route from an external database, like{' '}
@@ -262,7 +260,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
               >
                 Mountain Project
               </Text>
-              , or
+              , or{' '}
               <Text
                 href="https://27crags.com/"
                 target="_blank"
@@ -297,7 +295,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
           </Box>
         )}
       </Box>
-      <Box>
+      <Box mt={10}>
         <Heading size="md">Notes</Heading>
         <Text size="xs" mb={4} as="div" width="auto" height="auto">
           Beta, or other noteworthy details about the climb for future
