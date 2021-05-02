@@ -11,7 +11,7 @@ export class MailService {
     this.sgMail.setApiKey(this.configService.get('SENDGRID_API_KEY'));
   }
 
-  private makeANiceEmail(text: string) {
+  private makeANiceEmail(text: string): string {
     return `
   <div className="email" style="
     border: 1px solid black;
@@ -35,7 +35,7 @@ export class MailService {
     text: string;
     to: string;
     subject: string;
-  }) {
+  }): Promise<void> {
     await this.sgMail.send({
       from: 'emails@craglog.cc',
       to,
@@ -43,7 +43,6 @@ export class MailService {
       html: this.makeANiceEmail(text),
       text,
     });
-    // return a message
-    return { message: 'Success' };
+    return;
   }
 }

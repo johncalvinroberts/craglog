@@ -64,6 +64,7 @@ export class UserService {
 
     try {
       const savedUser = await this.userRepository.save(newUser);
+      process.nextTick(() => this.sendWelcomeEmail(email, username));
       return this.buildAuthResponse(savedUser);
     } catch (error) {
       if (parseInt(error.code) === 23505) {
@@ -207,5 +208,17 @@ export class UserService {
     user.password = password; // this will get encrypted by the user model/entity
     await this.userRepository.save(user);
     return this.buildAuthResponse(user);
+  }
+
+  async sendWelcomeEmail(email: string, username) {
+    return this.mailService.sendANiceEmail({
+      subject: 'Welcome to Craglog',
+      to: email,
+      text: `Hi, ${username}!
+      \n\n
+      We just wanted to send a welcome email to say thanks for trying out Craglog.
+      \n\n
+      If you have any questions, feedback, or just want to get in contact, just respond to this email, or send an email to emails@craglog.cc`,
+    });
   }
 }
