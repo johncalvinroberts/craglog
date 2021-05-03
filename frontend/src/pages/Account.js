@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Heading,
@@ -29,11 +29,13 @@ const defaultValues = {
 };
 
 const ChangePasswordForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const formMethods = useForm({ validationSchema, defaultValues });
   const { watch, reset } = formMethods;
   const { newPassword, oldPassword } = watch();
   const toast = useToast();
   const onSubmit = async (values) => {
+    setIsLoading(true);
     try {
       await http.post(`/user/change-password`, values);
       toast({
@@ -49,6 +51,7 @@ const ChangePasswordForm = () => {
         duration: 9000,
       });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -68,6 +71,8 @@ const ChangePasswordForm = () => {
         <Button
           variantColor="red"
           disabled={!newPassword || !oldPassword}
+          loadingText="Changing..."
+          isLoading={isLoading}
           type="submit"
         >
           Change password

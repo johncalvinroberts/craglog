@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
@@ -20,11 +20,13 @@ const defaultValues = {
 // format should be reset?resetToken=token&email=someemail
 const ForgotPassword = () => {
   useTitle('Reset Password');
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const history = useHistory();
   const formMethods = useForm({ defaultValues, validationSchema });
 
   const onSubmit = async (values) => {
+    setIsLoading(true);
     const params = new URLSearchParams(window.location.search);
     try {
       await submitPasswordReset({
@@ -43,6 +45,7 @@ const ForgotPassword = () => {
         isClosable: true,
       });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -71,7 +74,7 @@ const ForgotPassword = () => {
           methods={formMethods}
           defaultValues={defaultValues}
         >
-          <PasswordField label="Password" name="password" required />
+          <PasswordField label="New Password" name="password" required />
           <Box pt={3} pb={2}>
             <Button
               type="submit"
@@ -79,6 +82,7 @@ const ForgotPassword = () => {
               border="2px"
               borderColor="teal.300"
               variant="solid"
+              isLoading={isLoading}
             >
               Submit
             </Button>

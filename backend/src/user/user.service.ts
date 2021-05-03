@@ -187,7 +187,7 @@ export class UserService {
     await this.mailService.sendANiceEmail({
       subject: 'Your password reset',
       to: user.email,
-      text: `Your Password Reset Token is here!
+      text: `Your Password Reset is Here!
       \n\n
       <a href="${frontendUrl}/reset?resetToken=${resetToken}&email=${user.email}">Click Here to Reset</a>`,
     });
