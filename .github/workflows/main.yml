@@ -3,14 +3,14 @@ name: BUILD AND DEPLOY CRAGLOG
 on:
   push:
     branches:
-      - 'master'
+      - '*'
     tags:        
       - '*'
 
 
 jobs:
   build:
-    name: Build Artifacts
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -23,90 +23,17 @@ jobs:
         with:
           node-version: 14
 
-      - name: Determine Docker image tag 
-        id: determine_tag
-        shell: bash
-        run: |
-          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-
       - name: Install backend deps (with cache)
         uses: bahmutov/npm-install@v1.7.1
         with:
           install-command: yarn
           working-directory: ./backend
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      
+      - name: Setup Test Environment
+        run: make up
 
-      - name: Build and push backend docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./backend
-          push: true
-          tags: ghcr.io/johncalvinroberts/craglog:latest,ghcr.io/johncalvinroberts/craglog:${{ steps.determine_tag.outputs.sha_short }}
-          build-args: |
-            DATABASE_HOST=172.17.0.1
-            DATABASE_PORT=5432
-            POSTGRES_USER=craglog-admin
-            "POSTGRES_PASSWORD=${{secrets.BACKEND_POSTGRES_PASSWORD}}"
-            POSTGRES_DB=craglog
-            "JWT_SECRET=${{secrets.BACKEND_JWT_SECRET}}"
-            FRONTEND_URL=https://craglog.cc
-            "MAIL_HOST=${{secrets.BACKEND_MAIL_HOST}}"
-            "MAIL_PORT=${{secrets.BACKEND_MAIL_PORT}}"
-            "MAIL_USER=${{secrets.BACKEND_MAIL_USER}}"
-            "MAIL_PASS=${{secrets.BACKEND_MAIL_PASSWORD}}"
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-      - name: Install frontend deps (with cache)
-        uses: bahmutov/npm-install@v1.7.1
+      - name: Test
+        run: yarn test
         with:
           install-command: yarn
-          working-directory: ./frontend
-
-      - name: Build frontend
-        working-directory: ./frontend
-        run: yarn build
-        env:
-          NODE_ENV: production
-          API_BASE_PATH: api
-
-      - name: Copy files via SSH
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.DEPLOY_SSH_HOST }}
-          username: ${{ secrets.DEPLOY_SSH_USERNAME }}
-          port: 20022
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          overwrite: true
-          source: "deploy,frontend/dist"
-          target: "deploy"
-          strip_components: 1
-
-      - name: SSH into server and run deploy script
-        uses: appleboy/ssh-action@master
-        env:
-          DOCKER_TAG: ${{ steps.determine_tag.outputs.sha_short }}
-          GCHR_PAT: ${{ secrets.GCHR_PAT }}
-        with:
-          host: ${{ secrets.DEPLOY_SSH_HOST }}
-          username: ${{ secrets.DEPLOY_SSH_USERNAME }}
-          port: 20022
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          envs: DOCKER_TAG,GCHR_PAT
-          script: |
-            source /etc/profile
-            cd deploy
-            sh ./deploy.sh -t $DOCKER_TAG -p $GHCR_PAT
+          working-directory: ./backend
