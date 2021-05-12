@@ -23,11 +23,12 @@ export class HangboardSequenceService {
   ) {}
 
   findAll(query: HangboardSequenceQueryDto, userId: number) {
-    const { isPublic, ...rest } = query;
+    const { isPublic = false, ...rest } = query;
     return this.hangboardSequenceRepository.find({
       ...rest,
-      ...rest,
-      ...(isPublic ? { isPublic: true } : { userId }),
+      where: {
+        ...(isPublic ? { isPublic: true } : { userId }),
+      },
     });
   }
 
