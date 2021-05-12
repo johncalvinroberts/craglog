@@ -12,5 +12,8 @@
     "import/no-unresolved": "off",
     "no-shadow": "off",
     "no-alert": "error"
+  },
+  "globals": {
+    "self": true
   }
 }

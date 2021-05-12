@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "patch-package",
+    "prebuild": "rimraf dist",
     "start": "parcel serve src/index.html",
-    "build": "parcel build --no-cache src/index.html",
+    "build": "parcel build --no-cache --no-content-hash src/index.html",
     "postbuild": "react-snap",
     "clean": "rimraf dist && rimraf .cache",
     "lint": "eslint . --ignore-path .gitignore"
