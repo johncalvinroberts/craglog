@@ -3823,6 +3823,11 @@ grapheme-breaker@^0.3.2:
     brfs "^1.2.0"
     unicode-trie "^0.3.1"
 
+guu@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.npmjs.org/guu/-/guu-0.2.7.tgz#f4df38c9a3bc1d5341cad25008e0bef3c7ef40c5"
+  integrity sha512-odI+HDrTcCel5OPHSfiyT8Fciw3PV9D8WD2eGk2bjQDxWDCJphGFi++LIb88OphxCxb9BhI7QtlKeTazQIxaCA==
+
 har-schema@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/har-schema/-/har-schema-2.0.0.tgz#a94c2224ebcac04782a0d9035521f24735b7ec92"

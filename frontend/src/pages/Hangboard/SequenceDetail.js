@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Spinner, useToast, Box, Heading } from '@chakra-ui/core';
 import useSWR, { mutate } from 'swr';
+import Guu from 'guu';
 import { hangBoardMap } from '../../components/hangboards';
 import PseudoButton from '../../components/PseudoButton';
 import http from '../../http';
@@ -17,6 +18,8 @@ import { useTitle, useCountdown, useScreenLock } from '../../hooks';
 
 const REST_MS_INTERVAL = 1000;
 const EXERCISE_MS_INTERVAL = 100;
+
+const log = new Guu('SequenceDetail', '#6998f1');
 
 const INTERVAL_LABELS = {
   1000: `s`,
@@ -157,7 +160,7 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
 
   useEffect(() => {
     if (currentItemRef.current && currentItemRef.current.isRepetitions) {
-      console.log({ timeRemaining });
+      log.info({ timeRemaining });
       setRepsRemaining(Math.floor(timeRemaining / 3000));
     } else {
       setRepsRemaining(0);
@@ -180,7 +183,7 @@ const SequenceDetailInner = ({ data, Hangboard, totalTime, handleDone }) => {
     }
   }, [isDone, handleDone]);
 
-  console.log({ currentItem });
+  log.info({ currentItem });
 
   return (
     <Box d="flex" justifyContent="center" width="100%" flexWrap="wrap">

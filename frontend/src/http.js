@@ -1,4 +1,7 @@
+import Guu from 'guu';
 import { TOKEN_KEY, API_BASE_PATH } from './constants';
+
+const log = new Guu('http.js', '#a2ffd8');
 
 const GET = 'GET';
 const POST = 'POST';
@@ -8,6 +11,7 @@ const DELETE = 'DELETE';
 let token = localStorage.getItem(TOKEN_KEY);
 
 const easyFetch = async ({ url, method, body = {} }) => {
+  log.info('easyFetch fetching', { url, method, body });
   const headers = {
     'content-type': 'application/json',
     accept: 'application/json, text/plain, */*',

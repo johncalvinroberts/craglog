@@ -10,6 +10,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import Guu from 'guu';
 import Form, { PasswordField } from '../components/Form';
 import DashboardWrapper from '../components/DashboardWrapper';
 import { useTitle, useAuthState } from '../hooks';
@@ -17,6 +18,8 @@ import DeleteModal from '../components/DeleteModal';
 import http from '../http';
 import { useDispatch } from '../components/State';
 import { performLogout } from '../states';
+
+const log = new Guu('Account', 'purple');
 
 const validationSchema = yup.object().shape({
   newPassword: yup.string().required().min(8).max(250),
@@ -102,6 +105,7 @@ const Account = () => {
         isClosable: true,
       });
     } catch (error) {
+      log.error('Failed to delete user', error);
       toast({
         description: error.message || 'Something went wrong',
         status: 'error',

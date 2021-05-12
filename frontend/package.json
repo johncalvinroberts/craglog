@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "patch-package",    
+    "postinstall": "patch-package",
     "start": "parcel serve src/index.html",
     "build": "parcel build --no-cache src/index.html",
     "postbuild": "react-snap",
@@ -22,6 +22,7 @@
     "emotion-theming": "^10.0.27",
     "flattenjs": "^2.0.0",
     "google-map-react": "^1.1.5",
+    "guu": "^0.2.7",
     "jwt-decode": "^3.0.0",
     "parcel": "^1.12.4",
     "patch-package": "^6.4.7",
