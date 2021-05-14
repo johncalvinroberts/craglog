@@ -86,6 +86,8 @@ export const TickCard = ({ item, dictKey }) => {
 
   if (isDeleted) return <></>;
 
+  const showSnapshot = item.routeSnapshot && item.routeSnapshot.name;
+
   return (
     <>
       {isFirstOfYear && (
@@ -197,7 +199,7 @@ export const TickCard = ({ item, dictKey }) => {
               <TickStyleChip style={item.style} />
               <TickTypeChip type={item.type} />
             </Box>
-            {item.routeSnapshot && !item.gymName && (
+            {showSnapshot && (
               <RouteCard
                 route={item.routeSnapshot}
                 showLink={false}

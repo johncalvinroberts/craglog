@@ -5,24 +5,30 @@ import { useSWRInfinite } from 'swr';
 import http from '../../http';
 import getErrorMessage from '../../utils/getErrorMessage';
 import EmptyView from '../../components/EmptyView';
-import TickCard from './TickCard';
+import { TickCard } from './TickCard';
 import { TickDatesContext } from './TickDatesContext';
 
 const reducer = (state, action) => ({ ...state, ...action });
 
-const TickPage = ({ page, size, dispatch }) => {
+const getDictKey = (page, index) => `${page || 0}_${index}`;
+
+const TickPage = ({ page, pageIndex, size, dispatch }) => {
   useEffect(() => {
     if (page && page.length > 0) {
       const nextDatesDict = page.reduce((memo, current, index) => {
-        const key = `${size || 0}_${index}`;
+        const key = getDictKey(pageIndex, index);
         return { ...memo, [key]: current.tickDate };
       }, {});
       dispatch(nextDatesDict);
     }
-  }, [page, size, dispatch]);
+  }, [pageIndex, page, size, dispatch]);
 
   return page.map((item, index) => (
-    <TickCard item={item} key={item.id} dictKey={`${size || 0}_${index}`} />
+    <TickCard
+      item={item}
+      key={item.id}
+      dictKey={getDictKey(pageIndex, index)}
+    />
   ));
 };
 
@@ -32,10 +38,10 @@ const TickDataGrid = ({ query }) => {
 
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.length) return null; // reached the end
-    const offSet = pageIndex + 1 * 10 - 10;
+    const skip = (pageIndex + 1) * 10 - 10;
     const params = new URLSearchParams({
       take: 10,
-      skip: offSet,
+      skip,
       ...query,
     });
     return `/tick?${params.toString()}`;
@@ -68,8 +74,16 @@ const TickDataGrid = ({ query }) => {
     );
   }
 
-  const pages = data.map((item) => {
-    return <TickPage page={item} key={item} size={size} dispatch={dispatch} />;
+  const pages = data.map((item, index) => {
+    return (
+      <TickPage
+        page={item}
+        pageIndex={index}
+        key={item}
+        size={size}
+        dispatch={dispatch}
+      />
+    );
   });
 
   return (
