@@ -2,8 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import { Box, IconButton, Heading } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
 import Guu from 'guu';
-import { useTitle } from '../hooks';
-import LoginLayout from '../components/LogInLayout';
+import { useTitle } from '../../hooks';
+import LoginLayout from '../../components/LogInLayout';
+import { getMostSimilarGrade } from './utils';
 
 const log = new Guu('converter', 'pink');
 
@@ -16,7 +17,8 @@ const ClimbingGradeConverter = () => {
   }, []);
 
   const handleInput = (e) => {
-    log.debug(e.target.value);
+    const matches = getMostSimilarGrade(e.target.value);
+    log.info(matches);
   };
 
   return (
