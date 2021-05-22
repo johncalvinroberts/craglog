@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Box, IconButton, Heading } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
 import Guu from 'guu';
@@ -10,6 +10,7 @@ const log = new Guu('converter', 'pink');
 
 const ClimbingGradeConverter = () => {
   useTitle('Climbing Grade Converter');
+  const [matches, setMatches] = useState([]);
   const inputRef = useRef();
 
   useEffect(() => {
@@ -17,8 +18,9 @@ const ClimbingGradeConverter = () => {
   }, []);
 
   const handleInput = (e) => {
-    const matches = getMostSimilarGrade(e.target.value);
+    const matches = getMostSimilarGrade(e.target.value?.trim());
     log.info(matches);
+    setMatches(matches);
   };
 
   return (
@@ -50,6 +52,11 @@ const ClimbingGradeConverter = () => {
             fontSize="113px"
             border="none"
           />
+        </Box>
+        <Box>
+          {matches.map((item) => (
+            <Box key={item.name}>{item.name}</Box>
+          ))}
         </Box>
       </Box>
     </LoginLayout>
