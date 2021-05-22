@@ -2,7 +2,7 @@ import Guu, { TimerFactory } from 'guu';
 
 const log = new Guu('ConverterUtils', 'magenta');
 // Currently supported systems include: French, Australian, South African, UIAA, Hueco, Font, British, YDS
-
+const DELIMITER = '__';
 export const gradingMap = {
   yds: [
     '5.1',
@@ -290,16 +290,49 @@ const allGradesAsArray = Object.keys(gradingMap).reduce((memo, system) => {
   const grades = gradingMap[system];
   return [
     ...memo,
-    ...grades.map((grade, index) => `${grade}__${system}__${index}`),
+    ...grades.map(
+      (grade, index) => `${grade}${DELIMITER}${system}${DELIMITER}${index}`,
+    ),
   ];
 }, []);
 
 const timer = new TimerFactory('getMostSimilarGrade');
 
 export const getMostSimilarGrade = (query, priorityList) => {
+  if (!query) return [];
   timer.start();
   log.info('getMostSimilarGrade', { query, priorityList });
-  const matches = allGradesAsArray.filter((item) => item.startsWith(query));
+  const term = query && query.toLowerCase();
+  const expr = new RegExp(term, 'g');
+
+  const matches = allGradesAsArray
+    .reduce((memo, current) => {
+      const name = current?.split(DELIMITER)[0] || '';
+      // run the regexp on the master name string
+      // use Set to dedupe
+      const matches = Array.from(new Set(name.match(expr)));
+      let matchCount = matches?.length || 0;
+      if (name.startsWith(term)) {
+        matchCount = matchCount + 1;
+      }
+
+      if (name.endsWith(term)) {
+        matchCount = matchCount + 1;
+      }
+
+      if (matches?.length > 0) {
+        // append a field "matchCount" to use on the item
+
+        memo.push({
+          name: current,
+          matchCount,
+          value: name,
+        });
+      }
+      return memo;
+    }, [])
+    .sort((a, b) => b.matchCount - a.matchCount)
+    .slice(0, 10);
   timer.crumb('initialMatch');
   log.info('matches', { matches });
   timer.crumb('matches');
