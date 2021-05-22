@@ -18,11 +18,10 @@ const fs = require('fs/promises');
     const files = await fs.readdir(folder);
     for (const file of files) {
       if (file.endsWith('.js')) {
-        console.log(file);
         const oldPath = `${folder}/${file}`;
         const newPath = oldPath.replace('.js', '.jsx');
-        console.log(`${oldPath} -> ${newPath}`);
-        // await fs.rename(oldPath, newPath);
+        console.log(`${oldPath} -> ${newPath}`); // eslint-disable-line
+        await fs.rename(oldPath, newPath);
       }
     }
   }
