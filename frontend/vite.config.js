@@ -5,9 +5,4 @@ import reactRefresh from '@vitejs/plugin-react-refresh';
 export default defineConfig({
   plugins: [reactRefresh()],
   root: 'src',
-  esbuild: {
-    include: /\.(tsx?|jsx?)$/,
-    exclude: [],
-    loader: 'tsx',
-  },
 });
