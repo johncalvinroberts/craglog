@@ -338,3 +338,12 @@ export const getMostSimilarGrade = (query, priorityList) => {
   timer.crumb('matches');
   return matches;
 };
+
+export const stringToEntry = (value) => {
+  const [grade, system, index] = value.split(DELIMITER);
+  const conversions = Object.keys(gradingMap).reduce((memo, system) => {
+    const grade = gradingMap[system][parseInt(index, 10)];
+    return [...memo, { grade, system }];
+  }, []);
+  return { grade, system, index, conversions };
+};
