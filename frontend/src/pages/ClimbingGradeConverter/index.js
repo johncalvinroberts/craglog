@@ -16,20 +16,23 @@ const handleKeydown = () => {
   outerRef.current?.focus();
 };
 
-const Grade = ({ value }) => {
+const Grade = ({ value, isHighlight }) => {
   const entry = stringToEntry(value);
   const { grade, system, conversions = [] } = entry;
   return (
-    <Box display="flex">
+    <Box display="flex" borderColor="gray.200" borderBottom="1px">
       {conversions.map((item) => {
+        const isPrimary =
+          isHighlight && item.grade === grade && item.system === system;
+        const isSecondary = isHighlight && !isPrimary;
         return (
           <Box
             flex="0 0 40px"
             display="flex"
             key={`${item.system}${item.grade}`}
-            {...(item.grade === grade && item.system === system
-              ? { border: 'solid 2px black' }
-              : null)}
+            {...(isPrimary ? { opacity: '1' } : null)}
+            {...(isSecondary ? { opacity: '0.8' } : null)}
+            {...(!isSecondary && !isPrimary ? { opacity: '0.5' } : null)}
           >
             <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium">
               {item.system}
@@ -97,8 +100,12 @@ const ClimbingGradeConverter = () => {
           />
         </Box>
         <Box>
-          {matches.map((item) => (
-            <Grade key={item.name} value={item.name} />
+          {matches.map((item, index) => (
+            <Grade
+              key={item.name}
+              value={item.name}
+              isHighlight={index === 0}
+            />
           ))}
         </Box>
       </Box>
