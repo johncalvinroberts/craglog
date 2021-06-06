@@ -300,6 +300,8 @@ export const allGradesAsArray = Object.keys(gradingMap).reduce(
   [],
 );
 
+export const allGradesLength = gradingMap.yds.length;
+
 const timer = new TimerFactory('getMostSimilarGrade');
 
 export const getMostSimilarGrade = (query, priorityList) => {
