@@ -286,15 +286,19 @@ export const gradingMap = {
   ],
 };
 
-const allGradesAsArray = Object.keys(gradingMap).reduce((memo, system) => {
-  const grades = gradingMap[system];
-  return [
-    ...memo,
-    ...grades.map(
-      (grade, index) => `${grade}${DELIMITER}${system}${DELIMITER}${index}`,
-    ),
-  ];
-}, []);
+export const allGradesAsArray = Object.keys(gradingMap).reduce(
+  (memo, system) => {
+    const grades = gradingMap[system];
+    return [
+      ...memo,
+      ...grades.map((grade, index) => ({
+        name: `${grade}${DELIMITER}${system}${DELIMITER}${index}`,
+        value: grade,
+      })),
+    ];
+  },
+  [],
+);
 
 const timer = new TimerFactory('getMostSimilarGrade');
 
@@ -306,8 +310,7 @@ export const getMostSimilarGrade = (query, priorityList) => {
   const expr = new RegExp(term, 'g');
 
   const matches = allGradesAsArray
-    .reduce((memo, current) => {
-      const name = current?.split(DELIMITER)[0] || '';
+    .reduce((memo, { name, value }) => {
       // run the regexp on the master name string
       // use Set to dedupe
       const matches = Array.from(new Set(name.match(expr)));
@@ -324,9 +327,9 @@ export const getMostSimilarGrade = (query, priorityList) => {
         // append a field "matchCount" to use on the item
 
         memo.push({
-          name: current,
           matchCount,
-          value: name,
+          name,
+          value,
         });
       }
       return memo;
@@ -336,6 +339,7 @@ export const getMostSimilarGrade = (query, priorityList) => {
   timer.crumb('initialMatch');
   log.info('matches', { matches });
   timer.crumb('matches');
+  timer.stop('matches');
   return matches;
 };
 
@@ -347,3 +351,65 @@ export const stringToEntry = (value) => {
   }, []);
   return { grade, system, index, conversions };
 };
+
+// can check more info here: https://www.cruxrange.com/blog/climbing-ratings-explained/#australian-ratings
+
+const systemMap = {
+  yds: {
+    emoji: '🇺🇸',
+    displayName: 'YDS',
+    color: '',
+    description:
+      'YDS - aka Yosemite Decimal System. Commonly used in North America.',
+  },
+  french: {
+    emoji: '🇫🇷',
+    displayName: 'French',
+    color: '',
+    description: 'French Climbing Scale. Common in Europe.',
+  },
+  australian: {
+    emoji: '🇦🇺',
+    displayName: 'Australian',
+    color: '',
+    description: 'Australian Grading System, aka the Ewbank system.',
+  },
+  south_african: {
+    emoji: '🇿🇦',
+    displayName: 'South African',
+    color: '',
+    description: 'Does anyone use this scale?',
+  },
+  uiaa: {
+    emoji: '🌐',
+    displayName: 'UIAA',
+    color: '',
+    description: 'The UIAA Grading System',
+  },
+  british: {
+    emoji: '🇬🇧',
+    displayName: 'UK',
+    color: '',
+    description:
+      'The UK grading system is a two part system - the first part is an objective difficulty/scariness level, the second part is technical -- the hardest move on the climb.',
+  },
+  hueco: {
+    emoji: '🇺🇸🪨',
+    displayName: 'Hueco',
+    color: '',
+    description:
+      'The Hueco system, or "V-System" is a grading scale for bouldering commonly used in North America.',
+  },
+  font: {
+    emoji: '🇫🇷🪨',
+    displayName: 'Font',
+    color: '',
+    description:
+      'A traditional French grading system for bouldering which originated in Fontainebleau, France.',
+  },
+};
+
+export const systems = Object.keys(gradingMap).map((key) => ({
+  key,
+  ...systemMap[key],
+}));

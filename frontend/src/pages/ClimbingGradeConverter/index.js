@@ -1,12 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Box, IconButton, Heading, Text } from '@chakra-ui/core';
+import { Box, IconButton, Heading, Text, useColorMode } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
 import Guu from 'guu';
 import { useTitle } from '../../hooks';
 import LoginLayout from '../../components/LogInLayout';
-import { getMostSimilarGrade, stringToEntry } from './utils';
+import {
+  getMostSimilarGrade,
+  stringToEntry,
+  allGradesAsArray,
+  systems,
+} from './utils';
 
 const log = new Guu('converter', 'pink');
+
+const CELL_WIDTH = ['0 0 6.2rem'];
 
 const outerRef = {
   current: undefined,
@@ -20,23 +27,23 @@ const Grade = ({ value, isHighlight }) => {
   const entry = stringToEntry(value);
   const { grade, system, conversions = [] } = entry;
   return (
-    <Box display="flex" borderColor="gray.200" borderBottom="1px">
+    <Box display="flex">
       {conversions.map((item) => {
         const isPrimary =
           isHighlight && item.grade === grade && item.system === system;
         const isSecondary = isHighlight && !isPrimary;
         return (
           <Box
-            flex="0 0 40px"
+            flex={CELL_WIDTH}
             display="flex"
             key={`${item.system}${item.grade}`}
+            borderColor="gray.200"
+            borderBottom="1px"
+            borderRight="1px"
             {...(isPrimary ? { opacity: '1' } : null)}
             {...(isSecondary ? { opacity: '0.8' } : null)}
             {...(!isSecondary && !isPrimary ? { opacity: '0.5' } : null)}
           >
-            <Text mr={1} fontSize={['xs', 'sm']} fontWeight="medium">
-              {item.system}
-            </Text>
             <Text mx={[0, 2]} fontSize="xs" flex="1" lineHeight="normal">
               {item.grade}
             </Text>
@@ -49,8 +56,10 @@ const Grade = ({ value, isHighlight }) => {
 
 const ClimbingGradeConverter = () => {
   useTitle('Climbing Grade Converter');
-  const [matches, setMatches] = useState([]);
+  const [matches, setMatches] = useState(allGradesAsArray);
   const inputRef = useRef();
+  const { colorMode } = useColorMode();
+  const headerBg = { light: 'gray.200', dark: 'gray.900' };
 
   useEffect(() => {
     outerRef.current = inputRef.current;
@@ -60,14 +69,17 @@ const ClimbingGradeConverter = () => {
   }, []);
 
   const handleInput = (e) => {
-    const matches = getMostSimilarGrade(e.target.value?.trim());
+    const query = e.target.value?.trim();
+    const matches = query
+      ? getMostSimilarGrade(e.target.value?.trim())
+      : allGradesAsArray;
     log.info(matches);
     setMatches(matches);
   };
 
   return (
-    <LoginLayout>
-      <Box mb={4} d="block">
+    <LoginLayout maxW="800px">
+      <Box mb={4} d="block" minHeight="80vh">
         <Box
           as={Link}
           style={{ display: 'block' }}
@@ -100,6 +112,23 @@ const ClimbingGradeConverter = () => {
           />
         </Box>
         <Box>
+          <Box
+            d="flex"
+            position="sticky"
+            top="0"
+            backgroundColor={headerBg[colorMode]}
+            zIndex="9999"
+            width="100%"
+          >
+            {systems.map(({ key, displayName, emoji }) => (
+              <Box flex={CELL_WIDTH} key={key} d="flex" alignItems="center">
+                <Box>{emoji}</Box>
+                <Text mx={[0, 2]} fontSize="xs" flex="1" lineHeight="normal">
+                  {displayName}
+                </Text>
+              </Box>
+            ))}
+          </Box>
           {matches.map((item, index) => (
             <Grade
               key={item.name}

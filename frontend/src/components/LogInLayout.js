@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@chakra-ui/core';
 
-const LogIn = ({ children }) => {
+const LogIn = ({ children, maxW = '400px' }) => {
   return (
     <Box
       minH="100vh"
@@ -10,7 +10,7 @@ const LogIn = ({ children }) => {
       justifyContent="center"
       p={4}
     >
-      <Box pb={20} w="100%" maxW="400px">
+      <Box pb={20} w="100%" maxW={maxW}>
         {children}
       </Box>
     </Box>
