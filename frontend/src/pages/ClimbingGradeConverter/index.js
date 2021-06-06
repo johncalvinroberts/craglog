@@ -9,11 +9,14 @@ import {
   stringToEntry,
   allGradesAsArray,
   systems,
+  allGradesLength,
 } from './utils';
+
+const allGrades = allGradesAsArray.slice(0, allGradesLength);
 
 const log = new Guu('converter', 'pink');
 
-const CELL_WIDTH = ['0 0 6.2rem'];
+const CELL_WIDTH = ['1'];
 
 const outerRef = {
   current: undefined,
@@ -56,7 +59,7 @@ const Grade = ({ value, isHighlight }) => {
 
 const ClimbingGradeConverter = () => {
   useTitle('Climbing Grade Converter');
-  const [matches, setMatches] = useState(allGradesAsArray);
+  const [matches, setMatches] = useState(allGrades);
   const inputRef = useRef();
   const { colorMode } = useColorMode();
   const headerBg = { light: 'gray.200', dark: 'gray.900' };
@@ -70,9 +73,7 @@ const ClimbingGradeConverter = () => {
 
   const handleInput = (e) => {
     const query = e.target.value?.trim();
-    const matches = query
-      ? getMostSimilarGrade(e.target.value?.trim())
-      : allGradesAsArray;
+    const matches = query ? getMostSimilarGrade(query) : allGrades;
     log.info(matches);
     setMatches(matches);
   };
@@ -119,9 +120,18 @@ const ClimbingGradeConverter = () => {
             backgroundColor={headerBg[colorMode]}
             zIndex="9999"
             width="100%"
+            borderRight="1px solid"
+            borderColor={headerBg[colorMode]}
           >
             {systems.map(({ key, displayName, emoji }) => (
-              <Box flex={CELL_WIDTH} key={key} d="flex" alignItems="center">
+              <Box
+                flex={CELL_WIDTH}
+                key={key}
+                d="flex"
+                alignItems="center"
+                flexWrap="wrap"
+                justifyContent="center"
+              >
                 <Box>{emoji}</Box>
                 <Text mx={[0, 2]} fontSize="xs" flex="1" lineHeight="normal">
                   {displayName}
@@ -133,7 +143,9 @@ const ClimbingGradeConverter = () => {
             <Grade
               key={item.name}
               value={item.name}
-              isHighlight={index === 0}
+              isHighlight={
+                index === 0 && matches.length !== allGradesAsArray.length
+              }
             />
           ))}
         </Box>
