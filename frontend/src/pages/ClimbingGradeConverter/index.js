@@ -34,7 +34,6 @@ const Grade = ({ value, isHighlight }) => {
       {conversions.map((item) => {
         const isPrimary =
           isHighlight && item.grade === grade && item.system === system;
-        const isSecondary = isHighlight && !isPrimary;
         return (
           <Box
             flex={CELL_WIDTH}
@@ -43,9 +42,10 @@ const Grade = ({ value, isHighlight }) => {
             borderColor="gray.200"
             borderBottom="1px"
             borderRight="1px"
-            {...(isPrimary ? { opacity: '1' } : null)}
-            {...(isSecondary ? { opacity: '0.8' } : null)}
-            {...(!isSecondary && !isPrimary ? { opacity: '0.5' } : null)}
+            {...(isPrimary && isHighlight
+              ? { opacity: '1', backgroundColor: 'hotpink' }
+              : { opacity: '0.6' })}
+            {...(!isHighlight ? { opacity: '0.9' } : null)}
           >
             <Text mx={[0, 2]} fontSize="xs" flex="1" lineHeight="normal">
               {item.grade}
@@ -77,6 +77,9 @@ const ClimbingGradeConverter = () => {
     log.info(matches);
     setMatches(matches);
   };
+
+  const isHighlight =
+    matches.length !== allGradesAsArray.length / systems.length;
 
   return (
     <LoginLayout maxW="800px">
@@ -131,21 +134,25 @@ const ClimbingGradeConverter = () => {
                 alignItems="center"
                 flexWrap="wrap"
                 justifyContent="center"
+                textAlign={['center', 'center', 'left']}
               >
                 <Box>{emoji}</Box>
-                <Text mx={[0, 2]} fontSize="xs" flex="1" lineHeight="normal">
+                <Text
+                  mx={[0, 2]}
+                  fontSize="xs"
+                  flex={['0 0 100%', '0 0 100%', '1']}
+                  lineHeight="normal"
+                >
                   {displayName}
                 </Text>
               </Box>
             ))}
           </Box>
-          {matches.map((item, index) => (
+          {matches.map((item) => (
             <Grade
               key={item.name}
               value={item.name}
-              isHighlight={
-                index === 0 && matches.length !== allGradesAsArray.length
-              }
+              isHighlight={isHighlight}
             />
           ))}
         </Box>
