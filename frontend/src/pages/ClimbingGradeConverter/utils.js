@@ -316,7 +316,7 @@ export const getMostSimilarGrade = (query, priorityList) => {
       // run the regexp on the master name string
       // use Set to dedupe
       const matches = Array.from(new Set(name.match(expr)));
-      let matchCount = matches?.length || 0;
+      let matchCount = (matches && matches.length) || 0;
       if (name.startsWith(term)) {
         matchCount = matchCount + 1;
       }
@@ -325,7 +325,7 @@ export const getMostSimilarGrade = (query, priorityList) => {
         matchCount = matchCount + 1;
       }
 
-      if (matches?.length > 0) {
+      if (matchCount > 0) {
         // append a field "matchCount" to use on the item
 
         memo.push({

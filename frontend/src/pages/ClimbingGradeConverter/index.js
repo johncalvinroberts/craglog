@@ -23,7 +23,7 @@ const outerRef = {
 };
 
 const handleKeydown = () => {
-  outerRef.current?.focus();
+  if (outerRef.current) outerRef.current.focus();
 };
 
 const Grade = ({ value, isHighlight }) => {
@@ -72,7 +72,7 @@ const ClimbingGradeConverter = () => {
   }, []);
 
   const handleInput = (e) => {
-    const query = e.target.value?.trim();
+    const query = e.target.value.trim();
     const matches = query ? getMostSimilarGrade(query) : allGrades;
     log.info(matches);
     setMatches(matches);
