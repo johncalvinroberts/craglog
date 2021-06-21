@@ -2,6 +2,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { processTheCrag } from './thecrag.process';
+import { process27Crags } from './27crags.process';
 
 @Processor('scraper')
 export class JobProcessor {
@@ -11,6 +12,14 @@ export class JobProcessor {
   async handleTheCrag(job: Job) {
     this.logger.debug('Received job to scrape thecrag');
     const ret = await processTheCrag(job);
+    this.logger.debug(`finished scraping thecrag, ${JSON.stringify(ret)}`);
+    return ret;
+  }
+
+  @Process('27crags.com')
+  async handle27Crags(job: Job) {
+    this.logger.debug('Received job to scrape thecrag');
+    const ret = await process27Crags(job);
     this.logger.debug(`finished scraping thecrag, ${JSON.stringify(ret)}`);
     return ret;
   }
