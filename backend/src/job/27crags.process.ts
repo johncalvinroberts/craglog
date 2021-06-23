@@ -6,10 +6,6 @@ import { Job } from 'bull';
 
 const logger = new Logger('jobs:33:27crags.process');
 
-function trimWhiteSpace(string) {
-  return string && string.replace(/\s+/g, '');
-}
-
 //https://27crags.com/crags/10771/routes/142408
 const fetchAndFormatRoute = async (url: string) => {
   const res = await fetch(url);
@@ -35,7 +31,7 @@ const fetchAndFormatRoute = async (url: string) => {
     grade,
     location: '',
     height: '',
-    bolts: '',
+    bolts: 0,
     style,
   };
 };

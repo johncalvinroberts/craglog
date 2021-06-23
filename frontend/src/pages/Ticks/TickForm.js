@@ -48,7 +48,7 @@ const validationSchema = yup.object().shape({
   routeSnapshot: yup.object().shape({
     externalUrl: yup.string().url().nullable(),
     area: yup.string(),
-    bolts: yup.number().nullable(),
+    bolts: yup.number().nullable().optional(),
     cragName: yup.string().nullable(),
     grade: yup.string().nullable(),
     height: yup.string().nullable(),
@@ -114,6 +114,7 @@ const TickForm = ({ defaultValues, onSubmit }) => {
 
   const formRef = useRef();
   const importJobIdRef = useRef();
+  console.log(formMethods.errors);
   const toast = useToast();
 
   const handleImport = async () => {
