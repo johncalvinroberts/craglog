@@ -11,6 +11,7 @@ import NotFound from '../pages/NotFound';
 import Landing from '../pages/index';
 import ClimbingGradeConverter from '../pages/ClimbingGradeConverter';
 import ErrorBoundary from './ErrorBoundary';
+import { useRouteChanged } from '../hooks';
 
 const LogIn = lazy(() => import('../pages/LogIn'));
 const Register = lazy(() => import('../pages/Register'));
@@ -45,6 +46,8 @@ const AdminRoutes = () => {
 };
 
 const App = () => {
+  useRouteChanged(() => window.fathom('trackPageview'));
+
   return (
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
