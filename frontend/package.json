@@ -25,6 +25,7 @@
     "google-map-react": "^1.1.5",
     "guu": "^0.2.7",
     "jwt-decode": "^3.0.0",
+    "paper": "^0.12.15",
     "parcel": "^1.12.4",
     "patch-package": "^6.4.7",
     "react": "^17.0.1",

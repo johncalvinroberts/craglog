@@ -60,6 +60,20 @@ const MobileUtilMenu = () => {
               >
                 Hangboard
               </MenuItem>
+              <MenuItem
+                as={RouterLink}
+                to="/app/betasheets"
+                aria-label="Betasheets"
+              >
+                Betasheets
+              </MenuItem>
+              <MenuItem
+                as={RouterLink}
+                to="/climbing-grade-converter"
+                aria-label="Grade Converter"
+              >
+                Grade Converter
+              </MenuItem>
             </MenuList>
           </>
         )}

@@ -38,6 +38,8 @@ export const SideNavContent = ({
           <MenuLink to="/app">Home</MenuLink>
           <MenuLink to="/app/tick/new">Add Log</MenuLink>
           <MenuLink to="/app/hangboard">Hangboard</MenuLink>
+          <MenuLink to="/app/betasheets">Betasheets</MenuLink>
+          <MenuLink to="/climbing-grade-converter">Grade Converter</MenuLink>
         </Box>
         {isAdmin && (
           <Box mb="10">
