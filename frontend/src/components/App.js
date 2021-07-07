@@ -11,7 +11,7 @@ import NotFound from '../pages/NotFound';
 import Landing from '../pages/index';
 import ClimbingGradeConverter from '../pages/ClimbingGradeConverter';
 import ErrorBoundary from './ErrorBoundary';
-import { useRouteChanged } from '../hooks';
+import Fathom from './Fathom';
 
 const LogIn = lazy(() => import('../pages/LogIn'));
 const Register = lazy(() => import('../pages/Register'));
@@ -46,8 +46,6 @@ const AdminRoutes = () => {
 };
 
 const App = () => {
-  useRouteChanged(() => window.fathom('trackPageview'));
-
   return (
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
@@ -57,6 +55,7 @@ const App = () => {
             <State>
               <SWRConfig value={{ refreshInterval: 10000 }}>
                 <Router>
+                  <Fathom />
                   <Switch>
                     <Route path="/" exact component={Landing} />
                     <Route path="/login" exact component={LogIn} />
