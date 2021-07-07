@@ -60,6 +60,13 @@ const MobileUtilMenu = () => {
               >
                 Hangboard
               </MenuItem>
+              <MenuItem
+                as={RouterLink}
+                to="/app/betasheets"
+                aria-label="Betasheets"
+              >
+                Betasheets
+              </MenuItem>
             </MenuList>
           </>
         )}

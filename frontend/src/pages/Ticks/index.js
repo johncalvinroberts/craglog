@@ -5,6 +5,7 @@ import DashboardLayout from '../../components/DashboardLayout';
 import DashboardWrapper from '../../components/DashboardWrapper';
 import NotFound from '../NotFound';
 import TickList from './TickList';
+import BetaSheets from '../BetaSheetGenerator';
 
 const Hangboard = lazy(() => import('../Hangboard'));
 const TickCreate = lazy(() => import('./TickCreate'));
@@ -30,6 +31,7 @@ const Home = ({ match }) => {
             />
             <Route path={`${match.path}/hangboard`} component={Hangboard} />
             <Route path={`${match.path}/account`} component={Account} />
+            <Route path={`${match.path}/betasheets`} component={BetaSheets} />
             <Route component={NotFound} />
           </Switch>
         </DashboardWrapper>
