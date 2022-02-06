@@ -1,29 +1,23 @@
-# CRAGLOG
+# [craglog](https://craglog.cc/)
+
+This is a soon-to-be-deprecated sideproject that I spent way too much time on. 
+
+It's basically a climbing journal for tracking accomplishments, ascents, and training.
 
 ### Tech stack
 This app is using a monorepo -- both frontend, backend, and deployment related code lives in this repo.
-#### Data persistence
-* mongo db v4.0.1
-* Redis
 
 #### Backend
+* [Nest JS](https://nestjs.com/)
 * [fastify](https://github.com/fastify/fastify)
 * [bull](https://github.com/OptimalBits/bull)
+* Redis
+* Typescript
 
 #### Frontend
 * React
 * [Chakra-ui](https://chakra-ui.com)
-
-
-### Scraping The Crag 
-* Area Search: https://www.thecrag.com/climbing/world/search?S=lions%20head&only=areas
-* Route Search: https://www.thecrag.com/climbing/world/routes/search/cracka%20lackin
-* Area detail: 
-  - https://www.thecrag.com/climbing/china-mainland/zhejiang-jiangsu/area/563680785
-  - https://www.thecrag.com/area/563680785
-* Route detail: 
-  - https://www.thecrag.com/climbing/china-mainland/zhejiang-jiangsu/route/1132935318
-  - https://www.thecrag.com/route/1132935318
+* [SWR](https://swr.vercel.app/)
 
 
 ### Environment variables
@@ -47,7 +41,6 @@ MAIL_HOST
 MAIL_PORT
 MAIL_USER
 MAIL_PASS
-
 ```
 
 #### frontend

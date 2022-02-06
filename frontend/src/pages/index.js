@@ -35,9 +35,6 @@ const Landing = () => {
             register
           </Link>
         </Box>
-        <Link to="/climbing-grade-converter" as={RouterLink} mt={3}>
-          climbing grade converter utility 🧮 →
-        </Link>
       </Box>
     </Box>
   );
