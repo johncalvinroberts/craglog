@@ -11,7 +11,6 @@ import NotFound from '../pages/NotFound';
 import Landing from '../pages/index';
 import ClimbingGradeConverter from '../pages/ClimbingGradeConverter';
 import ErrorBoundary from './ErrorBoundary';
-import Fathom from './Fathom';
 
 const LogIn = lazy(() => import('../pages/LogIn'));
 const Register = lazy(() => import('../pages/Register'));
@@ -55,7 +54,6 @@ const App = () => {
             <State>
               <SWRConfig value={{ refreshInterval: 10000 }}>
                 <Router>
-                  <Fathom />
                   <Switch>
                     <Route path="/" exact component={Landing} />
                     <Route path="/login" exact component={LogIn} />

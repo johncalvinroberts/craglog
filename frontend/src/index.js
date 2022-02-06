@@ -30,6 +30,5 @@ const mountServiceWorker = async () => {
 };
 
 if (isProduction && !isPrerenderPhase) {
-  window.__MOUNT_FATHOM = true;
   mountServiceWorker();
 }
