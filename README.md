@@ -5,9 +5,11 @@ This is a soon-to-be-deprecated sideproject that I spent way too much time on.
 It's basically a climbing journal for tracking accomplishments, ascents, and training.
 
 ### Tech stack
+
 This app is using a monorepo -- both frontend, backend, and deployment related code lives in this repo.
 
 #### Backend
+
 * [Nest JS](https://nestjs.com/)
 * [fastify](https://github.com/fastify/fastify)
 * [bull](https://github.com/OptimalBits/bull)
@@ -15,6 +17,7 @@ This app is using a monorepo -- both frontend, backend, and deployment related c
 * Typescript
 
 #### Frontend
+
 * React
 * [Chakra-ui](https://chakra-ui.com)
 * [SWR](https://swr.vercel.app/)
@@ -23,6 +26,7 @@ This app is using a monorepo -- both frontend, backend, and deployment related c
 ### Environment variables
 
 #### backend
+
 ```
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
@@ -44,6 +48,7 @@ MAIL_PASS
 ```
 
 #### frontend
+
 ```
 WEBPACK_DEV_PORT=1234
 API_BASE_URL=http://localhost:3000
@@ -51,13 +56,14 @@ API_BASE_PATH=/api/v1
 ```
 
 ### Make Commands
-`docker-up`
-`docker-down`
-`restart-docker`
-`bootstrap-dev`
-`start-backend`
-`dev-backend`
-`dev-jobs`
-`dev-all` - run with `make -j dev-all` to run backend and jobs
-`dev-frontend`
-`seed`
+
+* `docker-up`
+* `docker-down`
+* `restart-docker`
+* `bootstrap-dev`
+* `start-backend`
+* `dev-backend`
+* `dev-jobs`
+* `dev-all` - run with `make -j dev-all` to run backend and jobs
+* `dev-frontend`
+* `seed`
